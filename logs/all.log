@@ -1,0 +1,81 @@
+2017-04-23 13:22:03,832  INFO HealthcareApplication:48 - Starting HealthcareApplication on localhost with PID 95216 (/Users/zhao/dev/work/healthcare_backend_v1/target/classes started by zhao in /Users/zhao/dev/work/healthcare_backend_v1)
+2017-04-23 13:22:03,833  INFO HealthcareApplication:665 - The following profiles are active: dev
+2017-04-23 13:22:03,873  INFO AnnotationConfigEmbeddedWebApplicationContext:582 - Refreshing org.springframework.boot.context.embedded.AnnotationConfigEmbeddedWebApplicationContext@19bb07ed: startup date [Sun Apr 23 13:22:03 EDT 2017]; root of context hierarchy
+2017-04-23 13:22:04,007  INFO Version:30 - HV000001: Hibernate Validator 5.2.4.Final
+2017-04-23 13:22:04,732  INFO RepositoryConfigurationDelegate:170 - Multiple Spring Data modules found, entering strict repository configuration mode!
+2017-04-23 13:22:04,791  INFO RepositoryConfigurationDelegate:170 - Multiple Spring Data modules found, entering strict repository configuration mode!
+2017-04-23 13:22:04,813  INFO RepositoryConfigurationExtensionSupport:283 - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.healthcare.repository.AdminPermissionRepository.
+2017-04-23 13:22:04,813  INFO RepositoryConfigurationExtensionSupport:283 - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.healthcare.repository.AdminRepository.
+2017-04-23 13:22:05,071  INFO AutowiredAnnotationBeanPostProcessor:155 - JSR-330 'javax.inject.Inject' annotation found and supported for autowiring
+2017-04-23 13:22:05,188  INFO PostProcessorRegistrationDelegate$BeanPostProcessorChecker:325 - Bean 'org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration' of type [class org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration$$EnhancerBySpringCGLIB$$15ac1327] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2017-04-23 13:22:05,223  INFO PostProcessorRegistrationDelegate$BeanPostProcessorChecker:325 - Bean 'org.springframework.security.config.annotation.configuration.ObjectPostProcessorConfiguration' of type [class org.springframework.security.config.annotation.configuration.ObjectPostProcessorConfiguration$$EnhancerBySpringCGLIB$$ae59db61] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2017-04-23 13:22:05,231  INFO PostProcessorRegistrationDelegate$BeanPostProcessorChecker:325 - Bean 'objectPostProcessor' of type [class org.springframework.security.config.annotation.configuration.AutowireBeanFactoryObjectPostProcessor] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2017-04-23 13:22:05,232  INFO PostProcessorRegistrationDelegate$BeanPostProcessorChecker:325 - Bean 'org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler@446e7065' of type [class org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2017-04-23 13:22:05,236  INFO PostProcessorRegistrationDelegate$BeanPostProcessorChecker:325 - Bean 'org.springframework.security.config.annotation.method.configuration.GlobalMethodSecurityConfiguration' of type [class org.springframework.security.config.annotation.method.configuration.GlobalMethodSecurityConfiguration$$EnhancerBySpringCGLIB$$d32e7e13] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2017-04-23 13:22:05,246  INFO PostProcessorRegistrationDelegate$BeanPostProcessorChecker:325 - Bean 'methodSecurityMetadataSource' of type [class org.springframework.security.access.method.DelegatingMethodSecurityMetadataSource] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2017-04-23 13:22:05,558  INFO TomcatEmbeddedServletContainer:87 - Tomcat initialized with port(s): 8080 (http)
+2017-04-23 13:22:05,639  INFO ContextLoader:276 - Root WebApplicationContext: initialization completed in 1768 ms
+2017-04-23 13:22:06,188  INFO DruidDataSource:715 - {dataSource-1} inited
+2017-04-23 13:22:06,283  INFO VersionPrinter:44 - Flyway 3.2.1 by Boxfuse
+2017-04-23 13:22:06,289  INFO DbSupportFactory:44 - Database: jdbc:mysql://192.168.10.59:3306/health_care_v1_dev?autoReconnect=true&useSSL=false (MySQL 5.5)
+2017-04-23 13:22:06,389  INFO DbValidate:44 - Validated 2 migrations (execution time 00:00.087s)
+2017-04-23 13:22:06,434  INFO DbMigrate:44 - Current version of schema `health_care_v1_dev`: 2
+2017-04-23 13:22:06,435  INFO DbMigrate:44 - Schema `health_care_v1_dev` is up to date. No migration necessary.
+2017-04-23 13:22:06,492  INFO LocalContainerEntityManagerFactoryBean:349 - Building JPA container EntityManagerFactory for persistence unit 'default'
+2017-04-23 13:22:06,503  INFO LogHelper:31 - HHH000204: Processing PersistenceUnitInfo [
+	name: default
+	...]
+2017-04-23 13:22:06,556  INFO Version:37 - HHH000412: Hibernate Core {5.0.11.Final}
+2017-04-23 13:22:06,558  INFO Environment:213 - HHH000206: hibernate.properties not found
+2017-04-23 13:22:06,559  INFO Environment:317 - HHH000021: Bytecode provider name : javassist
+2017-04-23 13:22:06,586  INFO Version:66 - HCANN000001: Hibernate Commons Annotations {5.0.1.Final}
+2017-04-23 13:22:06,672  INFO Dialect:156 - HHH000400: Using dialect: org.hibernate.dialect.MySQL5Dialect
+2017-04-23 13:22:06,962  INFO SchemaUpdate:105 - HHH000228: Running hbm2ddl schema update
+2017-04-23 13:22:07,039  INFO LocalContainerEntityManagerFactoryBean:382 - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2017-04-23 13:22:07,583  INFO FilterRegistrationBean:258 - Mapping filter: 'characterEncodingFilter' to: [/*]
+2017-04-23 13:22:07,583  INFO FilterRegistrationBean:258 - Mapping filter: 'hiddenHttpMethodFilter' to: [/*]
+2017-04-23 13:22:07,583  INFO FilterRegistrationBean:258 - Mapping filter: 'httpPutFormContentFilter' to: [/*]
+2017-04-23 13:22:07,583  INFO FilterRegistrationBean:258 - Mapping filter: 'requestContextFilter' to: [/*]
+2017-04-23 13:22:07,584  INFO DelegatingFilterProxyRegistrationBean:258 - Mapping filter: 'springSecurityFilterChain' to: [/*]
+2017-04-23 13:22:07,584  INFO FilterRegistrationBean:271 - Mapping filter: 'webStatFilter' to urls: [/*]
+2017-04-23 13:22:07,584  INFO FilterRegistrationBean:258 - Mapping filter: 'authTokenFilter' to: [/*]
+2017-04-23 13:22:07,585  INFO FilterRegistrationBean:258 - Mapping filter: 'authenticationTokenFilterBean' to: [/*]
+2017-04-23 13:22:07,585  INFO ServletRegistrationBean:190 - Mapping servlet: 'statViewServlet' to [/druid/*]
+2017-04-23 13:22:07,585  INFO ServletRegistrationBean:190 - Mapping servlet: 'dispatcherServlet' to [/]
+2017-04-23 13:22:07,938  INFO RequestMappingHandlerMapping:543 - Mapped "{[/api/user/{id}],methods=[GET]}" onto public java.lang.String com.healthcare.api.UserController.getUser(java.lang.Long)
+2017-04-23 13:22:07,940  INFO RequestMappingHandlerMapping:543 - Mapped "{[/api/auth/logout],methods=[POST],produces=[application/json]}" onto public com.healthcare.model.response.Response com.healthcare.api.auth.login.AuthenticationAPI.logout(javax.servlet.http.HttpServletRequest)
+2017-04-23 13:22:07,940  INFO RequestMappingHandlerMapping:543 - Mapped "{[/api/auth/profile],methods=[GET],produces=[application/json;charset=utf-8]}" onto public com.healthcare.model.response.Response com.healthcare.api.auth.login.AuthenticationAPI.getUser(javax.servlet.http.HttpServletRequest)
+2017-04-23 13:22:07,940  INFO RequestMappingHandlerMapping:543 - Mapped "{[/api/auth/login],methods=[POST],produces=[application/json]}" onto public com.healthcare.model.response.Response com.healthcare.api.auth.login.AuthenticationAPI.login(com.healthcare.api.auth.model.AuthRequest) throws org.springframework.security.core.AuthenticationException
+2017-04-23 13:22:07,940  INFO RequestMappingHandlerMapping:543 - Mapped "{[/api/auth/token/refresh],methods=[GET]}" onto public com.healthcare.model.response.Response com.healthcare.api.auth.login.AuthenticationAPI.refreshAndGetAuthenticationToken(javax.servlet.http.HttpServletRequest)
+2017-04-23 13:22:07,941  INFO RequestMappingHandlerMapping:543 - Mapped "{[/api/admin/get_email],methods=[GET],produces=[application/json]}" onto public com.healthcare.model.response.Response com.healthcare.api.web.AdminController.getEmailByUsername(java.lang.String)
+2017-04-23 13:22:07,942  INFO RequestMappingHandlerMapping:543 - Mapped "{[/v2/api-docs],methods=[GET],produces=[application/json || application/hal+json]}" onto public org.springframework.http.ResponseEntity<springfox.documentation.spring.web.json.Json> springfox.documentation.swagger2.web.Swagger2Controller.getDocumentation(java.lang.String,javax.servlet.http.HttpServletRequest)
+2017-04-23 13:22:07,945  INFO RequestMappingHandlerMapping:543 - Mapped "{[/swagger-resources/configuration/ui]}" onto org.springframework.http.ResponseEntity<springfox.documentation.swagger.web.UiConfiguration> springfox.documentation.swagger.web.ApiResourceController.uiConfiguration()
+2017-04-23 13:22:07,946  INFO RequestMappingHandlerMapping:543 - Mapped "{[/swagger-resources/configuration/security]}" onto org.springframework.http.ResponseEntity<springfox.documentation.swagger.web.SecurityConfiguration> springfox.documentation.swagger.web.ApiResourceController.securityConfiguration()
+2017-04-23 13:22:07,946  INFO RequestMappingHandlerMapping:543 - Mapped "{[/swagger-resources]}" onto org.springframework.http.ResponseEntity<java.util.List<springfox.documentation.swagger.web.SwaggerResource>> springfox.documentation.swagger.web.ApiResourceController.swaggerResources()
+2017-04-23 13:22:07,950  INFO RequestMappingHandlerMapping:543 - Mapped "{[/error]}" onto public org.springframework.http.ResponseEntity<java.util.Map<java.lang.String, java.lang.Object>> org.springframework.boot.autoconfigure.web.BasicErrorController.error(javax.servlet.http.HttpServletRequest)
+2017-04-23 13:22:07,950  INFO RequestMappingHandlerMapping:543 - Mapped "{[/error],produces=[text/html]}" onto public org.springframework.web.servlet.ModelAndView org.springframework.boot.autoconfigure.web.BasicErrorController.errorHtml(javax.servlet.http.HttpServletRequest,javax.servlet.http.HttpServletResponse)
+2017-04-23 13:22:08,203  INFO DefaultSecurityFilterChain:43 - Creating filter chain: org.springframework.security.web.util.matcher.AnyRequestMatcher@1, [org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@27d98bef, org.springframework.security.web.context.SecurityContextPersistenceFilter@1b475663, org.springframework.security.web.header.HeaderWriterFilter@2af9a5ef, org.springframework.security.web.authentication.logout.LogoutFilter@25470477, com.healthcare.api.auth.AuthTokenFilter@ffe6201, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@6b24ddd7, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@2499b971, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@349312d5, org.springframework.security.web.session.SessionManagementFilter@6f0c45f4, org.springframework.security.web.access.ExceptionTranslationFilter@1d944fc0, org.springframework.security.web.access.intercept.FilterSecurityInterceptor@2a2b7a35]
+2017-04-23 13:22:08,332  INFO RequestMappingHandlerAdapter:534 - Looking for @ControllerAdvice: org.springframework.boot.context.embedded.AnnotationConfigEmbeddedWebApplicationContext@19bb07ed: startup date [Sun Apr 23 13:22:03 EDT 2017]; root of context hierarchy
+2017-04-23 13:22:08,378  INFO SimpleUrlHandlerMapping:354 - Mapped URL path [/webjars/**] onto handler of type [class org.springframework.web.servlet.resource.ResourceHttpRequestHandler]
+2017-04-23 13:22:08,378  INFO SimpleUrlHandlerMapping:354 - Mapped URL path [/**] onto handler of type [class org.springframework.web.servlet.resource.ResourceHttpRequestHandler]
+2017-04-23 13:22:08,414  INFO SimpleUrlHandlerMapping:354 - Mapped URL path [/**/favicon.ico] onto handler of type [class org.springframework.web.servlet.resource.ResourceHttpRequestHandler]
+2017-04-23 13:22:08,708  WARN RedisStarterDeprecationWarningAutoConfiguration:43 - spring-boot-starter-redis is deprecated as of Spring Boot 1.4, please migrate to spring-boot-starter-data-redis
+2017-04-23 13:22:08,746  INFO AnnotationMBeanExporter:431 - Registering beans for JMX exposure on startup
+2017-04-23 13:22:08,747  INFO AnnotationMBeanExporter:916 - Bean with name 'dataSource' has been autodetected for JMX exposure
+2017-04-23 13:22:08,752  INFO AnnotationMBeanExporter:671 - Located MBean 'dataSource': registering with JMX server as MBean [com.alibaba.druid.pool:name=dataSource,type=DruidDataSource]
+2017-04-23 13:22:08,754  INFO DefaultLifecycleProcessor:341 - Starting beans in phase 2147483647
+2017-04-23 13:22:08,755  INFO DocumentationPluginsBootstrapper:120 - Context refreshed
+2017-04-23 13:22:08,769  INFO DocumentationPluginsBootstrapper:123 - Found 1 custom documentation plugin(s)
+2017-04-23 13:22:08,784  INFO ApiListingReferenceScanner:41 - Scanning for api listing references
+2017-04-23 13:22:08,884  INFO CachingOperationNameGenerator:40 - Generating unique operation named: getUserUsingGET_1
+2017-04-23 13:22:08,934  INFO TomcatEmbeddedServletContainer:185 - Tomcat started on port(s): 8080 (http)
+2017-04-23 13:22:08,941  INFO HealthcareApplication:57 - Started HealthcareApplication in 5.343 seconds (JVM running for 5.584)
+2017-04-23 13:22:17,957  INFO DispatcherServlet:489 - FrameworkServlet 'dispatcherServlet': initialization started
+2017-04-23 13:22:17,968  INFO DispatcherServlet:508 - FrameworkServlet 'dispatcherServlet': initialization completed in 11 ms
+2017-04-23 13:22:18,004  INFO UserController:22 - ===id==20
+2017-04-23 13:22:42,624  INFO AnnotationConfigEmbeddedWebApplicationContext:987 - Closing org.springframework.boot.context.embedded.AnnotationConfigEmbeddedWebApplicationContext@19bb07ed: startup date [Sun Apr 23 13:22:03 EDT 2017]; root of context hierarchy
+2017-04-23 13:22:42,626  INFO DefaultLifecycleProcessor:356 - Stopping beans in phase 2147483647
+2017-04-23 13:22:42,628  INFO AnnotationMBeanExporter:449 - Unregistering JMX-exposed beans on shutdown
+2017-04-23 13:22:42,629  INFO AnnotationMBeanExporter:241 - Unregistering JMX-exposed beans
+2017-04-23 13:22:42,631  INFO LocalContainerEntityManagerFactoryBean:551 - Closing JPA EntityManagerFactory for persistence unit 'default'
+2017-04-23 13:22:42,634  INFO DruidDataSource:1444 - {dataSource-1} closed
