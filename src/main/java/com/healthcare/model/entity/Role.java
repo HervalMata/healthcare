@@ -17,20 +17,20 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "admin_permission")
-public @Data class AdminPermission implements java.io.Serializable {
+@Table(name = "role")
+public @Data class Role implements java.io.Serializable {
 	
 	private static final long serialVersionUID = -6360665934926249915L;
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private long id;
 	private long level;
-	private String levelName;
+	private String level_name;
 	private long status;
 
 	// @OneToMany(cascade = { CascadeType.PERSIST,
 	// CascadeType.REMOVE }, fetch = FetchType.EAGER, mappedBy =
-	// "admin_permission")
+	// "role")
 	// private List<Admin> admins;
 
 }

@@ -28,14 +28,23 @@ public class Admin implements java.io.Serializable {
 	private long id;
 	private String username;
 	private String password;
-	private String firstname;
-	private String lastname;
+	private String first_name;
+	private String middle_name;
+	private String last_name;
+	private String gender;
 	private String email;
-	private String rememberToken;
+	private String phone;
+	private String profile_photo;
+	private String ip;
+	private String device_address;
+	private String secondary_phone;
+	private String remember_token;
+	private long created_at;
+	private long updated_at;
 	private long status;
 
 	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "admin_permission_id")
-	private AdminPermission adminPermission;
+	@JoinColumn(name = "role_id")
+	private Role role;
 
 }
