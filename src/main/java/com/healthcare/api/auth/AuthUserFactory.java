@@ -20,13 +20,13 @@ public final class AuthUserFactory {
 	}
 
 	public static AuthUser create(Admin user) {
-		return new AuthUser(user.getId(), user.getUsername(), user.getFirst_name(), user.getLast_name(),
+		return new AuthUser(user.getId(), user.getUsername(), user.getFirstName(), user.getLastName(),
 				user.getEmail(), user.getPassword(), mapToGrantedAuthorities(user.getRole()), (user.getStatus() == 1));
 	}
 
 	private static List<GrantedAuthority> mapToGrantedAuthorities(Role role) {
 		List<GrantedAuthority> authoritys = new ArrayList<GrantedAuthority>();
-		authoritys.add(new SimpleGrantedAuthority(role.getLevel_name()));
+		authoritys.add(new SimpleGrantedAuthority(role.getLevelName()));
 		return authoritys;
 	}
 }
