@@ -71,7 +71,7 @@ public class AuthenticationAPI extends AbstractBasedAPI {
 				// Generate token for authen admin user
 				final String token = tokenUtil.generateToken(userDetails);
 				// Update token for current Admin login
-				adminUser.setRemember_token(token);
+				adminUser.setRememberToken(token);
 				adminService.save(adminUser);
 				// Return result
 				AuthResponse authResponse = new AuthResponse(token, adminUser);
@@ -128,7 +128,7 @@ public class AuthenticationAPI extends AbstractBasedAPI {
 			UserDetails userDetails = AuthUserFactory.create(adminUser);
 			if (tokenUtil.validateToken(token, userDetails)) {
 				String refreshedToken = tokenUtil.refreshToken(token);
-				adminUser.setRemember_token(refreshedToken);
+				adminUser.setRememberToken(refreshedToken);
 				adminService.save(adminUser);
 				// Return result
 				AuthResponse authResponse = new AuthResponse(refreshedToken, adminUser);
