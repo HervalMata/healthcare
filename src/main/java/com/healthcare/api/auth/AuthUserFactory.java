@@ -8,7 +8,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import com.healthcare.api.auth.model.AuthUser;
 import com.healthcare.model.entity.Admin;
-import com.healthcare.model.entity.AdminPermission;
+import com.healthcare.model.entity.Role;
 
 /**
  * 
@@ -20,13 +20,13 @@ public final class AuthUserFactory {
 	}
 
 	public static AuthUser create(Admin user) {
-		return new AuthUser(user.getId(), user.getUsername(), user.getFirstname(), user.getLastname(), user.getEmail(),
-				user.getPassword(), mapToGrantedAuthorities(user.getAdminPermission()), (user.getStatus() == 1));
+		return new AuthUser(user.getId(), user.getUsername(), user.getFirstName(), user.getLastName(),
+				user.getEmail(), user.getPassword(), mapToGrantedAuthorities(user.getRole()), (user.getStatus() == 1));
 	}
 
-	private static List<GrantedAuthority> mapToGrantedAuthorities(AdminPermission permission) {
+	private static List<GrantedAuthority> mapToGrantedAuthorities(Role role) {
 		List<GrantedAuthority> authoritys = new ArrayList<GrantedAuthority>();
-		authoritys.add(new SimpleGrantedAuthority(permission.getLevelName()));
+		authoritys.add(new SimpleGrantedAuthority(role.getLevelName()));
 		return authoritys;
 	}
 }
