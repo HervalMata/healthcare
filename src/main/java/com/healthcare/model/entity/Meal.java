@@ -10,9 +10,11 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Entity
 @Table(name = "meal")
+@EqualsAndHashCode(callSuper = true)
 public @Data class Meal extends Audit implements Serializable {
 
 	/**

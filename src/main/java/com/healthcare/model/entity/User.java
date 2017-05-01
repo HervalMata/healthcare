@@ -13,9 +13,11 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Entity
 @Table(name = "user")
+@EqualsAndHashCode(callSuper = true)
 public @Data class User extends Audit implements Serializable {
 
 	/**

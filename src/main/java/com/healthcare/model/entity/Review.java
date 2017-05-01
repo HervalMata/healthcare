@@ -12,9 +12,11 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Entity
 @Table(name = "review")
+@EqualsAndHashCode(callSuper = true)
 public @Data class Review extends Audit implements Serializable {
 
 	/**
