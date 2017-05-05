@@ -4,9 +4,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
-import com.healthcare.model.entity.Employee;
+import com.healthcare.model.entity.Meal;
 
 @Repository
-public interface EmployeeRepository extends CrudRepository<Employee, Long>, JpaRepository<Employee, Long> {
+public interface MealRepository extends CrudRepository<Meal, Long>, JpaRepository<Meal, Long> {
 
 }
