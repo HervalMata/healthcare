@@ -2,6 +2,7 @@ package com.healthcare.model.entity;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -26,12 +27,10 @@ public @Data class User extends Audit implements Serializable {
 	private static final long serialVersionUID = 8716797253090002699L;
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private int id;
+	private Long id;
 	@ManyToOne
 	@JoinColumn(name = "company_id")
 	private Company company;
-	@Column(name = "base_id")
-	private long baseId;
 	@Column(name = "user_type")
 	private int userType;
 	private String username;
@@ -45,12 +44,16 @@ public @Data class User extends Audit implements Serializable {
 	private String language;
 	@Column(name = "social_security_number")
 	private String socialSecurityNumber;
+	@Column(name = "dob")
+	private Date dateOfBirth;
 	private String email;
 	private String phone;
 	@Column(name = "secondary_phone")
 	private String secondaryPhone;
 	@Column(name = "verification_code")
 	private String verificationCode;
+	@Column(name = "address_type")
+	private String addressType;
 	@Column(name = "address_one")
 	private String addressOne;
 	@Column(name = "address_two")
@@ -58,6 +61,28 @@ public @Data class User extends Audit implements Serializable {
 	private String city;
 	private String state;
 	private String zipcode;
+	@Column(name = "emergency_contact_first_name")
+	private String emergencyContactFirstName;
+	@Column(name = "emergency_contact_middle_name")
+	private String emergencyContactMiddleName;
+	@Column(name = "emergency_contact_last_name")
+	private String emergencyContactLastName;
+	@Column(name = "relationship_to_paticipant")
+	private String relationshipToParticipant;
+	@Column(name = "emergency_contact_phone")
+	private String emergencyContactPhone;
+	@Column(name = "emergency_contact_address_one")
+	private String emergencyContactAddressOne;
+	@Column(name = "emergency_contact_address_two")
+	private String emergencyContactAddressTwo;
+	@Column(name = "emergency_contact_city")
+	private String emergencyContactCity;
+	@Column(name = "emergency_contact_state")
+	private String emergencyContactState;
+	@Column(name = "emergency_contact_zipcode")
+	private String emergencyContactZipcode;
+	@Column(name = "comment")
+	private String comment;
 	@ManyToOne
 	@JoinColumn(name = "preferred_meal_id")
 	private Meal preferredMeal;
@@ -70,10 +95,10 @@ public @Data class User extends Audit implements Serializable {
 	private String profilePhoto;
 	@Column(name = "approvable_mail")
 	private Integer approvableMail;
-	@Column(name = "state_card_no")
-	private String stateCardNo;
-	@Column(name = "federal_card_no")
-	private String federalCardNo;
+	@Column(name = "medicaid_no")
+	private String medicaIdNumber;
+	@Column(name = "medicare_no")
+	private String medicareNumber;
 	private String insurance;
 	@Column(name = "insurance_start")
 	private Timestamp insuranceStart;
