@@ -22,7 +22,6 @@ public class MealServiceImpl implements MealService {
     @Autowired
     public MealServiceImpl(MealRepository mealRepository) {
         this.mealRepository = mealRepository;
-
     }
 
     @Nonnull
@@ -43,7 +42,7 @@ public class MealServiceImpl implements MealService {
 
     @Override
     public void delete(@Nonnull Long id) {
-        notNull(id, "Meal must not be null");
+        notNull(id, "Meal Id must not be null");
 
         mealRepository.delete(id);
     }

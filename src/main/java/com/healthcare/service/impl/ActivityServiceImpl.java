@@ -42,7 +42,7 @@ public class ActivityServiceImpl implements ActivityService {
 
     @Override
     public void delete(@Nonnull Long id) {
-        notNull(id, "Activity must not be null");
+        notNull(id, "Activity Id must not be null");
 
         activityRepository.delete(id);
     }
