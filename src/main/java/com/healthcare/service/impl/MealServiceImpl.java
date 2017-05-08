@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.transaction.Transactional;
 
 import static org.springframework.util.Assert.notNull;
 
@@ -15,6 +16,7 @@ import static org.springframework.util.Assert.notNull;
  * Meal service
  */
 @Service
+@Transactional
 public class MealServiceImpl implements MealService {
 
     private MealRepository mealRepository;
