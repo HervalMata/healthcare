@@ -1,7 +1,7 @@
 package com.healthcare.api;
 
-import com.healthcare.model.entity.Meal;
-import com.healthcare.service.MealService;
+import com.healthcare.model.entity.Activity;
+import com.healthcare.service.ActivityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,54 +16,54 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Meal controller
+ * Activity controller
  */
 @RestController
-@RequestMapping("/api/meal")
-public class MealController extends BaseController {
+@RequestMapping("/api/activity")
+public class ActivityController extends BaseController {
 
-    private MealService mealService;
+    private ActivityService activityService;
 
     @Autowired
-    public MealController(MealService mealService) {
-        this.mealService = mealService;
+    public ActivityController(ActivityService activityService) {
+        this.activityService = activityService;
     }
 
     @PostMapping()
-    public ResponseEntity create(@ModelAttribute Meal meal) {
+    public ResponseEntity create(@ModelAttribute Activity activity) {
 
         return ResponseEntity.ok(
-                mealService.save(meal).getId()
+                activityService.save(activity).getId()
         );
     }
 
     @GetMapping("/{id}")
     public ResponseEntity get(@PathVariable("id") String id) {
-        Long mealId = parseId(id);
+        Long activityId = parseId(id);
 
-        if (mealId == null) {
+        if (activityId == null) {
             return ResponseEntity.badRequest().build();
         }
 
         return ResponseEntity.ok(
-                mealService.get(mealId)
+                activityService.get(activityId)
         );
     }
 
     @PostMapping("/{id}")
-    public void save(@ModelAttribute Meal meal) {
-        mealService.save(meal);
+    public void save(@ModelAttribute Activity activity) {
+        activityService.save(activity);
     }
 
     @DeleteMapping("/{id}")
     public void delete(@PathVariable("id") String id, HttpServletResponse response) {
-        Long mealId = parseId(id);
+        Long activityId = parseId(id);
 
-        if (mealId == null) {
+        if (activityId == null) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
             return;
         }
 
-        mealService.delete(mealId);
+        activityService.delete(activityId);
     }
 }
