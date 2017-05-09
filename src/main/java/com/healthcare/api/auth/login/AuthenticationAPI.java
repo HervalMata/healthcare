@@ -123,7 +123,7 @@ public class AuthenticationAPI extends AbstractBasedAPI {
 	public Response refreshAndGetAuthenticationToken(HttpServletRequest request) {
 		String token = request.getHeader(tokenHeader);
 		String username = tokenUtil.getUsernameFromToken(token);
-		Admin adminUser = adminService.getUser(username);
+		Admin adminUser = (Admin) adminService.getUser(username);
 		if (adminUser != null) {
 			UserDetails userDetails = AuthUserFactory.create(adminUser);
 			if (tokenUtil.validateToken(token, userDetails)) {

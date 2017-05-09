@@ -27,5 +27,6 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="/home/pazfernando/opt/eclipse_neon/lombok.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

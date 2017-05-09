@@ -12,11 +12,9 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
 @Entity
 @Table(name = "company")
-@EqualsAndHashCode(callSuper = true)
 public @Data class Company extends Audit implements Serializable {
 
 	/**
