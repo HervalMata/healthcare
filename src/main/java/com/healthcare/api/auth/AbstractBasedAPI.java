@@ -81,7 +81,7 @@ public abstract class AbstractBasedAPI implements ApplicationEventPublisherAware
 	protected Admin getCurrentAuthenUser(HttpServletRequest request) {
 		String token = request.getHeader("token");
 		String username = authTokenUtil.getUsernameFromToken(token);
-		Admin adminUser = adminService.getUser(username);
+		Admin adminUser = (Admin) adminService.getUser(username);
 		if (adminUser != null) {
 			UserDetails userDetails = AuthUserFactory.create(adminUser);
 			if (authTokenUtil.validateToken(token, userDetails)) {

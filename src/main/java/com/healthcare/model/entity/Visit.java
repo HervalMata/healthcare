@@ -55,13 +55,13 @@ public @Data class Visit implements Serializable {
 	private String notes;
 	private Integer status;
 	@ManyToOne
-	@JoinColumn(name = "user_id1")
+	@Column(name = "user_id1")
 	private User user1;
 	@ManyToOne
-	@JoinColumn(name = "user_id2")
+	@Column(name = "user_id2")
 	private User user2;
 	@ManyToOne
-	@JoinColumn(name = "signature_type_id")
+	@Column(name = "signature_type_id")
 	private SignatureType signatureType;
 
 }
