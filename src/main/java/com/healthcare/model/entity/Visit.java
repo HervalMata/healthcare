@@ -24,7 +24,7 @@ public @Data class Visit implements Serializable {
 	private static final long serialVersionUID = -5449963759010972006L;
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private long id;
+	private Long id;
 	@ManyToOne
 	@JoinColumn(name = "user_id")
 	private User user;

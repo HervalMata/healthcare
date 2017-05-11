@@ -1,4 +1,4 @@
-package com.healthcare.service;
+package com.healthcare.integration.service;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
