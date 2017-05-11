@@ -1,17 +1,23 @@
 package com.healthcare.api;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.healthcare.api.auth.AbstractBasedAPI;
-import com.healthcare.model.response.Response;
+import com.healthcare.model.entity.Admin;
 import com.healthcare.service.AdminService;
 
 @CrossOrigin
@@ -19,20 +25,43 @@ import com.healthcare.service.AdminService;
 @RequestMapping(value = "/api/admin")
 public class AdminController extends AbstractBasedAPI {
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
-	@Autowired
+	
 	private AdminService adminService;
+	
+	@Autowired
+	public AdminController(AdminService adminService) {
+		this.adminService = adminService;
+	}
 
-	// @RequestMapping("/hello")
-	// public String login() {
-	// Admin admin = adminService.getUser("admin");
-	// logger.debug("==debug===" + admin.getEmail());
-	// return "login:" + admin.getEmail();
-	// }
+	@GetMapping("/{id}")
+	public ResponseEntity<Admin> get(@PathVariable Long id) {
+		logger.info("id : " + id);
+		if (id == null) {
+			return ResponseEntity.badRequest().build();
+		}
 
-	@RequestMapping(value = "/get_email", method = RequestMethod.GET, produces = { "application/json" })
-	public @ResponseBody Response getEmailByUsername(@RequestParam("driver_id") String username) {
-		//return adminService.getUser("admin");
-		return null;
+		return ResponseEntity.ok(adminService.get(id));
+	}
+
+	@PostMapping("/{id}")
+	public void save(@ModelAttribute Admin admin) {
+		adminService.save(admin);
+	}
+
+	@PostMapping()
+	public ResponseEntity<Long> create(@ModelAttribute Admin admin) {
+
+		return ResponseEntity.ok(adminService.save(admin).getId());
+	}
+
+	@DeleteMapping("/{id}")
+	public void delete(@PathVariable("id") Long id, HttpServletResponse response) {
+		logger.info("id : " + id);
+		if (id == null) {
+			response.setStatus(HttpStatus.BAD_REQUEST.value());
+			return;
+		}
+
+		adminService.delete(id);
 	}
 }

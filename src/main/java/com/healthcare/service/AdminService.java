@@ -12,5 +12,9 @@ public interface AdminService {
 
 	Response logout(String sessionId);
 
-	void save(Admin admin);
+	Admin save(Admin admin);
+
+	void delete(Long id);
+
+	Admin get(Long id);
 }
