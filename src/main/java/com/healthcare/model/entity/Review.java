@@ -25,7 +25,7 @@ public @Data class Review extends Audit implements Serializable {
 	private static final long serialVersionUID = 8451585526769991568L;
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private long id;
+	private Long id;
 	@ManyToOne
 	@JoinColumn(name = "user_id")
 	private User user;

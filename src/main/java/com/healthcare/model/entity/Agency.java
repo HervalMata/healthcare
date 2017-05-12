@@ -25,7 +25,7 @@ public @Data class Agency extends Audit implements Serializable {
 	private static final long serialVersionUID = -6572833124019691517L;
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private long id;
+	private Long id;
 	@Column(name = "license_no")
 	private String licenseNo;
 	@ManyToOne

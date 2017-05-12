@@ -179,14 +179,13 @@ DEFAULT CHARACTER SET = utf8;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `health_care_v1_dev`.`visit` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `user_id` INT UNSIGNED NOT NULL,
-  `viti_agency_id` INT UNSIGNED NOT NULL,
+  `meal_id` INT UNSIGNED NOT NULL,
+  `agency_id` INT UNSIGNED NOT NULL,
   `check_in_time` DATETIME NULL DEFAULT CURRENT_TIMESTAMP,
   `selected_meal_id` INT UNSIGNED NOT NULL,
   `selected_activity_id` INT UNSIGNED NOT NULL,
-  `selected_seat` VARCHAR(255) NULL DEFAULT NULL,
-  `user_signature` VARCHAR(255) NULL DEFAULT NULL,
-  `user_signature_type` INT UNSIGNED NOT NULL,
+  `selected_seat` VARCHAR(255) NOT NULL,
+  `user_signature` VARCHAR(255) NULL,
   `user_barcode_id` VARCHAR(255) NULL DEFAULT NULL,
   `check_out_time` DATETIME NULL DEFAULT CURRENT_TIMESTAMP,
   `user_comments` VARCHAR(1000) NULL DEFAULT NULL,
@@ -194,14 +193,13 @@ CREATE TABLE IF NOT EXISTS `health_care_v1_dev`.`visit` (
   `status` INT NULL DEFAULT '0',
   `created_at` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
-  `user_id1` INT UNSIGNED NOT NULL,
-  `user_id2` INT UNSIGNED NOT NULL,
+  `user_id` INT UNSIGNED NOT NULL,
   `signature_type_id` INT UNSIGNED NOT NULL,
-  PRIMARY KEY (`id`, `user_id2`, `signature_type_id`),
-  INDEX `fk_visit_user1_idx` (`user_id2`),
+  PRIMARY KEY (`id`, `user_id`, `signature_type_id`),
+  INDEX `fk_visit_user1_idx` (`user_id`),
   INDEX `fk_visit_signature_type1_idx` (`signature_type_id`),
   CONSTRAINT `fk_visit_user1`
-    FOREIGN KEY (`user_id2`)
+    FOREIGN KEY (`user_id`)
     REFERENCES `health_care_v1_dev`.`user` (`id`)
     ON DELETE RESTRICT
     ON UPDATE RESTRICT,

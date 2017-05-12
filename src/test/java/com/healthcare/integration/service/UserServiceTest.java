@@ -1,4 +1,4 @@
-package com.healthcare.service;
+package com.healthcare.integration.service;
 
 import java.sql.Timestamp;
 import java.util.Calendar;
@@ -17,6 +17,7 @@ import com.healthcare.model.entity.User;
 import com.healthcare.model.enums.GenderEnum;
 import com.healthcare.model.enums.LanguageEnum;
 import com.healthcare.model.enums.StateEnum;
+import com.healthcare.service.UserService;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest

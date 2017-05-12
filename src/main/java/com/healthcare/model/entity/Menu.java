@@ -24,7 +24,7 @@ public @Data class Menu implements Serializable {
 	private static final long serialVersionUID = -3163487536542705169L;
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private long id;
+	private Long id;
 	private String name;
 	private String url;
 	@Column(name = "angular_url")

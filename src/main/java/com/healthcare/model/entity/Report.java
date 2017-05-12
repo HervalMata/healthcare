@@ -24,7 +24,7 @@ public @Data class Report implements Serializable {
 	private static final long serialVersionUID = -709441430085367978L;
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private long id;
+	private Long id;
 	@Column(name = "base_idl")
 	private long baseId;
 	@ManyToOne
