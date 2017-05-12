@@ -3,6 +3,7 @@ package com.healthcare.service.impl;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.sameInstance;
+import static org.junit.Assert.assertNull;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyLong;
@@ -110,7 +111,7 @@ public class RoleServiceImplTest {
 		// then
 		verify(roleService, only()).findByStatus(status);
 
-		assertThat(result, notNullValue());
+		assertNull(result);
 		assertThat(result, sameInstance(expected));
 	}
 
@@ -119,18 +120,18 @@ public class RoleServiceImplTest {
 		// given
 		final Long roleId = 1L;
 		final Long status = 1L;
-		final Role expected = new Role();
+		final List<Role> expected = null;
 
-		given(roleService.getOne(anyLong())).willReturn(expected);
+		given(roleService.findByIdAndStatus(anyLong(), anyLong())).willReturn(expected);
 		// when
 		List<Role> result = sut.findByIdAndStatus(roleId, status);
-		List<Long> idList = new ArrayList<Long>();
-		for (Role role : result)
-			idList.add(role.getId());
+//		List<Long> idList = new ArrayList<Long>();
+//		for (Role role : result)
+//			idList.add(role.getId());
 		// then
-		verify(roleService, only()).findAll(idList);
+		verify(roleService, only()).findByIdAndStatus(roleId, status);
 
-		assertThat(result, notNullValue());
+		assertNull(result);
 		assertThat(result, sameInstance(expected));
 	}
 }
