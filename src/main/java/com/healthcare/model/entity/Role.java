@@ -8,7 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import lombok.Data;
@@ -20,12 +20,12 @@ public @Data class Role implements Serializable {
 	private static final long serialVersionUID = -6360665934926249915L;
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private long id;
+	private Long id;
 	private long level;
 	@Column(name = "level_name")
 	private String levelName;
 	private long status;
-	@OneToMany
+	@ManyToOne
 	@JoinColumn(name = "agency_id")
 	private Agency agency;
 }

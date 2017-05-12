@@ -24,13 +24,13 @@ public @Data class Visit implements Serializable {
 	private static final long serialVersionUID = -5449963759010972006L;
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private long id;
+	private Long id;
 	@ManyToOne
-	@JoinColumn(name = "user_id")
-	private User user;
+	@JoinColumn(name = "meal_id")
+	private Meal meal;
 	@ManyToOne
-	@JoinColumn(name = "viti_agency_id")
-	private Agency vitiAgency;
+	@JoinColumn(name = "agency_id")
+	private Agency agency;
 	@Column(name = "check_in_time")
 	private Timestamp checkInTime;
 	@ManyToOne
@@ -43,9 +43,6 @@ public @Data class Visit implements Serializable {
 	private String selectedSeat;
 	@Column(name = "user_signature")
 	private String userSignature;
-	@ManyToOne
-	@JoinColumn(name = "user_signature_type")
-	private SignatureType userSignatureType;
 	@Column(name = "user_barcode_id")
 	private String userBarcodeId;
 	@Column(name = "check_out_time")
@@ -55,13 +52,10 @@ public @Data class Visit implements Serializable {
 	private String notes;
 	private Integer status;
 	@ManyToOne
-	@Column(name = "user_id1")
-	private User user1;
+	@JoinColumn(name = "user_id")
+	private User user;
 	@ManyToOne
-	@Column(name = "user_id2")
-	private User user2;
-	@ManyToOne
-	@Column(name = "signature_type_id")
+	@JoinColumn(name = "signature_type_id")
 	private SignatureType signatureType;
 
 }
