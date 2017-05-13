@@ -22,59 +22,58 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.healthcare.model.entity.User;
-import com.healthcare.service.UserService;
+import com.healthcare.model.entity.Visit;
+import com.healthcare.service.VisitService;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = WebEnvironment.MOCK)
-// @WebMvcTest(controllers = {UserController.class}, secure = false)
 @Transactional
-public class UserControllerTest {
+public class VisitControllerTest {
 	private MockMvc mockMvc;
-	private User user;
+	private Visit visit;
 
 	@Autowired
 	private WebApplicationContext wac;
 	@MockBean
-	private UserService userService;
+	private VisitService visitService;
 
 	@Before
 	public void setup() {
 		this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
-		user = new User();
+		visit = new Visit();
 	}
 
 	@Test
-	public void shouldAcceptSaveUserRequest() throws Exception {
-		Mockito.when(userService.save(user)).thenReturn(user);
+	public void shouldAcceptSaveVisitRequest() throws Exception {
+		Mockito.when(visitService.save(visit)).thenReturn(visit);
 
 		ObjectMapper mapper = new ObjectMapper();
-		String jsonInString = mapper.writeValueAsString(user);
+		String jsonInString = mapper.writeValueAsString(visit);
 
-		this.mockMvc.perform(post("/api/user").contentType(MediaType.APPLICATION_JSON).content(jsonInString))
+		this.mockMvc.perform(post("/api/visit").contentType(MediaType.APPLICATION_JSON).content(jsonInString))
 				.andExpect(status().isOk());
 	}
 
 	@Test
-	public void shouldAcceptGetUserRequest() throws Exception {
-		Mockito.when(userService.findById(1L)).thenReturn(user);
-		this.mockMvc.perform(get("/api/user/1")).andExpect(status().isOk());
+	public void shouldAcceptGetVisitRequest() throws Exception {
+		Mockito.when(visitService.findById(1L)).thenReturn(visit);
+		this.mockMvc.perform(get("/api/visit/1")).andExpect(status().isOk());
 	}
 
 	@Test
-	public void shouldAcceptUpdateUserRequest() throws Exception {
-		Mockito.when(userService.save(user)).thenReturn(user);
+	public void shouldAcceptUpdateVisitRequest() throws Exception {
+		Mockito.when(visitService.save(visit)).thenReturn(visit);
 
 		ObjectMapper mapper = new ObjectMapper();
-		String jsonInString = mapper.writeValueAsString(user);
+		String jsonInString = mapper.writeValueAsString(visit);
 
-		this.mockMvc.perform(put("/api/user").contentType(MediaType.APPLICATION_JSON).content(jsonInString))
+		this.mockMvc.perform(put("/api/visit").contentType(MediaType.APPLICATION_JSON).content(jsonInString))
 				.andExpect(status().isOk());
 	}
 
 	@Test
-	public void shouldAcceptDeleteUserRequest() throws Exception {
-		Mockito.doNothing().when(userService).deleteById(1L);
-		this.mockMvc.perform(get("/api/user/1")).andExpect(status().isOk());
+	public void shouldAcceptDeleteVisitRequest() throws Exception {
+		Mockito.doNothing().when(visitService).deleteById(1L);
+		this.mockMvc.perform(get("/api/visit/1")).andExpect(status().isOk());
 	}
 }
