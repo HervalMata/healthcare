@@ -9,9 +9,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -41,12 +41,12 @@ public class AdminPostController {
 	}
 
 	@PostMapping("/{id}")
-	public void save(@ModelAttribute AdminPost adminPost) {
+	public void save(@RequestBody AdminPost adminPost) {
 		adminPostService.save(adminPost);
 	}
 
 	@PostMapping()
-	public ResponseEntity<Long> create(@ModelAttribute AdminPost adminPost) {
+	public ResponseEntity<Long> create(@RequestBody AdminPost adminPost) {
 
 		return ResponseEntity.ok(adminPostService.save(adminPost).getId());
 	}
