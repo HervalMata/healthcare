@@ -1,5 +1,6 @@
 package com.healthcare.api;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.healthcare.model.entity.Review;
 import com.healthcare.service.ReviewService;
 import org.junit.Before;
@@ -7,6 +8,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
@@ -20,6 +22,7 @@ import static org.mockito.internal.verification.VerificationModeFactory.only;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -30,11 +33,14 @@ public class ReviewControllerTest {
     private ReviewService reviewService;
 
     private MockMvc mockMvc;
+    private ObjectMapper objectMapper;
 
     @Before
     public void setUp() {
         ReviewController controller = new ReviewController(reviewService);
         mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
+
+        objectMapper = new ObjectMapper();
     }
 
     @Test
@@ -52,7 +58,8 @@ public class ReviewControllerTest {
         // when
         mockMvc.perform(
                     post("/api/review")
-                        .param("content", reviewContent.toString()))
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsBytes(review)))
                 .andExpect(status().isOk())
                 .andExpect(content().string(reviewId.toString()));
         // then
@@ -113,28 +120,13 @@ public class ReviewControllerTest {
                 .willReturn(review);
         // when
         mockMvc.perform(
-                    post("/api/review/" + reviewId)
-                        .param("id", reviewId.toString())
-                        .param("content", reviewContent.toString()))
+                    put("/api/review")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsBytes(review)))
                 .andExpect(status().isOk())
                 .andExpect(content().string(isEmptyString()));
         // then
         verify(reviewService, only()).save(review);
-    }
-
-    @Test
-    public void testSaveWithIncorrectIdReturnBadRequestStatus() throws Exception {
-        // given
-        final Integer reviewContent = 2;
-        final String reviewId = "abc";
-        // when
-        mockMvc.perform(
-                    post("/api/review/" + reviewId)
-                        .param("id", reviewId)
-                        .param("name", reviewContent.toString()))
-                .andExpect(status().isBadRequest());
-        // then
-        verifyZeroInteractions(reviewService);
     }
 
     @Test

@@ -7,9 +7,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -29,8 +30,8 @@ public class ReviewController extends BaseController {
         this.reviewService = reviewService;
     }
 
-    @PostMapping()
-    public ResponseEntity create(@ModelAttribute Review review) {
+    @PostMapping
+    public ResponseEntity create(@RequestBody Review review) {
 
         return ResponseEntity.ok(
                 reviewService.save(review).getId()
@@ -50,8 +51,8 @@ public class ReviewController extends BaseController {
         );
     }
 
-    @PostMapping("/{id}")
-    public void save(@ModelAttribute Review review) {
+    @PutMapping
+    public void save(@RequestBody Review review) {
         reviewService.save(review);
     }
 

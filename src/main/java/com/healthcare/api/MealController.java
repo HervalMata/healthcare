@@ -7,9 +7,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -30,7 +31,7 @@ public class MealController extends BaseController {
     }
 
     @PostMapping()
-    public ResponseEntity create(@ModelAttribute Meal meal) {
+    public ResponseEntity create(@RequestBody Meal meal) {
 
         return ResponseEntity.ok(
                 mealService.save(meal).getId()
@@ -50,8 +51,8 @@ public class MealController extends BaseController {
         );
     }
 
-    @PostMapping("/{id}")
-    public void save(@ModelAttribute Meal meal) {
+    @PutMapping
+    public void save(@RequestBody Meal meal) {
         mealService.save(meal);
     }
 

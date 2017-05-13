@@ -1,5 +1,6 @@
 package com.healthcare.api;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.healthcare.model.entity.Meal;
 import com.healthcare.service.MealService;
 import org.junit.Before;
@@ -7,6 +8,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
@@ -20,6 +22,7 @@ import static org.mockito.internal.verification.VerificationModeFactory.only;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -30,11 +33,14 @@ public class MealControllerTest {
     private MealService mealService;
 
     private MockMvc mockMvc;
+    private ObjectMapper objectMapper;
 
     @Before
     public void setUp() {
         MealController controller = new MealController(mealService);
         mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
+
+        objectMapper = new ObjectMapper();
     }
 
     @Test
@@ -52,7 +58,8 @@ public class MealControllerTest {
         // when
         mockMvc.perform(
                     post("/api/meal")
-                        .param("name", mealName))
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsBytes(meal)))
                 .andExpect(status().isOk())
                 .andExpect(content().string(mealId.toString()));
         // then
@@ -113,28 +120,13 @@ public class MealControllerTest {
                 .willReturn(meal);
         // when
         mockMvc.perform(
-                    post("/api/meal/" + mealId)
-                        .param("id", mealId.toString())
-                        .param("name", mealName))
+                    put("/api/meal")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(meal)))
                 .andExpect(status().isOk())
                 .andExpect(content().string(isEmptyString()));
         // then
         verify(mealService, only()).save(meal);
-    }
-
-    @Test
-    public void testSaveWithIncorrectIdReturnBadRequestStatus() throws Exception {
-        // given
-        final String mealName = "Meal name";
-        final String mealId = "abc";
-        // when
-        mockMvc.perform(
-                post("/api/meal/" + mealId)
-                        .param("id", mealId)
-                        .param("name", mealName))
-                .andExpect(status().isBadRequest());
-        // then
-        verifyZeroInteractions(mealService);
     }
 
     @Test

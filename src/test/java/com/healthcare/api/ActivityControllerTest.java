@@ -1,5 +1,6 @@
 package com.healthcare.api;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.healthcare.model.entity.Activity;
 import com.healthcare.service.ActivityService;
 import org.junit.Before;
@@ -7,6 +8,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
@@ -20,6 +22,7 @@ import static org.mockito.internal.verification.VerificationModeFactory.only;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -31,10 +34,14 @@ public class ActivityControllerTest {
 
     private MockMvc mockMvc;
 
+    private ObjectMapper objectMapper;
+
     @Before
     public void setUp() {
         ActivityController controller = new ActivityController(activityService);
         mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
+
+        objectMapper = new ObjectMapper();
     }
 
     @Test
@@ -52,7 +59,8 @@ public class ActivityControllerTest {
         // when
         mockMvc.perform(
                     post("/api/activity")
-                        .param("name", activityName))
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsBytes(activity)))
                 .andExpect(status().isOk())
                 .andExpect(content().string(activityId.toString()));
         // then
@@ -115,28 +123,13 @@ public class ActivityControllerTest {
                 .willReturn(activity);
         // when
         mockMvc.perform(
-                    post("/api/activity/" + activityId)
-                        .param("id", activityId.toString())
-                        .param("name", activityName))
+                    put("/api/activity")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsBytes(activity)))
                 .andExpect(status().isOk())
                 .andExpect(content().string(isEmptyString()));
         // then
         verify(activityService, only()).save(activity);
-    }
-
-    @Test
-    public void testSaveWithIncorrectIdReturnBadRequestStatus() throws Exception {
-        // given
-        final String activityName = "Activity name";
-        final String activityId = "abc";
-        // when
-        mockMvc.perform(
-                post("/api/activity/" + activityId)
-                        .param("id", activityId)
-                        .param("name", activityName))
-                .andExpect(status().isBadRequest());
-        // then
-        verifyZeroInteractions(activityService);
     }
 
     @Test

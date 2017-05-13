@@ -7,9 +7,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -29,8 +30,8 @@ public class ActivityController extends BaseController {
         this.activityService = activityService;
     }
 
-    @PostMapping()
-    public ResponseEntity create(@ModelAttribute Activity activity) {
+    @PostMapping
+    public ResponseEntity create(@RequestBody Activity activity) {
 
         return ResponseEntity.ok(
                 activityService.save(activity).getId()
@@ -50,8 +51,8 @@ public class ActivityController extends BaseController {
         );
     }
 
-    @PostMapping("/{id}")
-    public void save(@ModelAttribute Activity activity) {
+    @PutMapping
+    public void save(@RequestBody Activity activity) {
         activityService.save(activity);
     }
 
