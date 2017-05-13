@@ -27,7 +27,7 @@ public class UserController {
 	private UserService userService;
 
 	@ApiOperation(value = "save user", notes = "save a new user")
-	@ApiParam(name = "user", value = "user to aupdate", required = true)
+	@ApiParam(name = "user", value = "user to update", required = true)
 	@RequestMapping(method = RequestMethod.POST)
 	public ResponseEntity<User> create(@RequestBody User user) {
 		user = userService.save(user);
