@@ -77,7 +77,7 @@ public class MealControllerTest {
                     "\"status\":null" +
                 "}";
 
-        given(mealService.get(anyLong()))
+        given(mealService.findById(anyLong()))
                 .willReturn(meal);
         // when
         mockMvc.perform(
@@ -85,7 +85,7 @@ public class MealControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().string(expectedContent));
         // then
-        verify(mealService, only()).get(mealId);
+        verify(mealService, only()).findById(mealId);
     }
 
     @Test
@@ -147,7 +147,7 @@ public class MealControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().string(isEmptyString()));
         // then
-        verify(mealService, only()).delete(mealId);
+        verify(mealService, only()).deleteById(mealId);
     }
 
     @Test

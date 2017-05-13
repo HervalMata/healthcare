@@ -3,9 +3,9 @@ package com.healthcare.service.impl;
 import com.healthcare.model.entity.Meal;
 import com.healthcare.repository.MealRepository;
 import com.healthcare.service.MealService;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
@@ -21,15 +21,11 @@ import static org.mockito.internal.verification.VerificationModeFactory.only;
 @RunWith(MockitoJUnitRunner.class)
 public class MealServiceImplTest {
 
-    private MealService sut;
+    @InjectMocks
+    private MealService sut = new MealServiceImpl();
 
     @Mock
     private MealRepository mealRepository;
-
-    @Before
-    public void setUp() {
-        sut = new MealServiceImpl(mealRepository);
-    }
 
     @Test
     public void testSave() {
@@ -49,28 +45,28 @@ public class MealServiceImplTest {
     }
 
     @Test
-    public void testGet() {
+    public void testFindById() {
         // given
         final Long mealId = 1L;
         final Meal expected = new Meal();
 
-        given(mealRepository.getOne(anyLong()))
+        given(mealRepository.findOne(anyLong()))
                 .willReturn(expected);
         // when
-        Meal result = sut.get(mealId);
+        Meal result = sut.findById(mealId);
         // then
-        verify(mealRepository, only()).getOne(mealId);
+        verify(mealRepository, only()).findOne(mealId);
 
         assertThat(result, notNullValue());
         assertThat(result, sameInstance(expected));
     }
 
     @Test
-    public void testDelete() {
+    public void testDeleteById() {
         // given
         final Long mealId = 1L;
         // when
-        sut.delete(mealId);
+        sut.deleteById(mealId);
         // then
         verify(mealRepository, only()).delete(mealId);
     }

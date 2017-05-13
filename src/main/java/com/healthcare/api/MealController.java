@@ -46,7 +46,7 @@ public class MealController extends BaseController {
         }
 
         return ResponseEntity.ok(
-                mealService.get(mealId)
+                mealService.findById(mealId)
         );
     }
 
@@ -64,6 +64,6 @@ public class MealController extends BaseController {
             return;
         }
 
-        mealService.delete(mealId);
+        mealService.deleteById(mealId);
     }
 }
