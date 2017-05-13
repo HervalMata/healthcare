@@ -13,6 +13,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -34,6 +36,7 @@ public @Data class User extends Audit implements Serializable {
 	@Column(name = "user_type")
 	private int userType;
 	private String username;
+	@JsonIgnore
 	private String password;
 	@Column(name = "first_name")
 	private String firstName;
