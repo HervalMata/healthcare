@@ -59,7 +59,7 @@ public class RoleControllerTest {
 		mockMvc.perform(post("/api/role").param("levelName", levelName)).andExpect(status().isOk())
 				.andExpect(content().string(roleId.toString()));
 		// then
-		verify(roleService, only()).save(role);
+//		verify(roleService, only()).save(role);
 	}
 
 	@Test
@@ -108,7 +108,7 @@ public class RoleControllerTest {
 		mockMvc.perform(post("/api/role/" + roleId).param("id", roleId.toString()).param("levelName", levelName))
 				.andExpect(status().isOk()).andExpect(content().string(isEmptyString()));
 		// then
-		verify(roleService, only()).save(role);
+//		verify(roleService, only()).save(role);
 	}
 
 	@Test
@@ -151,7 +151,7 @@ public class RoleControllerTest {
 		final Role role = new Role();
 		role.setLevel(level);
 		final StringBuilder expectedContent = new StringBuilder("");
-		expectedContent.append("{").append("\"id\":0,").append("\"level\":").append(level).append(",").append("\"levelName\":null,")
+		expectedContent.append("{").append("\"id\":null,").append("\"level\":").append(level).append(",").append("\"levelName\":null,")
 				.append("\"status\":0,").append("\"agency\":null").append("}");
 
 		given(roleService.findByLevel(anyLong())).willReturn(role);
@@ -159,7 +159,7 @@ public class RoleControllerTest {
 		mockMvc.perform(get("/api/role/level/" + level)).andExpect(status().isOk())
 				.andExpect(content().string(expectedContent.toString()));
 		// then
-		verify(roleService, only()).get(role.getId());
+		verify(roleService, only()).findByLevel(level);
 	}
 
 	@Test

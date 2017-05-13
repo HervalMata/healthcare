@@ -60,7 +60,6 @@ public class AdminPostControllerTest {
 	public void testGet() throws Exception {
 		// given
 		final Long adminPostId = 1L;
-		final String postText = "Admin Post Text";
 		final AdminPost adminPost = new AdminPost();
 		adminPost.setId(adminPostId);
 		final StringBuilder expectedContent = new StringBuilder("");
