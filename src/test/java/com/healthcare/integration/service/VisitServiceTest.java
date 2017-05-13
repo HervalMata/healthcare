@@ -6,14 +6,16 @@ import java.util.Date;
 import javax.transaction.Transactional;
 
 import org.junit.Assert;
-import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import com.healthcare.model.entity.Agency;
+import com.healthcare.model.entity.Meal;
 import com.healthcare.model.entity.User;
 import com.healthcare.model.entity.Visit;
+import com.healthcare.service.MealService;
 import com.healthcare.service.VisitService;
 
 //@RunWith(SpringRunner.class)
@@ -21,15 +23,24 @@ import com.healthcare.service.VisitService;
 @Transactional
 public class VisitServiceTest {
 	@Autowired
+	private MealService mealService;
+
+	@Autowired
 	private VisitService visitService;
 
-//	@Test
+	// @Test
 	public void shouldSaveAVisit() {
 		Timestamp checkInTime = new Timestamp(new Date().getTime());
 		Timestamp checkOutTime = new Timestamp(new Date().getTime());
 		String userComments = "all ok";
 		String notes = ".";
 		Visit visit = new Visit();
+		Meal meal = new Meal();
+		meal.setMealClass("meal class 1");
+		meal.setName("meal A");
+		mealService.save(meal);
+		visit.setMeal(meal);
+		Agency agency = new Agency();
 		User user = new User();
 		visit.setUser(user);
 		visit.setCheckInTime(checkInTime);
