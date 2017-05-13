@@ -24,7 +24,7 @@ public @Data class AdminPost implements Serializable {
 	private static final long serialVersionUID = 2716722834559934023L;
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private long id;
+	private Long id;
 	@Column(name = "post_text")
 	private String postText;
 	@Column(name = "post_date")

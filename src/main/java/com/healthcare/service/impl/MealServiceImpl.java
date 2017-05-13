@@ -1,51 +1,28 @@
 package com.healthcare.service.impl;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.healthcare.model.entity.Meal;
 import com.healthcare.repository.MealRepository;
 import com.healthcare.service.MealService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.transaction.Transactional;
-
-import static org.springframework.util.Assert.notNull;
-
-/**
- * Meal service
- */
-@Service
-@Transactional
 public class MealServiceImpl implements MealService {
+	@Autowired
+	private MealRepository mealRepository;
 
-    private MealRepository mealRepository;
+	@Override
+	public Meal save(Meal meal) {
+		return mealRepository.save(meal);
+	}
 
-    @Autowired
-    public MealServiceImpl(MealRepository mealRepository) {
-        this.mealRepository = mealRepository;
-    }
+	@Override
+	public Meal findById(Long id) {
+		return mealRepository.findOne(id);
+	}
 
-    @Nonnull
-    @Override
-    public Meal save(@Nonnull Meal meal) {
-        notNull(meal, "Meal must not be null");
+	@Override
+	public void deleteById(Long id) {
+		mealRepository.delete(id);
+	}
 
-        return mealRepository.save(meal);
-    }
-
-    @Nullable
-    @Override
-    public Meal get(@Nonnull Long id) {
-        notNull(id, "Meal Id must not be null");
-
-        return mealRepository.getOne(id);
-    }
-
-    @Override
-    public void delete(@Nonnull Long id) {
-        notNull(id, "Meal Id must not be null");
-
-        mealRepository.delete(id);
-    }
 }

@@ -22,7 +22,7 @@ public @Data class SignatureType implements Serializable {
 	private static final long serialVersionUID = -93362933217847648L;
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private long id;
+	private Long id;
 	private String type;
 	@Column(name = "updated_at")
 	protected Timestamp updatedAt;

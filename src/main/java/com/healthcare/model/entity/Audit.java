@@ -6,10 +6,8 @@ import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
 import java.sql.Timestamp;
 
-import lombok.Data;
-
 @MappedSuperclass
-public @Data class Audit {
+public class Audit {
 	@Column(name = "created_at")
 	protected Timestamp createdAt;
 	@Column(name = "updated_at")
