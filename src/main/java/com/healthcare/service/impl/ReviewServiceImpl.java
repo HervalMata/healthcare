@@ -39,7 +39,7 @@ public class ReviewServiceImpl implements ReviewService {
     public Review get(@Nonnull Long id) {
         notNull(id, "Review Id must not be null");
 
-        return reviewRepository.getOne(id);
+        return reviewRepository.findOne(id);
     }
 
     @Override

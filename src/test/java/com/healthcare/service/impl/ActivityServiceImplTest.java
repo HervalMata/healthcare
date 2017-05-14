@@ -54,12 +54,12 @@ public class ActivityServiceImplTest {
         final Long activityId = 1L;
         final Activity expected = new Activity();
 
-        given(activityRepository.getOne(anyLong()))
+        given(activityRepository.findOne(anyLong()))
                 .willReturn(expected);
         // when
         Activity result = sut.get(activityId);
         // then
-        verify(activityRepository, only()).getOne(activityId);
+        verify(activityRepository, only()).findOne(activityId);
 
         assertThat(result, notNullValue());
         assertThat(result, sameInstance(expected));

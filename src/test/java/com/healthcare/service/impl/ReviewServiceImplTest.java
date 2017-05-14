@@ -54,12 +54,12 @@ public class ReviewServiceImplTest {
         final Long reviewId = 1L;
         final Review expected = new Review();
 
-        given(reviewRepository.getOne(anyLong()))
+        given(reviewRepository.findOne(anyLong()))
                 .willReturn(expected);
         // when
         Review result = sut.get(reviewId);
         // then
-        verify(reviewRepository, only()).getOne(reviewId);
+        verify(reviewRepository, only()).findOne(reviewId);
 
         assertThat(result, notNullValue());
         assertThat(result, sameInstance(expected));

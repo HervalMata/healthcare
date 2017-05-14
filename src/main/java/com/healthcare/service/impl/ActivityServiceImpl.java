@@ -39,7 +39,7 @@ public class ActivityServiceImpl implements ActivityService {
     public Activity get(@Nonnull Long id) {
         notNull(id, "Activity Id must not be null");
 
-        return activityRepository.getOne(id);
+        return activityRepository.findOne(id);
     }
 
     @Override
