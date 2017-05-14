@@ -2,8 +2,6 @@ package com.healthcare.service.impl;
 
 import javax.transaction.Transactional;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,13 +12,8 @@ import com.healthcare.service.ReportService;
 @Service
 @Transactional
 public class ReportServiceImpl implements ReportService {
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
-	ReportRepository reportRepository;
-
 	@Autowired
-	public ReportServiceImpl(ReportRepository reportRepository) {
-		this.reportRepository = reportRepository;
-	}
+	ReportRepository reportRepository;
 
 	@Override
 	public Report save(Report report) {
@@ -28,14 +21,12 @@ public class ReportServiceImpl implements ReportService {
 	}
 
 	@Override
-	public void delete(Long id) {
+	public void deleteById(Long id) {
 		reportRepository.delete(id);
-
 	}
 
 	@Override
-	public Report get(Long id) {
-		return reportRepository.getOne(id);
+	public Report findById(Long id) {
+		return reportRepository.findOne(id);
 	}
-
 }

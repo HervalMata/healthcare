@@ -1,138 +1,76 @@
-package com.healthcare.api;
+package com.healthcare.integration.controller;
 
-import static org.hamcrest.text.IsEmptyString.isEmptyString;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyLong;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
-import static org.mockito.internal.verification.VerificationModeFactory.only;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import javax.transaction.Transactional;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.healthcare.model.entity.AdminPost;
 import com.healthcare.service.AdminPostService;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(SpringRunner.class)
+@SpringBootTest(webEnvironment = WebEnvironment.MOCK)
+@Transactional
 public class AdminPostControllerTest {
+	private MockMvc mockMvc;
 
-	@Mock
+	@MockBean
 	private AdminPostService adminPostService;
 
-	private MockMvc mockMvc;
+	@Autowired
+	private WebApplicationContext wac;
 
 	@Before
 	public void setUp() {
-		AdminPostController controller = new AdminPostController(adminPostService);
-		mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
+		this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
 	}
 
 	@Test
-	public void testCreate() throws Exception {
-		// given
-		final String postText = "Admin Post Text";
-		final Long adminPostId = 1L;
-		final AdminPost adminPost = new AdminPost();
-		adminPost.setPostText(postText);
-		final AdminPost expected = new AdminPost();
-		expected.setId(adminPostId);
-
-		given(adminPostService.save(any(AdminPost.class))).willReturn(expected);
-		// when
-		mockMvc.perform(post("/api/adminpost").param("postText", postText)).andExpect(status().isOk())
-				.andExpect(content().string(adminPostId.toString()));
-		// then
-		verify(adminPostService, only()).save(adminPost);
+	public void testSaveAdminPost() throws Exception {
+		AdminPost adminPost = new AdminPost();
+		Mockito.when(adminPostService.save(adminPost)).thenReturn(adminPost);
+		ObjectMapper mapper = new ObjectMapper();
+		String jsonInString = mapper.writeValueAsString(adminPost);
+		this.mockMvc.perform(post("/api/adminpost").contentType(MediaType.APPLICATION_JSON).content(jsonInString))
+				.andExpect(status().isOk());
 	}
 
 	@Test
-	public void testGet() throws Exception {
-		// given
-		final Long adminPostId = 1L;
-		final AdminPost adminPost = new AdminPost();
-		adminPost.setId(adminPostId);
-		final StringBuilder expectedContent = new StringBuilder("");
-		expectedContent.append("{").append("\"id\":").append(adminPostId).append(",").append("\"postText\":null,")
-				.append("\"postDate\":null,").append("\"status\":0,").append("\"admin\":null").append("}");
-
-		given(adminPostService.get(anyLong())).willReturn(adminPost);
-
-		// when
-		mockMvc.perform(get("/api/adminpost/" + adminPostId)).andExpect(status().isOk())
-				.andExpect(content().string(expectedContent.toString()));
-		// then
-		verify(adminPostService, only()).get(adminPostId);
+	public void testGetAdminPost() throws Exception {
+		Mockito.when(adminPostService.findById(1L)).thenReturn(new AdminPost());
+		this.mockMvc.perform(get("/api/adminpost/1")).andExpect(status().isOk());
 	}
 
 	@Test
-	public void testGetWithIncorrectIdReturnBadRequestStatus() throws Exception {
-		// given
-		final String adminPostId = "abc";
-		// given
-		mockMvc.perform(get("/api/adminpost/" + adminPostId)).andExpect(status().isBadRequest());
-		// then
-		verifyZeroInteractions(adminPostService);
+	public void testUpdateAdminPost() throws Exception {
+		AdminPost adminPost = new AdminPost();
+		Mockito.when(adminPostService.save(adminPost)).thenReturn(adminPost);
+		ObjectMapper mapper = new ObjectMapper();
+		String jsonInString = mapper.writeValueAsString(adminPost);
+		this.mockMvc.perform(put("/api/adminpost").contentType(MediaType.APPLICATION_JSON).content(jsonInString))
+				.andExpect(status().isOk());
 	}
 
 	@Test
-	public void testSave() throws Exception {
-		// given
-		final String postText = "Admin Post Text";
-		final Long adminPostId = 1L;
-		final AdminPost adminPost = new AdminPost();
-		adminPost.setId(adminPostId);
-		adminPost.setPostText(postText);
-
-		given(adminPostService.save(any(AdminPost.class))).willReturn(adminPost);
-		// when
-		mockMvc.perform(
-				post("/api/adminpost/" + adminPostId).param("id", adminPostId.toString()).param("postText", postText))
-				.andExpect(status().isOk()).andExpect(content().string(isEmptyString()));
-		// then
-		verify(adminPostService, only()).save(adminPost);
-	}
-
-	@Test
-	public void testSaveWithIncorrectIdReturnBadRequestStatus() throws Exception {
-		// given
-		final String postText = "Admin Post Text";
-		final String adminPostId = "abc";
-		// when
-		mockMvc.perform(post("/api/adminpost/" + adminPostId).param("id", adminPostId).param("postText", postText))
-				.andExpect(status().isBadRequest());
-		// then
-		verifyZeroInteractions(adminPostService);
-	}
-
-	@Test
-	public void testDelete() throws Exception {
-		// given
-		final Long adminPostId = 1L;
-		// when
-		mockMvc.perform(delete("/api/adminpost/" + adminPostId)).andExpect(status().isOk())
-				.andExpect(content().string(isEmptyString()));
-		// then
-		verify(adminPostService, only()).delete(adminPostId);
-	}
-
-	@Test
-	public void testDeleteWithIncorrectIdReturnBadRequestStatus() throws Exception {
-		// given
-		final String adminPostId = "abc";
-		// when
-		mockMvc.perform(delete("/api/adminpost/" + adminPostId)).andExpect(status().isBadRequest());
-		// then
-		verifyZeroInteractions(adminPostService);
+	public void testDeleteAdminPost() throws Exception {
+		Mockito.doNothing().when(adminPostService).deleteById(1L);
+		this.mockMvc.perform(get("/api/adminpost/1")).andExpect(status().isOk());
 	}
 }

@@ -48,8 +48,10 @@ public @Data class Agency extends Audit implements Serializable {
 	private String phone;
 	private String holiday;
 	private String fax;
+	@ManyToOne
 	@JoinColumn(name = "company_id1")
 	private Company company1;
+	@ManyToOne
 	@JoinColumn(name = "agency_type_id")
 	private AgencyType agencyType;
 

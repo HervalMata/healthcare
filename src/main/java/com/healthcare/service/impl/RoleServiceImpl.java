@@ -4,8 +4,6 @@ import java.util.List;
 
 import javax.transaction.Transactional;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,13 +14,8 @@ import com.healthcare.service.RoleService;
 @Service
 @Transactional
 public class RoleServiceImpl implements RoleService {
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
-	RoleRepository roleRepository;
-
 	@Autowired
-	public RoleServiceImpl(RoleRepository roleRepository) {
-		this.roleRepository = roleRepository;
-	}
+	RoleRepository roleRepository;
 
 	@Override
 	public Role save(Role role) {
@@ -30,14 +23,13 @@ public class RoleServiceImpl implements RoleService {
 	}
 
 	@Override
-	public void delete(Long id) {
+	public void deleteById(Long id) {
 		roleRepository.delete(id);
-
 	}
 
 	@Override
-	public Role get(Long id) {
-		return roleRepository.getOne(id);
+	public Role findById(Long id) {
+		return roleRepository.findOne(id);
 	}
 
 	@Override
@@ -49,10 +41,4 @@ public class RoleServiceImpl implements RoleService {
 	public List<Role> findByStatus(long status) {
 		return roleRepository.findByStatus(status);
 	}
-
-	@Override
-	public List<Role> findByIdAndStatus(long id, long status) {
-		return roleRepository.findByIdAndStatus(id, status);
-	}
-
 }

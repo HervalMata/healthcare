@@ -15,12 +15,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.healthcare.model.entity.Admin;
+import com.healthcare.model.entity.AdminPost;
 import com.healthcare.model.entity.Agency;
 import com.healthcare.model.entity.AgencyType;
 import com.healthcare.model.entity.Company;
 import com.healthcare.model.entity.Role;
 import com.healthcare.model.enums.GenderEnum;
 import com.healthcare.model.enums.StateEnum;
+import com.healthcare.service.AdminPostService;
 import com.healthcare.service.AdminService;
 import com.healthcare.service.AgencyService;
 import com.healthcare.service.AgencyTypeService;
@@ -30,7 +32,10 @@ import com.healthcare.service.RoleService;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @Transactional
-public class AdminServiceTest {
+public class AdminPostServiceTest {
+	@Autowired
+	private AdminPostService adminPostService;
+	
 	@Autowired
 	private AdminService adminService;
 	
@@ -80,54 +85,64 @@ public class AdminServiceTest {
 	Calendar stateTaxExpire = Calendar.getInstance();
 	Calendar worktimeStart = Calendar.getInstance();
 	Calendar worktimeEnd = Calendar.getInstance();
-	Role role;	
+	
+	Calendar postDate = Calendar.getInstance();
+	String postText = "This is post text";
+	
+	Admin admin;	
+	
 
 	@Before
 	public void setup() {		
-		role = createNewRole();		
+		admin = createNewAdmin();		
 	}
 
 	@Test
-	public void testSaveAdmin() {
-		Admin admin = createNewAdmin();
-		adminService.save(admin);
-		Assert.assertNotNull(admin.getId());
+	public void testSaveAdminPost() {
+		AdminPost adminPost = createNewAdminPost();
+		adminPostService.save(adminPost);
+		Assert.assertNotNull(adminPost.getId());
 	}
 
 	@Test
-	public void testGetAdmin() {
-		Admin admin = createNewAdmin();
-		adminService.save(admin);
-		Assert.assertNotNull(adminService.findById(admin.getId()));
+	public void testGetAdminPost() {
+		AdminPost adminPost = createNewAdminPost();
+		adminPostService.save(adminPost);
+		Assert.assertNotNull(adminService.findById(adminPost.getId()));
 	}
 
 	@Test
-	public void testUpdateAdmin() {
-		String newPhone = "5967897788";
-		String newEmail = "firstname2@yahoo.com";
+	public void testUpdateAdminPost() {
+		String newPostText = "This is new post text";
 
-		Admin admin = createNewAdmin();
-		adminService.save(admin);
-		Assert.assertEquals(admin.getPhone(), phone);
-		Assert.assertEquals(admin.getEmail(), email);
-		Admin adminSaved = adminService.findById(admin.getId());
-		adminSaved.setPhone(newPhone);
-		adminSaved.setEmail(newEmail);
-		adminService.save(adminSaved);
-		Admin adminMofified = adminService.findById(admin.getId());
-		Assert.assertEquals(adminMofified.getPhone(), newPhone);
-		Assert.assertEquals(adminMofified.getEmail(), newEmail);
+		AdminPost adminPost = createNewAdminPost();
+		adminPostService.save(adminPost);
+		Assert.assertEquals(adminPost.getPostText(), postText);
+		AdminPost adminPostSaved = adminPostService.findById(adminPost.getId());
+		adminPostSaved.setPostText(newPostText);
+		adminPostService.save(adminPostSaved);
+		AdminPost adminPostMofified = adminPostService.findById(adminPost.getId());
+		Assert.assertEquals(adminPostMofified.getPostText(), newPostText);
 	}
 
 	@Test
-	public void testDeleteAdmin() {
-		Admin admin = createNewAdmin();
-		adminService.save(admin);
-		Assert.assertNotNull(admin.getId());
-		adminService.deleteById(admin.getId());
-		Assert.assertNull(adminService.findById(admin.getId()));
+	public void testDeleteAdminPost() {
+		AdminPost adminPost = createNewAdminPost();
+		adminPostService.save(adminPost);
+		Assert.assertNotNull(adminPost.getId());
+		adminPostService.deleteById(adminPost.getId());
+		Assert.assertNull(adminPostService.findById(adminPost.getId()));
 	}
 
+	private AdminPost createNewAdminPost() {
+		AdminPost adminPost = new AdminPost();
+		adminPost.setPostDate(new Timestamp(postDate.getTimeInMillis()));
+		adminPost.setPostText(postText);
+		adminPost.setStatus(1);
+		adminPost.setAdmin(admin);
+		return adminPost;
+	}	
+	
 	private Admin createNewAdmin() {
 		Admin admin = new Admin();
 		admin.setUsername(username);
@@ -144,8 +159,8 @@ public class AdminServiceTest {
 		admin.setRememberToken(rememberToken);
 		admin.setSecondaryPhone(secondaryPhone);
 		admin.setStatus(status);
-		admin.setRole(role);
-		return admin;
+		admin.setRole(createNewRole());
+		return adminService.save(admin);
 	}
 	
 	private Role createNewRole() {
