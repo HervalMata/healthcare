@@ -25,7 +25,7 @@ public @Data class Report implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
-	@Column(name = "base_idl")
+	@Column(name = "base_id")
 	private long baseId;
 	@ManyToOne
 	@JoinColumn(name = "company_id")

@@ -18,6 +18,7 @@ import com.healthcare.model.entity.Admin;
 import com.healthcare.model.entity.Agency;
 import com.healthcare.model.entity.AgencyType;
 import com.healthcare.model.entity.Company;
+import com.healthcare.model.entity.Report;
 import com.healthcare.model.entity.Role;
 import com.healthcare.model.enums.GenderEnum;
 import com.healthcare.model.enums.StateEnum;
@@ -25,26 +26,45 @@ import com.healthcare.service.AdminService;
 import com.healthcare.service.AgencyService;
 import com.healthcare.service.AgencyTypeService;
 import com.healthcare.service.CompanyService;
+import com.healthcare.service.ReportService;
 import com.healthcare.service.RoleService;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @Transactional
-public class AdminServiceTest {
+public class ReportServiceTest {
+	@Autowired
+	private ReportService reportService;
+
 	@Autowired
 	private AdminService adminService;
-	
+
 	@Autowired
 	private RoleService roleService;
-	
+
 	@Autowired
 	private CompanyService companyService;
-	
+
 	@Autowired
 	private AgencyService agencyService;
-	
+
 	@Autowired
 	private AgencyTypeService agencyTpeService;
+
+	String name = "Menu A";
+	String url = "/menu/menu";
+	String angularUrl = "/angular/a";
+	String page = "A";
+	String clazz = "Clazz";
+	String imgUrl = "/img/a.jpg";
+	Calendar createdAt = Calendar.getInstance();
+	Integer displayOrder = 1;
+	long baseId = 1;
+	String dataColumns = "Data columns";
+	Calendar endDate = Calendar.getInstance();
+	String format = "Report format";
+	String reportTitle = "Report title";
+	Calendar startDate = Calendar.getInstance();
 
 	String username = "username";
 	String password = "password";
@@ -57,13 +77,12 @@ public class AdminServiceTest {
 	String secondaryPhone = "1234560001";
 	String profilePhoto = "XXXXXXXXXX";
 	String deviceAddress = "City ABC";
-	String rememberToken = "00000";	
-	long status = 1;
-	
-	String licenseNo = "12D31";		 
+	String rememberToken = "00000";
+
+	String licenseNo = "12D31";
 	int trackingMode = 1;
 	String contactPerson = "Joe";
-	String addressOne = "20, Green St"; 
+	String addressOne = "20, Green St";
 	String addressTwo = "A st";
 	String city = "Orlando";
 	String state = StateEnum.FLORIDA.name();
@@ -71,61 +90,76 @@ public class AdminServiceTest {
 	String timezone = "UTC";
 	String holiday = "12";
 	String fax = "12212444";
-	
-	String federalTax = "federalTax"; 
+
+	String federalTax = "federalTax";
 	Calendar federalTaxStart = Calendar.getInstance();
 	Calendar federalTaxExpire = Calendar.getInstance();
 	String stateTax = "stateTax";
-	Calendar stateTaxStart = Calendar.getInstance(); 
+	Calendar stateTaxStart = Calendar.getInstance();
 	Calendar stateTaxExpire = Calendar.getInstance();
 	Calendar worktimeStart = Calendar.getInstance();
 	Calendar worktimeEnd = Calendar.getInstance();
-	Role role;	
+	Admin admin;
+	Role role;
+	Company company;
 
 	@Before
-	public void setup() {		
-		role = createNewRole();		
+	public void setup() {
+		company = createNewCompany();
+		role = createNewRole();
+		admin = createNewAdmin();		
 	}
 
 	@Test
-	public void testSaveAdmin() {
-		Admin admin = createNewAdmin();
-		adminService.save(admin);
-		Assert.assertNotNull(admin.getId());
+	public void testSaveReport() {
+		Report report = createNewReport();
+		reportService.save(report);
+		Assert.assertNotNull(report.getId());
 	}
 
 	@Test
-	public void testGetAdmin() {
-		Admin admin = createNewAdmin();
-		adminService.save(admin);
-		Assert.assertNotNull(adminService.findById(admin.getId()));
+	public void testGetReport() {
+		Report report = createNewReport();
+		reportService.save(report);
+		Assert.assertNotNull(reportService.findById(report.getId()));
 	}
 
 	@Test
-	public void testUpdateAdmin() {
-		String newPhone = "5967897788";
-		String newEmail = "firstname2@yahoo.com";
+	public void testUpdateReport() {
+		String newReportTitle = "New Report Title";
 
-		Admin admin = createNewAdmin();
-		adminService.save(admin);
-		Assert.assertEquals(admin.getPhone(), phone);
-		Assert.assertEquals(admin.getEmail(), email);
-		Admin adminSaved = adminService.findById(admin.getId());
-		adminSaved.setPhone(newPhone);
-		adminSaved.setEmail(newEmail);
-		adminService.save(adminSaved);
-		Admin adminMofified = adminService.findById(admin.getId());
-		Assert.assertEquals(adminMofified.getPhone(), newPhone);
-		Assert.assertEquals(adminMofified.getEmail(), newEmail);
+		Report report = createNewReport();
+		reportService.save(report);
+		Assert.assertEquals(report.getReportTitle(), reportTitle);
+		Report reportSaved = reportService.findById(report.getId());
+		reportSaved.setReportTitle(newReportTitle);
+		reportService.save(reportSaved);
+		Report reportMofified = reportService.findById(report.getId());
+		Assert.assertEquals(reportMofified.getReportTitle(), newReportTitle);
 	}
 
 	@Test
-	public void testDeleteAdmin() {
-		Admin admin = createNewAdmin();
-		adminService.save(admin);
-		Assert.assertNotNull(admin.getId());
-		adminService.deleteById(admin.getId());
-		Assert.assertNull(adminService.findById(admin.getId()));
+	public void testDeleteReport() {
+		Report report = createNewReport();
+		reportService.save(report);
+		Assert.assertNotNull(report.getId());
+		reportService.deleteById(report.getId());
+		Assert.assertNull(reportService.findById(report.getId()));
+	}
+
+	private Report createNewReport() {
+		Report report = new Report();
+		report.setAdmin(admin);
+		report.setBaseId(baseId);
+		report.setCompany(company);
+		report.setDataColumns(dataColumns);
+		report.setEndDate(new Timestamp(endDate.getTimeInMillis()));
+		report.setFormat(format);
+		report.setReportTitle(reportTitle);
+		report.setStartDate(new Timestamp(startDate.getTimeInMillis()));
+		report.setCreatedAt(new Timestamp(createdAt.getTimeInMillis()));
+		report.setRole(role);
+		return report;
 	}
 
 	private Admin createNewAdmin() {
@@ -143,16 +177,16 @@ public class AdminServiceTest {
 		admin.setProfilePhoto(profilePhoto);
 		admin.setRememberToken(rememberToken);
 		admin.setSecondaryPhone(secondaryPhone);
-		admin.setStatus(status);
+		admin.setStatus(1);
 		admin.setRole(role);
-		return admin;
+		return adminService.save(admin);
 	}
-	
+
 	private Role createNewRole() {
 		String levelName = "levelName";
 		long level = 1;
 		long status = 1;
-		
+
 		Role role = new Role();
 		role.setLevel(level);
 		role.setLevelName(levelName);
@@ -160,10 +194,9 @@ public class AdminServiceTest {
 		role.setAgency(createNewAgency());
 		return roleService.save(role);
 	}
-	
+
 	private Agency createNewAgency() {
-		Agency agency = new Agency();	
-		Company company = createNewCompany();
+		Agency agency = new Agency();
 		agency.setAddressOne(addressOne);
 		agency.setAddressTwo(addressTwo);
 		agency.setAgencyType(createNewAgencyType());
@@ -183,8 +216,8 @@ public class AdminServiceTest {
 		agency.setZipcode(zipcode);
 		return agencyService.save(agency);
 	}
-	
-	private Company createNewCompany(){
+
+	private Company createNewCompany() {
 		Company company = new Company();
 		company.setAddressOne(addressOne);
 		company.setAddressTwo(addressTwo);
@@ -209,8 +242,8 @@ public class AdminServiceTest {
 		company.setZipcode(zipcode);
 		return companyService.save(company);
 	}
-	
-	private AgencyType createNewAgencyType(){
+
+	private AgencyType createNewAgencyType() {
 		AgencyType agencyType = new AgencyType();
 		agencyType.setName("Agency Type Name");
 		agencyType.setStatus(1);

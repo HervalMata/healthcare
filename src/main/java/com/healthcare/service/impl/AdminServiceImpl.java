@@ -18,14 +18,13 @@ import com.healthcare.util.PasswordUtils;
 @Transactional
 public class AdminServiceImpl implements AdminService {
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
 	@Autowired
 	AdminRepository adminRepository;
 
 	@Override
 	public Admin getUser(String username) {
-
 		return adminRepository.findByUsername(username);
-
 	}
 
 	@Override
@@ -35,9 +34,8 @@ public class AdminServiceImpl implements AdminService {
 	}
 
 	@Override
-	public void save(Admin admin) {
-		// TODO Auto-generated method stub
-
+	public Admin save(Admin admin) {
+		return adminRepository.save(admin);
 	}
 
 	@Override
@@ -58,11 +56,20 @@ public class AdminServiceImpl implements AdminService {
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.error("Exception in AdminServiceImpl, login(), e: " + e.toString());
-			
+
 			response = new Response(Response.ResultCode.ERROR, null, e.getMessage());
 		}
 
 		return response;
 	}
 
+	@Override
+	public void deleteById(Long id) {
+		adminRepository.delete(id);
+	}
+
+	@Override
+	public Admin findById(Long id) {
+		return adminRepository.findOne(id);
+	}
 }
