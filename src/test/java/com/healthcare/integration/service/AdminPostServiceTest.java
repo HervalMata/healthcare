@@ -108,7 +108,7 @@ public class AdminPostServiceTest {
 	public void testGetAdminPost() {
 		AdminPost adminPost = createNewAdminPost();
 		adminPostService.save(adminPost);
-		Assert.assertNotNull(adminService.findById(adminPost.getId()));
+		Assert.assertNotNull(adminPostService.findById(adminPost.getId()));
 	}
 
 	@Test
