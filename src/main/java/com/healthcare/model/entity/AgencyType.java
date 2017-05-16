@@ -14,9 +14,13 @@ import lombok.Data;
 @Table(name = "agency_type", schema = "health_care_v1_dev", catalog = "")
 public @Data class AgencyType implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5513342374278345081L;
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private long id;
+	private Long id;
 	private String name;
 	private int status;
 

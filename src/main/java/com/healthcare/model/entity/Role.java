@@ -20,7 +20,7 @@ public @Data class Role implements Serializable {
 	private static final long serialVersionUID = -6360665934926249915L;
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private long id;
+	private Long id;
 	private long level;
 	@Column(name = "level_name")
 	private String levelName;

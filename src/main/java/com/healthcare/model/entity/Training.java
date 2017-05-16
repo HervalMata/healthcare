@@ -24,7 +24,7 @@ public @Data class Training extends Audit implements Serializable {
 	private static final long serialVersionUID = -797138070537430162L;
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private long id;
+	private Long id;
 	private String title;
 	@Column(name = "start_time")
 	private Timestamp startTime;

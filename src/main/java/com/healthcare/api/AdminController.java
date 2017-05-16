@@ -3,16 +3,25 @@ package com.healthcare.api;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.healthcare.api.auth.AbstractBasedAPI;
-import com.healthcare.model.response.Response;
+import com.healthcare.model.entity.Admin;
 import com.healthcare.service.AdminService;
+
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 
 @CrossOrigin
 @RestController(value = "AdminRestAPI")
@@ -23,16 +32,35 @@ public class AdminController extends AbstractBasedAPI {
 	@Autowired
 	private AdminService adminService;
 
-	// @RequestMapping("/hello")
-	// public String login() {
-	// Admin admin = adminService.getUser("admin");
-	// logger.debug("==debug===" + admin.getEmail());
-	// return "login:" + admin.getEmail();
-	// }
+	@ApiOperation(value = "save admin", notes = "save admin")
+	@ApiParam(name = "admin", value = "admin to save", required = true)
+	@PostMapping()
+	public ResponseEntity<Admin> create(@RequestBody Admin admin) {
+		admin = adminService.save(admin);
+		return new ResponseEntity<Admin>(admin, HttpStatus.OK);
+	}
 
-	@RequestMapping(value = "/get_email", method = RequestMethod.GET, produces = { "application/json" })
-	public @ResponseBody Response getEmailByUsername(@RequestParam("driver_id") String username) {
-		//return adminService.getUser("admin");
-		return null;
+	@ApiOperation(value = "get admin by id", notes = "get admin by id")
+	@ApiImplicitParam(name = "id", value = "admin id", required = true, dataType = "Long")
+	@GetMapping("/{id}")
+	public Admin read(@PathVariable Long id) {
+		logger.info("id : " + id);
+		return adminService.findById(id);
+	}
+
+	@ApiOperation(value = "update admin", notes = "update admin")
+	@ApiParam(name = "admin", value = "admin to update", required = true)
+	@PutMapping()
+	public ResponseEntity<Admin> update(@RequestBody Admin admin) {
+		admin = adminService.save(admin);
+		return new ResponseEntity<Admin>(admin, HttpStatus.OK);
+	}
+
+	@ApiOperation(value = "delete admin", notes = "delete admin")
+	@ApiImplicitParam(name = "id", value = "admin id", required = true, dataType = "Long")
+	@DeleteMapping("/{id}")
+	public void delete(@PathVariable("id") Long id) {
+		logger.info("id : " + id);
+		adminService.deleteById(id);
 	}
 }

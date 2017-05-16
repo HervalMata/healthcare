@@ -1,4 +1,4 @@
-package com.healthcare.filter;
+package com.healthcare.conf;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.support.http.StatViewServlet;
@@ -113,8 +113,8 @@ public class DruidDBConfig {
         ServletRegistrationBean reg = new ServletRegistrationBean();
         reg.setServlet(new StatViewServlet());
         reg.addUrlMappings("/druid/*");
-        reg.addInitParameter("allow", "192.168.10.117,192.168.10.195,127.0.0.1"); //白名单
-        reg.addInitParameter("deny",""); //黑名单
+        reg.addInitParameter("allow", "192.168.10.117,192.168.10.195,127.0.0.1"); //whitelist
+        reg.addInitParameter("deny",""); //blacklist
         reg.addInitParameter("loginUsername", "healthcare");
         reg.addInitParameter("loginPassword", "healthcare");
         reg.addInitParameter("resetEnable", "false");
