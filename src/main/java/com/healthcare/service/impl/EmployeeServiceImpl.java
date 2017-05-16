@@ -21,9 +21,19 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Autowired
     EmployeeRepository employeeRepository;
+    
+    @Override
+    public Employee save(Employee employee) {
+        return employee;
+    }
 
     @Override
-    public Employee getFirstName(String firstName) {
-        return employeeRepository.findByFirstName(firstName);
+    public Employee findById(Long id) {
+        return employeeRepository.findOne(id);
+    }
+
+    @Override
+    public void deleteById(Long id) {
+        logger.info("ID: " + id + "DELETED");
     }
 }
