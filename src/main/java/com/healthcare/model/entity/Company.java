@@ -25,7 +25,7 @@ public @Data class Company extends Audit implements Serializable {
 	private static final long serialVersionUID = -7901755875334279875L;
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private int id;
+	private long id;
 	@Column(name = "license_no")
 	private String licenseNo;
 	@Column(name = "federal_tax")
