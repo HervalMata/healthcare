@@ -1,7 +1,7 @@
 package com.healthcare.service;
 
 public interface IService<T> {
-	T save(T user);
+	T save(T entity);
 
 	T findById(Long id);
 
