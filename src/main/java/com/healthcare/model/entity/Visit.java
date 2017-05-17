@@ -29,7 +29,7 @@ public @Data class Visit implements Serializable {
 
 	@OneToMany
 	@JoinColumn(name = "meal_id")
-	private Set<Meal> meal;
+	private Set<Meal> meals;
 
 	@ManyToOne
 	@JoinColumn(name = "agency_id")
