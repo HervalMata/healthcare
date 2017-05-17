@@ -1,5 +1,6 @@
 package com.healthcare.conf;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
@@ -17,9 +18,17 @@ import com.healthcare.util.RedisObjectSerializer;
 @Configuration
 public class RedisConfig {
 
+	@Value("${spring.redis.host}")
+	private String localhost;
+	@Value("${spring.redis.port}")
+	private int port;
+
 	@Bean
 	JedisConnectionFactory jedisConnectionFactory() {
-		return new JedisConnectionFactory();
+		JedisConnectionFactory factory = new JedisConnectionFactory();
+		factory.setHostName(localhost);
+		factory.setPort(port);
+		return factory;
 	}
 
 	@Bean

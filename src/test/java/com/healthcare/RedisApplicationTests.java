@@ -10,8 +10,8 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import com.healthcare.model.entity.User1;
 
-//@RunWith(SpringJUnit4ClassRunner.class)
-//@SpringBootTest
+@RunWith(SpringJUnit4ClassRunner.class)
+@SpringBootTest
 public class RedisApplicationTests {
 
 	@Autowired
@@ -20,7 +20,7 @@ public class RedisApplicationTests {
 	@Autowired
 	private RedisTemplate<String, User1> redisTemplate;
 
-	//@Test
+	@Test
 	public void test() throws Exception {
 
 		// save string
