@@ -1,22 +1,18 @@
 package com.healthcare.integration.service;
 
-import java.sql.Timestamp;
-import java.util.Date;
-
-import javax.transaction.Transactional;
-
-import org.junit.Assert;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
-
 import com.healthcare.model.entity.Agency;
 import com.healthcare.model.entity.Meal;
 import com.healthcare.model.entity.User;
 import com.healthcare.model.entity.Visit;
 import com.healthcare.service.MealService;
 import com.healthcare.service.VisitService;
+import org.junit.Assert;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+
+import javax.transaction.Transactional;
+import java.sql.Timestamp;
+import java.util.Date;
 
 //@RunWith(SpringRunner.class)
 @SpringBootTest
@@ -39,7 +35,7 @@ public class VisitServiceTest {
 		meal.setMealClass("meal class 1");
 		meal.setName("meal A");
 		mealService.save(meal);
-		visit.setMeal(meal);
+//		visit.setMeal(meal);
 		Agency agency = new Agency();
 		User user = new User();
 		visit.setUser(user);

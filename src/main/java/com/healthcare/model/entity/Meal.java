@@ -1,16 +1,17 @@
 package com.healthcare.model.entity;
 
-import java.io.Serializable;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import java.io.Serializable;
 
 @Entity
 @Table(name = "meal")
@@ -33,4 +34,7 @@ public @Data class Meal extends Audit implements Serializable {
 	private Integer verifiedByNutritionist;
 	private Integer status;
 
+    @ManyToOne
+    @JoinColumn(name = "visit_id")
+    private Visit visit;
 }
