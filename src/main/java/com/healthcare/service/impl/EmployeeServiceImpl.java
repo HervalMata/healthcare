@@ -34,6 +34,6 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public void deleteById(Long id) {
-        logger.info("ID: " + id + "DELETED");
+        logger.info("id: " + id + " DELETED");
     }
 }

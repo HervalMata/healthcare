@@ -50,8 +50,8 @@ public class EmployeeController extends AbstractBasedAPI {
         return new ResponseEntity<>(employee, HttpStatus.OK);
     }
 
-    @ApiOperation(value = "delete employee post", notes = "delete employee post")
-    @ApiImplicitParam(name = "id", value = "employee post id", required = true, dataType = "Long")
+    @ApiOperation(value = "delete employee", notes = "delete employee")
+    @ApiImplicitParam(name = "id", value = "delete employee", required = true, dataType = "Long")
     @DeleteMapping("/{id}")
     public void delete(@PathVariable("id") Long id) {
         logger.info("id : " + id);
