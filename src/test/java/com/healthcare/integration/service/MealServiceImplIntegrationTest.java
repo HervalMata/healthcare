@@ -1,4 +1,4 @@
-package com.healthcare.service.impl;
+package com.healthcare.integration.service;
 
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
