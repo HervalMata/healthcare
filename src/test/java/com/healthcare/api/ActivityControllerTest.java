@@ -79,7 +79,7 @@ public class ActivityControllerTest {
                     "\"id\":" + activityId + "," +
                     "\"name\":null," +
                     "\"status\":null," +
-                    "\"instructorEmployeeId\":null," +
+                    "\"instructorEmployee\":null," +
                     "\"timeStart\":null," +
                     "\"timeEnd\":null," +
                     "\"date\":null," +

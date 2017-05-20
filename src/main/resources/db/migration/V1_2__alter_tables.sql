@@ -12,3 +12,6 @@ ALTER TABLE `health_care_v1_dev`.`visit`
 
 ALTER TABLE `health_care_v1_dev`.`meal`
     CHANGE COLUMN `verified_by_ nutritionist` `verified_by_nutritionist` INT NULL DEFAULT '0';
+
+ALTER TABLE `health_care_v1_dev`.`employee`
+    MODIFY `review_id` INT UNSIGNED DEFAULT NULL;
