@@ -7,8 +7,12 @@ import com.healthcare.repository.MealRepository;
 import com.healthcare.service.MealService;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
+
 @Service
+@Transactional
 public class MealServiceImpl implements MealService {
+
 	@Autowired
 	private MealRepository mealRepository;
 
