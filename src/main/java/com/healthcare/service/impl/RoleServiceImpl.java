@@ -5,6 +5,7 @@ import java.util.List;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import com.healthcare.model.entity.Role;
@@ -17,19 +18,30 @@ public class RoleServiceImpl implements RoleService {
 	@Autowired
 	RoleRepository roleRepository;
 
+	@Autowired
+	private RedisTemplate<String, Role> roleRedisTemplate;
+	
+	private static String ROLE_KEY = "Role";
+
 	@Override
 	public Role save(Role role) {
-		return roleRepository.save(role);
+		role = roleRepository.save(role);
+		roleRedisTemplate.opsForHash().put(ROLE_KEY, role.getId(), role);
+		return role;
 	}
 
 	@Override
 	public void deleteById(Long id) {
 		roleRepository.delete(id);
+		roleRedisTemplate.opsForHash().delete(ROLE_KEY, id);
 	}
 
 	@Override
 	public Role findById(Long id) {
-		return roleRepository.findOne(id);
+		Role role = (Role) roleRedisTemplate.opsForHash().get(ROLE_KEY, id);
+		if (role == null)
+			role = roleRepository.findOne(id);
+		return role;
 	}
 
 	@Override

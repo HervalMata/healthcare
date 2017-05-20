@@ -12,6 +12,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.healthcare.model.entity.Agency;
@@ -30,6 +31,11 @@ import com.healthcare.service.RoleService;
 public class RoleServiceTest {
 	@Autowired
 	private RoleService roleService;
+
+	@Autowired
+	private RedisTemplate<String, Role> roleRedisTemplate;
+
+	private static String ROLE_KEY = "Role";
 
 	@Autowired
 	private CompanyService companyService;
@@ -89,6 +95,7 @@ public class RoleServiceTest {
 		Role role = createNewRole();
 		role = roleService.save(role);
 		Assert.assertNotNull(role.getId());
+		Assert.assertNotNull(roleRedisTemplate.opsForHash().get(ROLE_KEY, role.getId()));
 	}
 
 	@Test
@@ -96,6 +103,7 @@ public class RoleServiceTest {
 		Role role = createNewRole();
 		role = roleService.save(role);
 		Assert.assertNotNull(roleService.findById(role.getId()));
+		Assert.assertNotNull(roleRedisTemplate.opsForHash().get(ROLE_KEY, role.getId()));
 	}
 
 	@Test
@@ -104,11 +112,15 @@ public class RoleServiceTest {
 		Role role = createNewRole();
 		role = roleService.save(role);
 		Assert.assertEquals(role.getLevelName(), levelName);
+		Assert.assertEquals(((Role) roleRedisTemplate.opsForHash().get(ROLE_KEY, role.getId())).getLevelName(),
+				levelName);
 		Role roleSaved = roleService.findById(role.getId());
 		roleSaved.setLevelName(newLevelName);
 		roleService.save(roleSaved);
 		Role roleMofified = roleService.findById(role.getId());
 		Assert.assertEquals(roleMofified.getLevelName(), newLevelName);
+		Assert.assertEquals(((Role) roleRedisTemplate.opsForHash().get(ROLE_KEY, role.getId())).getLevelName(),
+				newLevelName);
 	}
 
 	@Test
@@ -116,8 +128,10 @@ public class RoleServiceTest {
 		Role role = createNewRole();
 		role = roleService.save(role);
 		Assert.assertNotNull(role.getId());
+		Assert.assertNotNull(roleRedisTemplate.opsForHash().get(ROLE_KEY, role.getId()));
 		roleService.deleteById(role.getId());
 		Assert.assertNull(roleService.findById(role.getId()));
+		Assert.assertNull(roleRedisTemplate.opsForHash().get(ROLE_KEY, role.getId()));
 	}
 
 	private Role createNewRole() {
