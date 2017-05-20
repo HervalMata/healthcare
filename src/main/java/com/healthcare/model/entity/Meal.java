@@ -18,10 +18,8 @@ import java.io.Serializable;
 @EqualsAndHashCode(callSuper = true)
 public @Data class Meal extends Audit implements Serializable {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -3274532181839756840L;
+    private static final long serialVersionUID = -6955987587452175363L;
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
@@ -30,8 +28,10 @@ public @Data class Meal extends Audit implements Serializable {
 	private String name;
 	private String ingredients;
 	private String notes;
-	@Column(name = "verify_by_nutritionist")
+
+	@Column(name = "verified_by_nutritionist")
 	private Integer verifiedByNutritionist;
+
 	private Integer status;
 
     @ManyToOne

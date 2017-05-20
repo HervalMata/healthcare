@@ -28,7 +28,7 @@ public @Data class Visit implements Serializable {
 	private Long id;
 
 	@OneToMany
-	@JoinColumn(name = "meal_id")
+	@JoinColumn(name = "visit_id")
 	private Set<Meal> meals;
 
 	@ManyToOne
