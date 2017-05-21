@@ -47,6 +47,12 @@ public class RoleController {
 		return roleService.findById(id);
 	}
 
+	@ApiOperation(value = "get all role", notes = "get all role")
+	@GetMapping()
+	public List<Role> readAll() {
+		return roleService.findAll();
+	}
+
 	@ApiOperation(value = "update role", notes = "update role")
 	@ApiParam(name = "role", value = "role to update", required = true)
 	@PutMapping()

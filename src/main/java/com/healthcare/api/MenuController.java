@@ -1,5 +1,7 @@
 package com.healthcare.api;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +45,12 @@ public class MenuController {
 	public Menu read(@PathVariable Long id) {
 		logger.info("id : " + id);
 		return menuService.findById(id);
+	}
+
+	@ApiOperation(value = "get all menu", notes = "get all menu")
+	@GetMapping()
+	public List<Menu> readAll() {
+		return menuService.findAll();
 	}
 
 	@ApiOperation(value = "update menu", notes = "update menu")

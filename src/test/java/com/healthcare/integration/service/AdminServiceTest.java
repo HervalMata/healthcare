@@ -12,6 +12,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.healthcare.model.entity.Admin;
@@ -33,16 +34,21 @@ import com.healthcare.service.RoleService;
 public class AdminServiceTest {
 	@Autowired
 	private AdminService adminService;
-	
+
+	@Autowired
+	private RedisTemplate<String, Admin> adminRedisTemplate;
+
+	private static String ADMIN_KEY = "Admin";
+
 	@Autowired
 	private RoleService roleService;
-	
+
 	@Autowired
 	private CompanyService companyService;
-	
+
 	@Autowired
 	private AgencyService agencyService;
-	
+
 	@Autowired
 	private AgencyTypeService agencyTpeService;
 
@@ -57,13 +63,13 @@ public class AdminServiceTest {
 	String secondaryPhone = "1234560001";
 	String profilePhoto = "XXXXXXXXXX";
 	String deviceAddress = "City ABC";
-	String rememberToken = "00000";	
+	String rememberToken = "00000";
 	long status = 1;
-	
-	String licenseNo = "12D31";		 
+
+	String licenseNo = "12D31";
 	int trackingMode = 1;
 	String contactPerson = "Joe";
-	String addressOne = "20, Green St"; 
+	String addressOne = "20, Green St";
 	String addressTwo = "A st";
 	String city = "Orlando";
 	String state = StateEnum.FLORIDA.name();
@@ -71,20 +77,20 @@ public class AdminServiceTest {
 	String timezone = "UTC";
 	String holiday = "12";
 	String fax = "12212444";
-	
-	String federalTax = "federalTax"; 
+
+	String federalTax = "federalTax";
 	Calendar federalTaxStart = Calendar.getInstance();
 	Calendar federalTaxExpire = Calendar.getInstance();
 	String stateTax = "stateTax";
-	Calendar stateTaxStart = Calendar.getInstance(); 
+	Calendar stateTaxStart = Calendar.getInstance();
 	Calendar stateTaxExpire = Calendar.getInstance();
 	Calendar worktimeStart = Calendar.getInstance();
 	Calendar worktimeEnd = Calendar.getInstance();
-	Role role;	
+	Role role;
 
 	@Before
-	public void setup() {		
-		role = createNewRole();		
+	public void setup() {
+		role = createNewRole();
 	}
 
 	@Test
@@ -92,6 +98,7 @@ public class AdminServiceTest {
 		Admin admin = createNewAdmin();
 		adminService.save(admin);
 		Assert.assertNotNull(admin.getId());
+		Assert.assertNotNull(adminRedisTemplate.opsForHash().get(ADMIN_KEY, admin.getId()));
 	}
 
 	@Test
@@ -99,6 +106,18 @@ public class AdminServiceTest {
 		Admin admin = createNewAdmin();
 		adminService.save(admin);
 		Assert.assertNotNull(adminService.findById(admin.getId()));
+		Assert.assertNotNull(adminRedisTemplate.opsForHash().get(ADMIN_KEY, admin.getId()));
+	}
+
+	@Test
+	public void testFindAllAdmin() {
+		long size = adminService.findAll().size();
+		Admin admin = createNewAdmin();
+		adminService.save(admin);
+		Admin admin2 = createNewAdmin();
+		adminService.save(admin2);
+		Assert.assertEquals(size + 2, adminService.findAll().size());
+		Assert.assertEquals(size + 2, adminRedisTemplate.opsForHash().entries(ADMIN_KEY).size());
 	}
 
 	@Test
@@ -109,14 +128,20 @@ public class AdminServiceTest {
 		Admin admin = createNewAdmin();
 		adminService.save(admin);
 		Assert.assertEquals(admin.getPhone(), phone);
+		Assert.assertEquals(((Admin) adminRedisTemplate.opsForHash().get(ADMIN_KEY, admin.getId())).getPhone(), phone);
 		Assert.assertEquals(admin.getEmail(), email);
+		Assert.assertEquals(((Admin) adminRedisTemplate.opsForHash().get(ADMIN_KEY, admin.getId())).getEmail(), email);
 		Admin adminSaved = adminService.findById(admin.getId());
 		adminSaved.setPhone(newPhone);
 		adminSaved.setEmail(newEmail);
 		adminService.save(adminSaved);
 		Admin adminMofified = adminService.findById(admin.getId());
 		Assert.assertEquals(adminMofified.getPhone(), newPhone);
+		Assert.assertEquals(((Admin) adminRedisTemplate.opsForHash().get(ADMIN_KEY, admin.getId())).getPhone(),
+				newPhone);
 		Assert.assertEquals(adminMofified.getEmail(), newEmail);
+		Assert.assertEquals(((Admin) adminRedisTemplate.opsForHash().get(ADMIN_KEY, admin.getId())).getEmail(),
+				newEmail);
 	}
 
 	@Test
@@ -124,8 +149,10 @@ public class AdminServiceTest {
 		Admin admin = createNewAdmin();
 		adminService.save(admin);
 		Assert.assertNotNull(admin.getId());
+		Assert.assertNotNull(adminRedisTemplate.opsForHash().get(ADMIN_KEY, admin.getId()));
 		adminService.deleteById(admin.getId());
 		Assert.assertNull(adminService.findById(admin.getId()));
+		Assert.assertNull(adminRedisTemplate.opsForHash().get(ADMIN_KEY, admin.getId()));
 	}
 
 	private Admin createNewAdmin() {
@@ -147,12 +174,12 @@ public class AdminServiceTest {
 		admin.setRole(role);
 		return admin;
 	}
-	
+
 	private Role createNewRole() {
 		String levelName = "levelName";
 		long level = 1;
 		long status = 1;
-		
+
 		Role role = new Role();
 		role.setLevel(level);
 		role.setLevelName(levelName);
@@ -160,9 +187,9 @@ public class AdminServiceTest {
 		role.setAgency(createNewAgency());
 		return roleService.save(role);
 	}
-	
+
 	private Agency createNewAgency() {
-		Agency agency = new Agency();	
+		Agency agency = new Agency();
 		Company company = createNewCompany();
 		agency.setAddressOne(addressOne);
 		agency.setAddressTwo(addressTwo);
@@ -183,8 +210,8 @@ public class AdminServiceTest {
 		agency.setZipcode(zipcode);
 		return agencyService.save(agency);
 	}
-	
-	private Company createNewCompany(){
+
+	private Company createNewCompany() {
 		Company company = new Company();
 		company.setAddressOne(addressOne);
 		company.setAddressTwo(addressTwo);
@@ -209,8 +236,8 @@ public class AdminServiceTest {
 		company.setZipcode(zipcode);
 		return companyService.save(company);
 	}
-	
-	private AgencyType createNewAgencyType(){
+
+	private AgencyType createNewAgencyType() {
 		AgencyType agencyType = new AgencyType();
 		agencyType.setName("Agency Type Name");
 		agencyType.setStatus(1);

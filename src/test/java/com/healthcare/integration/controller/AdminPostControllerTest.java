@@ -5,6 +5,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.util.ArrayList;
+
 import javax.transaction.Transactional;
 
 import org.junit.Before;
@@ -56,6 +58,12 @@ public class AdminPostControllerTest {
 	public void testGetAdminPost() throws Exception {
 		Mockito.when(adminPostService.findById(1L)).thenReturn(new AdminPost());
 		this.mockMvc.perform(get("/api/adminpost/1")).andExpect(status().isOk());
+	}
+
+	@Test
+	public void testFindAllAdminPost() throws Exception {
+		Mockito.when(adminPostService.findAll()).thenReturn(new ArrayList<AdminPost>());
+		this.mockMvc.perform(get("/api/adminpost")).andExpect(status().isOk());
 	}
 
 	@Test
