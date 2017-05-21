@@ -1,5 +1,8 @@
 package com.healthcare.service.impl;
 
+import java.util.List;
+import java.util.Map;
+
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +12,8 @@ import org.springframework.stereotype.Service;
 import com.healthcare.model.entity.AdminPost;
 import com.healthcare.repository.AdminPostRepository;
 import com.healthcare.service.AdminPostService;
+
+import io.jsonwebtoken.lang.Collections;
 
 @Service
 @Transactional
@@ -41,4 +46,13 @@ public class AdminPostServiceImpl implements AdminPostService {
 			adminPost = adminPostRepository.findOne(id);
 		return adminPost;
 	}
+
+	@Override
+	public List<AdminPost> findAll() {
+		Map<Object, Object> adminPostMap = adminPostRedisTemplate.opsForHash().entries(ADMINPOST_KEY);
+		List<AdminPost> adminPostList = Collections.arrayToList(adminPostMap.values().toArray());
+		if(adminPostMap.isEmpty())
+			adminPostList = adminPostRepository.findAll();
+		return adminPostList;
+	}	
 }

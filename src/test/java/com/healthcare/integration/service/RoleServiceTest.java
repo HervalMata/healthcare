@@ -92,7 +92,7 @@ public class RoleServiceTest {
 
 	@Test
 	public void testSaveRole() {
-		Role role = createNewRole();
+		Role role = createNewRole(level);
 		role = roleService.save(role);
 		Assert.assertNotNull(role.getId());
 		Assert.assertNotNull(roleRedisTemplate.opsForHash().get(ROLE_KEY, role.getId()));
@@ -100,16 +100,27 @@ public class RoleServiceTest {
 
 	@Test
 	public void testGetRole() {
-		Role role = createNewRole();
+		Role role = createNewRole(level);
 		role = roleService.save(role);
 		Assert.assertNotNull(roleService.findById(role.getId()));
 		Assert.assertNotNull(roleRedisTemplate.opsForHash().get(ROLE_KEY, role.getId()));
 	}
 
 	@Test
+	public void testFindAllRole() {
+		long size = roleService.findAll().size();
+		Role role = createNewRole(level);
+		roleService.save(role);
+		Role role2 = createNewRole(2);
+		roleService.save(role2);
+		Assert.assertEquals(size + 2, roleService.findAll().size());
+		Assert.assertEquals(size + 2, roleRedisTemplate.opsForHash().entries(ROLE_KEY).size());
+	}
+
+	@Test
 	public void testUpdateRole() {
 		String newLevelName = "new level name";
-		Role role = createNewRole();
+		Role role = createNewRole(level);
 		role = roleService.save(role);
 		Assert.assertEquals(role.getLevelName(), levelName);
 		Assert.assertEquals(((Role) roleRedisTemplate.opsForHash().get(ROLE_KEY, role.getId())).getLevelName(),
@@ -125,7 +136,7 @@ public class RoleServiceTest {
 
 	@Test
 	public void testDeleteRole() {
-		Role role = createNewRole();
+		Role role = createNewRole(level);
 		role = roleService.save(role);
 		Assert.assertNotNull(role.getId());
 		Assert.assertNotNull(roleRedisTemplate.opsForHash().get(ROLE_KEY, role.getId()));
@@ -134,7 +145,7 @@ public class RoleServiceTest {
 		Assert.assertNull(roleRedisTemplate.opsForHash().get(ROLE_KEY, role.getId()));
 	}
 
-	private Role createNewRole() {
+	private Role createNewRole(long level) {
 		Role role = new Role();
 		role.setLevel(level);
 		role.setLevelName(levelName);

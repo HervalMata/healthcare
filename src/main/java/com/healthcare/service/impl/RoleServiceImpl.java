@@ -1,6 +1,7 @@
 package com.healthcare.service.impl;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.transaction.Transactional;
 
@@ -12,6 +13,8 @@ import com.healthcare.model.entity.Role;
 import com.healthcare.repository.RoleRepository;
 import com.healthcare.service.RoleService;
 
+import io.jsonwebtoken.lang.Collections;
+
 @Service
 @Transactional
 public class RoleServiceImpl implements RoleService {
@@ -20,7 +23,7 @@ public class RoleServiceImpl implements RoleService {
 
 	@Autowired
 	private RedisTemplate<String, Role> roleRedisTemplate;
-	
+
 	private static String ROLE_KEY = "Role";
 
 	@Override
@@ -52,5 +55,14 @@ public class RoleServiceImpl implements RoleService {
 	@Override
 	public List<Role> findByStatus(long status) {
 		return roleRepository.findByStatus(status);
+	}
+
+	@Override
+	public List<Role> findAll() {
+		Map<Object, Object> roleMap = roleRedisTemplate.opsForHash().entries(ROLE_KEY);
+		List<Role> roleList = Collections.arrayToList(roleMap.values().toArray());
+		if (roleMap.isEmpty())
+			roleList = roleRepository.findAll();
+		return roleList;
 	}
 }

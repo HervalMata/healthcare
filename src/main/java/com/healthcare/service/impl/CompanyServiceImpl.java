@@ -1,5 +1,8 @@
 package com.healthcare.service.impl;
 
+import java.util.List;
+import java.util.Map;
+
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +13,8 @@ import com.healthcare.model.entity.Company;
 import com.healthcare.repository.CompanyRepository;
 import com.healthcare.service.CompanyService;
 
+import io.jsonwebtoken.lang.Collections;
+
 @Service
 @Transactional
 public class CompanyServiceImpl implements CompanyService {
@@ -18,7 +23,7 @@ public class CompanyServiceImpl implements CompanyService {
 
 	@Autowired
 	private RedisTemplate<String, Company> companyRedisTemplate;
-	
+
 	private static String COMPANY_KEY = "Company";
 
 	@Override
@@ -40,5 +45,14 @@ public class CompanyServiceImpl implements CompanyService {
 		if (company == null)
 			company = companyRepository.findOne(id);
 		return company;
+	}
+
+	@Override
+	public List<Company> findAll() {
+		Map<Object, Object> companyMap = companyRedisTemplate.opsForHash().entries(COMPANY_KEY);
+		List<Company> companyList = Collections.arrayToList(companyMap.values().toArray());
+		if (companyMap.isEmpty())
+			companyList = companyRepository.findAll();
+		return companyList;
 	}
 }

@@ -1,5 +1,8 @@
 package com.healthcare.service.impl;
 
+import java.util.List;
+import java.util.Map;
+
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +13,8 @@ import com.healthcare.model.entity.AgencyType;
 import com.healthcare.repository.AgencyTypeRepository;
 import com.healthcare.service.AgencyTypeService;
 
+import io.jsonwebtoken.lang.Collections;
+
 @Service
 @Transactional
 public class AgencyTypeServiceImpl implements AgencyTypeService {
@@ -18,7 +23,7 @@ public class AgencyTypeServiceImpl implements AgencyTypeService {
 
 	@Autowired
 	private RedisTemplate<String, AgencyType> agencyTypeRedisTemplate;
-	
+
 	private static String AGENCYTYPE_KEY = "AgencyType";
 
 	@Override
@@ -40,5 +45,14 @@ public class AgencyTypeServiceImpl implements AgencyTypeService {
 		if (agencyType == null)
 			agencyType = agencyTypeRepository.findOne(id);
 		return agencyType;
+	}
+
+	@Override
+	public List<AgencyType> findAll() {
+		Map<Object, Object> agencyTypeMap = agencyTypeRedisTemplate.opsForHash().entries(AGENCYTYPE_KEY);
+		List<AgencyType> agencyTypeList = Collections.arrayToList(agencyTypeMap.values().toArray());
+		if (agencyTypeMap.isEmpty())
+			agencyTypeList = agencyTypeRepository.findAll();
+		return agencyTypeList;
 	}
 }

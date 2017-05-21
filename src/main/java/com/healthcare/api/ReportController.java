@@ -1,5 +1,7 @@
 package com.healthcare.api;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +45,12 @@ public class ReportController {
 	public Report read(@PathVariable Long id) {
 		logger.info("id : " + id);
 		return reportService.findById(id);
+	}
+
+	@ApiOperation(value = "get all report", notes = "get all report")
+	@GetMapping()
+	public List<Report> readAll() {
+		return reportService.findAll();
 	}
 
 	@ApiOperation(value = "update report", notes = "update report")

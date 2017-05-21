@@ -1,5 +1,8 @@
 package com.healthcare.service.impl;
 
+import java.util.List;
+import java.util.Map;
+
 import javax.transaction.Transactional;
 
 import org.slf4j.Logger;
@@ -15,6 +18,8 @@ import com.healthcare.repository.AdminRepository;
 import com.healthcare.service.AdminService;
 import com.healthcare.util.PasswordUtils;
 
+import io.jsonwebtoken.lang.Collections;
+
 @Service
 @Transactional
 public class AdminServiceImpl implements AdminService {
@@ -25,12 +30,13 @@ public class AdminServiceImpl implements AdminService {
 
 	@Autowired
 	private RedisTemplate<String, Admin> adminRedisTemplate;
-	
+
 	private static String ADMIN_KEY = "Admin";
 
 	@Override
 	public Admin getUser(String username) {
-//		Admin admin = (Admin) adminRedisTemplate.opsForHash().get(ADMIN_KEY, id);		
+		// Admin admin = (Admin) adminRedisTemplate.opsForHash().get(ADMIN_KEY,
+		// id);
 		return adminRepository.findByUsername(username);
 	}
 
@@ -83,5 +89,14 @@ public class AdminServiceImpl implements AdminService {
 		if (admin == null)
 			admin = adminRepository.findOne(id);
 		return admin;
+	}
+
+	@Override
+	public List<Admin> findAll() {
+		Map<Object, Object> adminMap = adminRedisTemplate.opsForHash().entries(ADMIN_KEY);
+		List<Admin> adminList = Collections.arrayToList(adminMap.values().toArray());
+		if (adminMap.isEmpty())
+			adminList = adminRepository.findAll();
+		return adminList;
 	}
 }
