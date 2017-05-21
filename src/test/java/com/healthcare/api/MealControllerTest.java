@@ -81,7 +81,8 @@ public class MealControllerTest {
                     "\"ingredients\":null," +
                     "\"notes\":null," +
                     "\"verifiedByNutritionist\":null," +
-                    "\"status\":null" +
+                    "\"status\":null," +
+                    "\"visit\":null" +
                 "}";
 
         given(mealService.findById(anyLong()))

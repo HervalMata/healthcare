@@ -14,6 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 
 import static org.hamcrest.core.IsEqual.equalTo;
@@ -32,6 +33,9 @@ public class MealServiceImplIntegrationTest {
 
     @Autowired
     private MealService sut;
+
+    @Autowired
+    private EntityManager em;
 
     @Test
     public void testCreate() {
@@ -72,6 +76,8 @@ public class MealServiceImplIntegrationTest {
         Meal result = sut.save(meal);
         // then
         assertThat(result, notNullValue());
+
+        em.flush();
     }
 
     @Test
@@ -96,5 +102,6 @@ public class MealServiceImplIntegrationTest {
         // when
         sut.deleteById(mealId);
         // then
+        em.flush();
     }
 }

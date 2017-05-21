@@ -1,4 +1,4 @@
-package com.healthcare.service.impl;
+package com.healthcare.integration.service;
 
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
@@ -15,6 +15,8 @@ import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
+
 import static org.hamcrest.core.IsNull.notNullValue;
 import static org.junit.Assert.assertThat;
 
@@ -30,6 +32,9 @@ public class ActivityServiceImplIntegrationTest {
 
     @Autowired
     private ActivityService sut;
+
+    @Autowired
+    private EntityManager em;
 
     @Test
     public void testCreate() {
@@ -68,6 +73,8 @@ public class ActivityServiceImplIntegrationTest {
         Activity result = sut.save(activity);
         // then
         assertThat(result, notNullValue());
+
+        em.flush();
     }
 
     @Test
@@ -91,5 +98,6 @@ public class ActivityServiceImplIntegrationTest {
         // when
         sut.delete(activityId);
         // then
+        em.flush();
     }
 }

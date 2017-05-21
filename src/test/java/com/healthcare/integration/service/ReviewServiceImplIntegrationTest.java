@@ -8,17 +8,15 @@ import com.healthcare.model.entity.Employee;
 import com.healthcare.model.entity.Review;
 import com.healthcare.model.entity.User;
 import com.healthcare.service.ReviewService;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
-import javax.transaction.Transactional;
 
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsNull.notNullValue;
@@ -30,23 +28,15 @@ import static org.junit.Assert.assertThat;
         mergeMode = TestExecutionListeners.MergeMode.MERGE_WITH_DEFAULTS
 )
 @DatabaseSetup(value = "/dataset/service/ReviewServiceImplIntegrationTest.xml")
-@SpringBootTest
 @Transactional
+@SpringBootTest
 public class ReviewServiceImplIntegrationTest {
-
-    @Autowired
-    private EntityManager em;
-
-    @Autowired
-    private ApplicationContext applicationContext;
 
     @Autowired
     private ReviewService sut;
 
-    @Before
-    public void setUp() {
-//        em.setFlushMode(FlushModeType.COMMIT);
-    }
+    @Autowired
+    private EntityManager em;
 
     @Test
     public void testCreate() {
@@ -95,6 +85,8 @@ public class ReviewServiceImplIntegrationTest {
         Review result = sut.save(review);
         // then
         assertThat(result, notNullValue());
+
+        em.flush();
     }
 
     @Test
@@ -119,5 +111,6 @@ public class ReviewServiceImplIntegrationTest {
         // when
         sut.delete(reviewId);
         // then
+        em.flush();
     }
 }
