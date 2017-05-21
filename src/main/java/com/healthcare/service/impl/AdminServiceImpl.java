@@ -1,10 +1,14 @@
 package com.healthcare.service.impl;
 
+import java.util.List;
+import java.util.Map;
+
 import javax.transaction.Transactional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import com.healthcare.api.auth.model.AuthRequest;
@@ -14,6 +18,8 @@ import com.healthcare.repository.AdminRepository;
 import com.healthcare.service.AdminService;
 import com.healthcare.util.PasswordUtils;
 
+import io.jsonwebtoken.lang.Collections;
+
 @Service
 @Transactional
 public class AdminServiceImpl implements AdminService {
@@ -22,8 +28,15 @@ public class AdminServiceImpl implements AdminService {
 	@Autowired
 	AdminRepository adminRepository;
 
+	@Autowired
+	private RedisTemplate<String, Admin> adminRedisTemplate;
+
+	private static String ADMIN_KEY = "Admin";
+
 	@Override
 	public Admin getUser(String username) {
+		// Admin admin = (Admin) adminRedisTemplate.opsForHash().get(ADMIN_KEY,
+		// id);
 		return adminRepository.findByUsername(username);
 	}
 
@@ -35,7 +48,9 @@ public class AdminServiceImpl implements AdminService {
 
 	@Override
 	public Admin save(Admin admin) {
-		return adminRepository.save(admin);
+		admin = adminRepository.save(admin);
+		adminRedisTemplate.opsForHash().put(ADMIN_KEY, admin.getId(), admin);
+		return admin;
 	}
 
 	@Override
@@ -56,7 +71,6 @@ public class AdminServiceImpl implements AdminService {
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.error("Exception in AdminServiceImpl, login(), e: " + e.toString());
-
 			response = new Response(Response.ResultCode.ERROR, null, e.getMessage());
 		}
 
@@ -66,10 +80,23 @@ public class AdminServiceImpl implements AdminService {
 	@Override
 	public void deleteById(Long id) {
 		adminRepository.delete(id);
+		adminRedisTemplate.opsForHash().delete(ADMIN_KEY, id);
 	}
 
 	@Override
 	public Admin findById(Long id) {
-		return adminRepository.findOne(id);
+		Admin admin = (Admin) adminRedisTemplate.opsForHash().get(ADMIN_KEY, id);
+		if (admin == null)
+			admin = adminRepository.findOne(id);
+		return admin;
+	}
+
+	@Override
+	public List<Admin> findAll() {
+		Map<Object, Object> adminMap = adminRedisTemplate.opsForHash().entries(ADMIN_KEY);
+		List<Admin> adminList = Collections.arrayToList(adminMap.values().toArray());
+		if (adminMap.isEmpty())
+			adminList = adminRepository.findAll();
+		return adminList;
 	}
 }
