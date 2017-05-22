@@ -37,8 +37,6 @@ public class AdminPostServiceTest {
 	@Autowired
 	private AdminPostService adminPostService;
 
-	private static String ADMINPOST_KEY = "AdminPost";
-
 	@Autowired
 	private RedisTemplate<String, AdminPost> adminPostRedisTemplate;
 
@@ -107,7 +105,7 @@ public class AdminPostServiceTest {
 		AdminPost adminPost = createNewAdminPost();
 		adminPostService.save(adminPost);
 		Assert.assertNotNull(adminPost.getId());
-		Assert.assertNotNull(adminPostRedisTemplate.opsForHash().get(ADMINPOST_KEY, adminPost.getId()));
+		Assert.assertNotNull(adminPostRedisTemplate.opsForHash().get(AdminPostService.KEY, adminPost.getId()));
 	}
 
 	@Test
@@ -115,7 +113,7 @@ public class AdminPostServiceTest {
 		AdminPost adminPost = createNewAdminPost();
 		adminPostService.save(adminPost);
 		Assert.assertNotNull(adminPostService.findById(adminPost.getId()));
-		Assert.assertNotNull(adminPostRedisTemplate.opsForHash().get(ADMINPOST_KEY, adminPost.getId()));
+		Assert.assertNotNull(adminPostRedisTemplate.opsForHash().get(AdminPostService.KEY, adminPost.getId()));
 	}
 
 	@Test
@@ -126,7 +124,7 @@ public class AdminPostServiceTest {
 		AdminPost adminPost2 = createNewAdminPost();
 		adminPostService.save(adminPost2);
 		Assert.assertEquals(size + 2, adminPostService.findAll().size());
-		Assert.assertEquals(size + 2, adminPostRedisTemplate.opsForHash().entries(ADMINPOST_KEY).size());
+		Assert.assertEquals(size + 2, adminPostRedisTemplate.opsForHash().entries(AdminPostService.KEY).size());
 	}
 
 	@Test
@@ -137,7 +135,7 @@ public class AdminPostServiceTest {
 		adminPostService.save(adminPost);
 		Assert.assertEquals(adminPost.getPostText(), postText);
 		Assert.assertEquals(
-				((AdminPost) adminPostRedisTemplate.opsForHash().get(ADMINPOST_KEY, adminPost.getId())).getPostText(),
+				((AdminPost) adminPostRedisTemplate.opsForHash().get(AdminPostService.KEY, adminPost.getId())).getPostText(),
 				postText);
 		AdminPost adminPostSaved = adminPostService.findById(adminPost.getId());
 		adminPostSaved.setPostText(newPostText);
@@ -145,7 +143,7 @@ public class AdminPostServiceTest {
 		AdminPost adminPostMofified = adminPostService.findById(adminPost.getId());
 		Assert.assertEquals(adminPostMofified.getPostText(), newPostText);
 		Assert.assertEquals(
-				((AdminPost) adminPostRedisTemplate.opsForHash().get(ADMINPOST_KEY, adminPost.getId())).getPostText(),
+				((AdminPost) adminPostRedisTemplate.opsForHash().get(AdminPostService.KEY, adminPost.getId())).getPostText(),
 				newPostText);
 	}
 
@@ -154,10 +152,10 @@ public class AdminPostServiceTest {
 		AdminPost adminPost = createNewAdminPost();
 		adminPostService.save(adminPost);
 		Assert.assertNotNull(adminPost.getId());
-		Assert.assertNotNull(adminPostRedisTemplate.opsForHash().get(ADMINPOST_KEY, adminPost.getId()));
+		Assert.assertNotNull(adminPostRedisTemplate.opsForHash().get(AdminPostService.KEY, adminPost.getId()));
 		adminPostService.deleteById(adminPost.getId());
 		Assert.assertNull(adminPostService.findById(adminPost.getId()));
-		Assert.assertNull(adminPostRedisTemplate.opsForHash().get(ADMINPOST_KEY, adminPost.getId()));
+		Assert.assertNull(adminPostRedisTemplate.opsForHash().get(AdminPostService.KEY, adminPost.getId()));
 	}
 
 	private AdminPost createNewAdminPost() {
