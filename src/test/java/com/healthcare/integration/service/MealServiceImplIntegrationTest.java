@@ -4,6 +4,7 @@ import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.github.springtestdbunit.annotation.ExpectedDatabase;
 import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
+import com.healthcare.DbUnitIntegrationTestConfiguration;
 import com.healthcare.model.entity.Meal;
 import com.healthcare.model.entity.Visit;
 import com.healthcare.service.MealService;
@@ -11,6 +12,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -27,8 +29,9 @@ import static org.junit.Assert.assertThat;
         mergeMode = TestExecutionListeners.MergeMode.MERGE_WITH_DEFAULTS
 )
 @DatabaseSetup(value = "/dataset/service/MealServiceImplIntegrationTest.xml")
-@SpringBootTest
+@ContextConfiguration(classes = {DbUnitIntegrationTestConfiguration.class})
 @Transactional
+@SpringBootTest
 public class MealServiceImplIntegrationTest {
 
     @Autowired
