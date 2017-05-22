@@ -43,7 +43,7 @@ class Agency extends Audit implements Serializable {
     private String state;
     @Column(name = "zipcode")
     private String zipcode;
-    @Column(name = "time_zone")
+    @Column(name = "timezone")
     private String timezone;
     @Column(name = "phone")
     private String phone;
