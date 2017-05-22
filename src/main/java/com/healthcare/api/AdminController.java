@@ -1,5 +1,7 @@
 package com.healthcare.api;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +48,12 @@ public class AdminController extends AbstractBasedAPI {
 	public Admin read(@PathVariable Long id) {
 		logger.info("id : " + id);
 		return adminService.findById(id);
+	}
+	
+	@ApiOperation(value = "get all admin", notes = "get all admin")
+	@GetMapping()
+	public List<Admin> readAll() {
+		return adminService.findAll();
 	}
 
 	@ApiOperation(value = "update admin", notes = "update admin")

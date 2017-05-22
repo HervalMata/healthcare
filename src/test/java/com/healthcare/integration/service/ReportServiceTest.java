@@ -12,6 +12,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.healthcare.model.entity.Admin;
@@ -35,6 +36,11 @@ import com.healthcare.service.RoleService;
 public class ReportServiceTest {
 	@Autowired
 	private ReportService reportService;
+
+	@Autowired
+	private RedisTemplate<String, Report> reportRedisTemplate;
+
+	private static String REPORT_KEY = "Report";
 
 	@Autowired
 	private AdminService adminService;
@@ -107,7 +113,7 @@ public class ReportServiceTest {
 	public void setup() {
 		company = createNewCompany();
 		role = createNewRole();
-		admin = createNewAdmin();		
+		admin = createNewAdmin();
 	}
 
 	@Test
@@ -115,6 +121,7 @@ public class ReportServiceTest {
 		Report report = createNewReport();
 		reportService.save(report);
 		Assert.assertNotNull(report.getId());
+		Assert.assertNotNull(reportRedisTemplate.opsForHash().get(REPORT_KEY, report.getId()));
 	}
 
 	@Test
@@ -122,6 +129,18 @@ public class ReportServiceTest {
 		Report report = createNewReport();
 		reportService.save(report);
 		Assert.assertNotNull(reportService.findById(report.getId()));
+		Assert.assertNotNull(reportRedisTemplate.opsForHash().get(REPORT_KEY, report.getId()));
+	}
+	
+	@Test
+	public void testFindAllReport() {
+		long size = reportService.findAll().size();
+		Report report = createNewReport();
+		reportService.save(report);
+		Report report2 = createNewReport();
+		reportService.save(report2);
+		Assert.assertEquals(size + 2, reportService.findAll().size());
+		Assert.assertEquals(size + 2, reportRedisTemplate.opsForHash().entries(REPORT_KEY).size());
 	}
 
 	@Test
@@ -131,11 +150,17 @@ public class ReportServiceTest {
 		Report report = createNewReport();
 		reportService.save(report);
 		Assert.assertEquals(report.getReportTitle(), reportTitle);
+		Assert.assertEquals(
+				((Report) reportRedisTemplate.opsForHash().get(REPORT_KEY, report.getId())).getReportTitle(),
+				reportTitle);
 		Report reportSaved = reportService.findById(report.getId());
 		reportSaved.setReportTitle(newReportTitle);
 		reportService.save(reportSaved);
 		Report reportMofified = reportService.findById(report.getId());
 		Assert.assertEquals(reportMofified.getReportTitle(), newReportTitle);
+		Assert.assertEquals(
+				((Report) reportRedisTemplate.opsForHash().get(REPORT_KEY, report.getId())).getReportTitle(),
+				newReportTitle);
 	}
 
 	@Test
@@ -143,8 +168,10 @@ public class ReportServiceTest {
 		Report report = createNewReport();
 		reportService.save(report);
 		Assert.assertNotNull(report.getId());
+		Assert.assertNotNull(reportRedisTemplate.opsForHash().get(REPORT_KEY, report.getId()));
 		reportService.deleteById(report.getId());
 		Assert.assertNull(reportService.findById(report.getId()));
+		Assert.assertNull(reportRedisTemplate.opsForHash().get(REPORT_KEY, report.getId()));
 	}
 
 	private Report createNewReport() {

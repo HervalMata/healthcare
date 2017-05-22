@@ -5,6 +5,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.util.ArrayList;
+
 import javax.transaction.Transactional;
 
 import org.junit.Before;
@@ -56,6 +58,12 @@ public class MenuControllerTest {
 	public void testGetMenu() throws Exception {
 		Mockito.when(menuService.findById(1L)).thenReturn(new Menu());
 		this.mockMvc.perform(get("/api/menu/1")).andExpect(status().isOk());
+	}
+
+	@Test
+	public void testFindAllMenu() throws Exception {
+		Mockito.when(menuService.findAll()).thenReturn(new ArrayList<Menu>());
+		this.mockMvc.perform(get("/api/menu")).andExpect(status().isOk());
 	}
 
 	@Test
