@@ -87,34 +87,28 @@ public class UserServiceRedisTest {
 	}
 
 	@Test
-	public void shouldSaveAUser() {
+	public void shouldSaveAUserToRedisAndRetrievedItFromRedis() {
 		User user = createNewUser();
-		User userSaved = createNewUser();
-		userSaved.setId(10L);
-		Mockito.when(userRepository.save(user)).thenReturn(userSaved);
+		user.setId(10L);
+		Mockito.when(userRepository.save(user)).thenReturn(user);
 		userService.save(user);
-		Assert.assertEquals(Long.valueOf(10), user.getId());
+		User userSaved = userService.findById(10L);
+		Assert.assertNotNull(userSaved);
 	}
 
 	@Test
-	public void shouldGetAUser() {
-		User user = createNewUser();
-		userService.save(user);
-		Assert.assertNotNull(userService.findById(user.getId()));
-	}
-
-	@Test
-	public void shouldUpdateAUser() {
+	public void shouldUpdateAUserToRedis() {
 		String newPhone = "5967897788";
 		String newAddress = "Av. 57 y 23 St.";
 
 		User user = createNewUser();
+		user.setId(10L);
+		Mockito.when(userRepository.save(user)).thenReturn(user);
 		userService.save(user);
-		Assert.assertEquals(user.getPhone(), phone);
-		Assert.assertEquals(user.getAddressOne(), addressOne);
 		User userSaved = userService.findById(user.getId());
 		userSaved.setPhone(newPhone);
 		userSaved.setAddressOne(newAddress);
+		Mockito.when(userRepository.save(userSaved)).thenReturn(userSaved);
 		userService.save(userSaved);
 		User userMofified = userService.findById(user.getId());
 		Assert.assertEquals(userMofified.getPhone(), newPhone);
@@ -124,10 +118,13 @@ public class UserServiceRedisTest {
 	@Test
 	public void shouldDeleteAUser() {
 		User user = createNewUser();
+		user.setId(10L);
+		Mockito.when(userRepository.save(user)).thenReturn(user);
 		userService.save(user);
-		Assert.assertNotNull(user.getId());
+		Mockito.doNothing().when(userRepository).delete(10L);
 		userService.deleteById(user.getId());
-		Assert.assertNull(userService.findById(user.getId()));
+		User userDeleted = userService.findById(10L);
+		Assert.assertNull(userDeleted);
 	}
 
 	private User createNewUser() {
