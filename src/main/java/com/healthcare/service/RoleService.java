@@ -8,4 +8,6 @@ public interface RoleService extends IService<Role> {
 	Role findByLevel(long level);
 
 	List<Role> findByStatus(long status);
+	
+	List<Role> findAll();
 }

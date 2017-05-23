@@ -61,6 +61,12 @@ public class RoleControllerTest {
 	}
 
 	@Test
+	public void testFindAllRole() throws Exception {
+		Mockito.when(roleService.findAll()).thenReturn(new ArrayList<Role>());
+		this.mockMvc.perform(get("/api/role")).andExpect(status().isOk());
+	}
+
+	@Test
 	public void testUpdateRole() throws Exception {
 		Role role = new Role();
 		Mockito.when(roleService.save(role)).thenReturn(role);

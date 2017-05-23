@@ -1,5 +1,7 @@
 package com.healthcare.api;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +45,12 @@ public class AdminPostController {
 	public AdminPost read(@PathVariable Long id) {
 		logger.info("id : " + id);
 		return adminPostService.findById(id);
+	}
+
+	@ApiOperation(value = "get all admin post", notes = "get all admin post")
+	@GetMapping()
+	public List<AdminPost> readAll() {
+		return adminPostService.findAll();
 	}
 
 	@ApiOperation(value = "update admin post", notes = "update admin post")
