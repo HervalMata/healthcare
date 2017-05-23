@@ -133,17 +133,6 @@ public class ReportServiceTest {
 	}
 	
 	@Test
-	public void testFindAllReport() {
-		long size = reportService.findAll().size();
-		Report report = createNewReport();
-		reportService.save(report);
-		Report report2 = createNewReport();
-		reportService.save(report2);
-		Assert.assertEquals(size + 2, reportService.findAll().size());
-		Assert.assertEquals(size + 2, reportRedisTemplate.opsForHash().entries(REPORT_KEY).size());
-	}
-
-	@Test
 	public void testUpdateReport() {
 		String newReportTitle = "New Report Title";
 

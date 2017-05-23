@@ -117,17 +117,6 @@ public class AdminPostServiceTest {
 	}
 
 	@Test
-	public void testFindAllAdminPost() {
-		long size = adminPostService.findAll().size();
-		AdminPost adminPost = createNewAdminPost();
-		adminPostService.save(adminPost);
-		AdminPost adminPost2 = createNewAdminPost();
-		adminPostService.save(adminPost2);
-		Assert.assertEquals(size + 2, adminPostService.findAll().size());
-		Assert.assertEquals(size + 2, adminPostRedisTemplate.opsForHash().entries(AdminPostService.KEY).size());
-	}
-
-	@Test
 	public void testUpdateAdminPost() {
 		String newPostText = "This is new post text";
 
