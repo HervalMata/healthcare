@@ -107,17 +107,6 @@ public class RoleServiceTest {
 	}
 
 	@Test
-	public void testFindAllRole() {
-		long size = roleService.findAll().size();
-		Role role = createNewRole(level);
-		roleService.save(role);
-		Role role2 = createNewRole(2);
-		roleService.save(role2);
-		Assert.assertEquals(size + 2, roleService.findAll().size());
-		Assert.assertEquals(size + 2, roleRedisTemplate.opsForHash().entries(ROLE_KEY).size());
-	}
-
-	@Test
 	public void testUpdateRole() {
 		String newLevelName = "new level name";
 		Role role = createNewRole(level);
