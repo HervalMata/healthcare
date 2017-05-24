@@ -10,8 +10,10 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.healthcare.model.entity.Agency;
@@ -19,6 +21,7 @@ import com.healthcare.model.entity.AgencyType;
 import com.healthcare.model.entity.Company;
 import com.healthcare.model.entity.Role;
 import com.healthcare.model.enums.StateEnum;
+import com.healthcare.repository.RoleRepository;
 import com.healthcare.service.AgencyService;
 import com.healthcare.service.AgencyTypeService;
 import com.healthcare.service.CompanyService;
@@ -27,9 +30,12 @@ import com.healthcare.service.RoleService;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @Transactional
-public class RoleServiceTest {
+public class RoleServiceRedisTest {
 	@Autowired
 	private RoleService roleService;
+
+	@MockBean
+	private RoleRepository roleRepository;
 
 	@Autowired
 	private CompanyService companyService;
@@ -87,25 +93,23 @@ public class RoleServiceTest {
 	@Test
 	public void testSaveRole() {
 		Role role = createNewRole(level);
+		role.setId(7L);
+		Mockito.when(roleRepository.save(role)).thenReturn(role);
 		role = roleService.save(role);
-		Assert.assertNotNull(role.getId());
-	}
-
-	@Test
-	public void testGetRole() {
-		Role role = createNewRole(level);
-		role = roleService.save(role);
-		Assert.assertNotNull(roleService.findById(role.getId()));
+		Role savedRole = roleService.findById(role.getId());
+		Assert.assertNotNull(savedRole);
 	}
 
 	@Test
 	public void testUpdateRole() {
 		String newLevelName = "new level name";
 		Role role = createNewRole(level);
+		role.setId(7L);
+		Mockito.when(roleRepository.save(role)).thenReturn(role);
 		role = roleService.save(role);
-		Assert.assertEquals(role.getLevelName(), levelName);
 		Role roleSaved = roleService.findById(role.getId());
 		roleSaved.setLevelName(newLevelName);
+		Mockito.when(roleRepository.save(roleSaved)).thenReturn(roleSaved);
 		roleService.save(roleSaved);
 		Role roleMofified = roleService.findById(role.getId());
 		Assert.assertEquals(roleMofified.getLevelName(), newLevelName);
@@ -114,10 +118,13 @@ public class RoleServiceTest {
 	@Test
 	public void testDeleteRole() {
 		Role role = createNewRole(level);
+		role.setId(7L);
+		Mockito.when(roleRepository.save(role)).thenReturn(role);
 		role = roleService.save(role);
-		Assert.assertNotNull(role.getId());
+		Mockito.doNothing().when(roleRepository).delete(role.getId());
 		roleService.deleteById(role.getId());
-		Assert.assertNull(roleService.findById(role.getId()));
+		Role deletedRole = roleService.findById(role.getId());
+		Assert.assertNull(deletedRole);
 	}
 
 	private Role createNewRole(long level) {
