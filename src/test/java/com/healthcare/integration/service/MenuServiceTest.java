@@ -117,17 +117,6 @@ public class MenuServiceTest {
 	}
 
 	@Test
-	public void testFindAllMenu() {
-		long size = menuService.findAll().size();
-		Menu menu = createNewMenu();
-		menuService.save(menu);
-		Menu menu2 = createNewMenu();
-		menuService.save(menu2);
-		Assert.assertEquals(size + 2, menuService.findAll().size());
-		Assert.assertEquals(size + 2, menuRedisTemplate.opsForHash().entries(MENU_KEY).size());
-	}
-
-	@Test
 	public void testUpdateMenu() {
 		String newImgUrl = "/img/new.jpg";
 

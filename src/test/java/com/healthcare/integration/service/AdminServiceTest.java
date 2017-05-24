@@ -110,17 +110,6 @@ public class AdminServiceTest {
 	}
 
 	@Test
-	public void testFindAllAdmin() {
-		long size = adminService.findAll().size();
-		Admin admin = createNewAdmin();
-		adminService.save(admin);
-		Admin admin2 = createNewAdmin();
-		adminService.save(admin2);
-		Assert.assertEquals(size + 2, adminService.findAll().size());
-		Assert.assertEquals(size + 2, adminRedisTemplate.opsForHash().entries(ADMIN_KEY).size());
-	}
-
-	@Test
 	public void testUpdateAdmin() {
 		String newPhone = "5967897788";
 		String newEmail = "firstname2@yahoo.com";
