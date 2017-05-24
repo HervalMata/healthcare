@@ -5,5 +5,6 @@ import java.util.List;
 import com.healthcare.model.entity.AdminPost;
 
 public interface AdminPostService extends IService<AdminPost> {
+	
 	List<AdminPost> findAll();
 }

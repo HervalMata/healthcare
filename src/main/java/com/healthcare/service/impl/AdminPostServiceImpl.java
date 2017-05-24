@@ -18,41 +18,41 @@ import io.jsonwebtoken.lang.Collections;
 @Service
 @Transactional
 public class AdminPostServiceImpl implements AdminPostService {
+	private static final String KEY = AdminPost.class.getSimpleName();
+	
 	@Autowired
 	AdminPostRepository adminPostRepository;
 
 	@Autowired
 	private RedisTemplate<String, AdminPost> adminPostRedisTemplate;
-	
-	private static String ADMINPOST_KEY = "AdminPost";
 
 	@Override
 	public AdminPost save(AdminPost adminPost) {
 		adminPost = adminPostRepository.save(adminPost);
-		adminPostRedisTemplate.opsForHash().put(ADMINPOST_KEY, adminPost.getId(), adminPost);
+		adminPostRedisTemplate.opsForHash().put(KEY, adminPost.getId(), adminPost);
 		return adminPost;
 	}
 
 	@Override
 	public void deleteById(Long id) {
 		adminPostRepository.delete(id);
-		adminPostRedisTemplate.opsForHash().delete(ADMINPOST_KEY, id);
+		adminPostRedisTemplate.opsForHash().delete(KEY, id);
 	}
 
 	@Override
 	public AdminPost findById(Long id) {
-		AdminPost adminPost = (AdminPost) adminPostRedisTemplate.opsForHash().get(ADMINPOST_KEY, id);
-		if (adminPost == null)
-			adminPost = adminPostRepository.findOne(id);
-		return adminPost;
+		if (adminPostRedisTemplate.opsForHash().hasKey(KEY, id)) {
+			return (AdminPost) adminPostRedisTemplate.opsForHash().get(KEY, id);
+		}
+		return adminPostRepository.findOne(id);
 	}
 
 	@Override
 	public List<AdminPost> findAll() {
-		Map<Object, Object> adminPostMap = adminPostRedisTemplate.opsForHash().entries(ADMINPOST_KEY);
+		Map<Object, Object> adminPostMap = adminPostRedisTemplate.opsForHash().entries(KEY);
 		List<AdminPost> adminPostList = Collections.arrayToList(adminPostMap.values().toArray());
-		if(adminPostMap.isEmpty())
+		if (adminPostMap.isEmpty())
 			adminPostList = adminPostRepository.findAll();
 		return adminPostList;
-	}	
+	}
 }

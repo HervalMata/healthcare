@@ -18,33 +18,32 @@ import io.jsonwebtoken.lang.Collections;
 @Service
 @Transactional
 public class RoleServiceImpl implements RoleService {
+	private static final String KEY = Role.class.getSimpleName();
+
 	@Autowired
 	RoleRepository roleRepository;
 
 	@Autowired
 	private RedisTemplate<String, Role> roleRedisTemplate;
 
-	private static String ROLE_KEY = "Role";
-
 	@Override
 	public Role save(Role role) {
 		role = roleRepository.save(role);
-		roleRedisTemplate.opsForHash().put(ROLE_KEY, role.getId(), role);
+		roleRedisTemplate.opsForHash().put(KEY, role.getId(), role);
 		return role;
 	}
 
 	@Override
 	public void deleteById(Long id) {
 		roleRepository.delete(id);
-		roleRedisTemplate.opsForHash().delete(ROLE_KEY, id);
+		roleRedisTemplate.opsForHash().delete(KEY, id);
 	}
 
 	@Override
 	public Role findById(Long id) {
-		Role role = (Role) roleRedisTemplate.opsForHash().get(ROLE_KEY, id);
-		if (role == null)
-			role = roleRepository.findOne(id);
-		return role;
+		if (roleRedisTemplate.opsForHash().hasKey(KEY, id))
+			return (Role) roleRedisTemplate.opsForHash().get(KEY, id);
+		return roleRepository.findOne(id);
 	}
 
 	@Override
@@ -59,7 +58,7 @@ public class RoleServiceImpl implements RoleService {
 
 	@Override
 	public List<Role> findAll() {
-		Map<Object, Object> roleMap = roleRedisTemplate.opsForHash().entries(ROLE_KEY);
+		Map<Object, Object> roleMap = roleRedisTemplate.opsForHash().entries(KEY);
 		List<Role> roleList = Collections.arrayToList(roleMap.values().toArray());
 		if (roleMap.isEmpty())
 			roleList = roleRepository.findAll();

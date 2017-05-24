@@ -23,6 +23,7 @@ import io.jsonwebtoken.lang.Collections;
 @Service
 @Transactional
 public class AdminServiceImpl implements AdminService {
+	private static final String KEY = Admin.class.getSimpleName();
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
@@ -30,8 +31,6 @@ public class AdminServiceImpl implements AdminService {
 
 	@Autowired
 	private RedisTemplate<String, Admin> adminRedisTemplate;
-
-	private static String ADMIN_KEY = "Admin";
 
 	@Override
 	public Admin getUser(String username) {
@@ -49,7 +48,7 @@ public class AdminServiceImpl implements AdminService {
 	@Override
 	public Admin save(Admin admin) {
 		admin = adminRepository.save(admin);
-		adminRedisTemplate.opsForHash().put(ADMIN_KEY, admin.getId(), admin);
+		adminRedisTemplate.opsForHash().put(KEY, admin.getId(), admin);
 		return admin;
 	}
 
@@ -80,20 +79,19 @@ public class AdminServiceImpl implements AdminService {
 	@Override
 	public void deleteById(Long id) {
 		adminRepository.delete(id);
-		adminRedisTemplate.opsForHash().delete(ADMIN_KEY, id);
+		adminRedisTemplate.opsForHash().delete(KEY, id);
 	}
 
 	@Override
 	public Admin findById(Long id) {
-		Admin admin = (Admin) adminRedisTemplate.opsForHash().get(ADMIN_KEY, id);
-		if (admin == null)
-			admin = adminRepository.findOne(id);
-		return admin;
+		if (adminRedisTemplate.opsForHash().hasKey(KEY, id))
+			return (Admin) adminRedisTemplate.opsForHash().get(KEY, id);
+		return adminRepository.findOne(id);
 	}
 
 	@Override
 	public List<Admin> findAll() {
-		Map<Object, Object> adminMap = adminRedisTemplate.opsForHash().entries(ADMIN_KEY);
+		Map<Object, Object> adminMap = adminRedisTemplate.opsForHash().entries(KEY);
 		List<Admin> adminList = Collections.arrayToList(adminMap.values().toArray());
 		if (adminMap.isEmpty())
 			adminList = adminRepository.findAll();

@@ -13,6 +13,6 @@ public interface AdminService extends IService<Admin> {
 	Response login(AuthRequest authenticationRequest);
 
 	Response logout(String sessionId);
-	
+
 	List<Admin> findAll();
 }
