@@ -1,34 +1,54 @@
 package com.healthcare.service.impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.healthcare.model.entity.Meal;
 import com.healthcare.repository.MealRepository;
 import com.healthcare.service.MealService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 
+/**
+ * Meal service
+ */
 @Service
 @Transactional
 public class MealServiceImpl implements MealService {
 
-	@Autowired
-	private MealRepository mealRepository;
+    private static final String REDIS_KEY = Meal.class.getSimpleName();
 
-	@Override
+	private MealRepository mealRepository;
+    private RedisTemplate<String, Meal> redisTemplate;
+
+    @Autowired
+    public MealServiceImpl(MealRepository mealRepository, RedisTemplate<String, Meal> redisTemplate) {
+        this.mealRepository = mealRepository;
+        this.redisTemplate = redisTemplate;
+    }
+
+    @Override
 	public Meal save(Meal meal) {
-		return mealRepository.save(meal);
+        Meal savedMeal = mealRepository.save(meal);
+        redisTemplate.opsForHash().put(REDIS_KEY, savedMeal.getId(), savedMeal);
+
+        return savedMeal;
 	}
 
 	@Override
 	public Meal findById(Long id) {
-		return mealRepository.findOne(id);
-	}
+        Object meal = redisTemplate.opsForHash().get(REDIS_KEY, id);
+        if (meal != null) {
+            return (Meal) meal;
+        }
+
+        return mealRepository.findOne(id);
+    }
 
 	@Override
 	public void deleteById(Long id) {
 		mealRepository.delete(id);
-	}
+        redisTemplate.opsForHash().delete(REDIS_KEY, id);
+    }
 
 }
