@@ -10,24 +10,41 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import com.healthcare.model.entity.Admin;
 import com.healthcare.model.entity.Agency;
 import com.healthcare.model.entity.AgencyType;
 import com.healthcare.model.entity.Company;
+import com.healthcare.model.entity.Report;
 import com.healthcare.model.entity.Role;
+import com.healthcare.model.enums.GenderEnum;
 import com.healthcare.model.enums.StateEnum;
+import com.healthcare.repository.ReportRepository;
+import com.healthcare.service.AdminService;
 import com.healthcare.service.AgencyService;
 import com.healthcare.service.AgencyTypeService;
 import com.healthcare.service.CompanyService;
+import com.healthcare.service.ReportService;
 import com.healthcare.service.RoleService;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @Transactional
-public class RoleServiceTest {
+public class ReportServiceRedisTest {
+	@Autowired
+	private ReportService reportService;
+
+	@MockBean
+	private ReportRepository reportRepository;
+
+	@Autowired
+	private AdminService adminService;
+
 	@Autowired
 	private RoleService roleService;
 
@@ -38,7 +55,22 @@ public class RoleServiceTest {
 	private AgencyService agencyService;
 
 	@Autowired
-	private AgencyTypeService agencyTypeService;
+	private AgencyTypeService agencyTpeService;
+
+	String name = "Menu A";
+	String url = "/menu/menu";
+	String angularUrl = "/angular/a";
+	String page = "A";
+	String clazz = "Clazz";
+	String imgUrl = "/img/a.jpg";
+	Calendar createdAt = Calendar.getInstance();
+	Integer displayOrder = 1;
+	long baseId = 1;
+	String dataColumns = "Data columns";
+	Calendar endDate = Calendar.getInstance();
+	String format = "Report format";
+	String reportTitle = "Report title";
+	Calendar startDate = Calendar.getInstance();
 
 	String username = "username";
 	String password = "password";
@@ -52,9 +84,6 @@ public class RoleServiceTest {
 	String profilePhoto = "XXXXXXXXXX";
 	String deviceAddress = "City ABC";
 	String rememberToken = "00000";
-	String levelName = "Level Name";
-	long level = 1;
-	long status = 1;
 
 	String licenseNo = "12D31";
 	int trackingMode = 1;
@@ -76,66 +105,108 @@ public class RoleServiceTest {
 	Calendar stateTaxExpire = Calendar.getInstance();
 	Calendar worktimeStart = Calendar.getInstance();
 	Calendar worktimeEnd = Calendar.getInstance();
-
-	Agency agency;
+	Admin admin;
+	Role role;
+	Company company;
 
 	@Before
 	public void setup() {
-		agency = createNewAgency();
+		company = createNewCompany();
+		role = createNewRole();
+		admin = createNewAdmin();
 	}
 
 	@Test
-	public void testSaveRole() {
-		Role role = createNewRole(level);
-		role = roleService.save(role);
-		Assert.assertNotNull(role.getId());
+	public void testSaveReport() {
+		Report report = createNewReport();
+		report.setId(7L);
+		Mockito.when(reportRepository.save(report)).thenReturn(report);
+		reportService.save(report);
+		Report savedReport = reportService.findById(report.getId());
+		Assert.assertNotNull(savedReport);
 	}
 
 	@Test
-	public void testGetRole() {
-		Role role = createNewRole(level);
-		role = roleService.save(role);
-		Assert.assertNotNull(roleService.findById(role.getId()));
+	public void testUpdateReport() {
+		String newReportTitle = "New Report Title";
+
+		Report report = createNewReport();
+		report.setId(7L);
+		Mockito.when(reportRepository.save(report)).thenReturn(report);
+		reportService.save(report);
+		Report reportSaved = reportService.findById(report.getId());
+		reportSaved.setReportTitle(newReportTitle);
+		Mockito.when(reportRepository.save(reportSaved)).thenReturn(reportSaved);
+		reportService.save(reportSaved);
+		Report reportMofified = reportService.findById(report.getId());
+		Assert.assertEquals(reportMofified.getReportTitle(), newReportTitle);
 	}
 
 	@Test
-	public void testUpdateRole() {
-		String newLevelName = "new level name";
-		Role role = createNewRole(level);
-		role = roleService.save(role);
-		Assert.assertEquals(role.getLevelName(), levelName);
-		Role roleSaved = roleService.findById(role.getId());
-		roleSaved.setLevelName(newLevelName);
-		roleService.save(roleSaved);
-		Role roleMofified = roleService.findById(role.getId());
-		Assert.assertEquals(roleMofified.getLevelName(), newLevelName);
+	public void testDeleteReport() {
+		Report report = createNewReport();
+		report.setId(7L);
+		Mockito.when(reportRepository.save(report)).thenReturn(report);
+		reportService.save(report);
+		Mockito.doNothing().when(reportRepository).delete(report.getId());
+		reportService.deleteById(report.getId());
+		Report deletedReport = reportService.findById(report.getId());
+		Assert.assertNull(deletedReport);
 	}
 
-	@Test
-	public void testDeleteRole() {
-		Role role = createNewRole(level);
-		role = roleService.save(role);
-		Assert.assertNotNull(role.getId());
-		roleService.deleteById(role.getId());
-		Assert.assertNull(roleService.findById(role.getId()));
+	private Report createNewReport() {
+		Report report = new Report();
+		report.setAdmin(admin);
+		report.setBaseId(baseId);
+		report.setCompany(company);
+		report.setDataColumns(dataColumns);
+		report.setEndDate(new Timestamp(endDate.getTimeInMillis()));
+		report.setFormat(format);
+		report.setReportTitle(reportTitle);
+		report.setStartDate(new Timestamp(startDate.getTimeInMillis()));
+		report.setCreatedAt(new Timestamp(createdAt.getTimeInMillis()));
+		report.setRole(role);
+		return report;
 	}
 
-	private Role createNewRole(long level) {
+	private Admin createNewAdmin() {
+		Admin admin = new Admin();
+		admin.setUsername(username);
+		admin.setPassword(password);
+		admin.setFirstName(firstName);
+		admin.setMiddleName(middleName);
+		admin.setLastName(lastName);
+		admin.setGender(GenderEnum.MAN.name());
+		admin.setPhone(phone);
+		admin.setEmail(email);
+		admin.setDeviceAddress(deviceAddress);
+		admin.setIp(ip);
+		admin.setProfilePhoto(profilePhoto);
+		admin.setRememberToken(rememberToken);
+		admin.setSecondaryPhone(secondaryPhone);
+		admin.setStatus(1);
+		admin.setRole(role);
+		return adminService.save(admin);
+	}
+
+	private Role createNewRole() {
+		String levelName = "levelName";
+		long level = 1;
+		long status = 1;
+
 		Role role = new Role();
 		role.setLevel(level);
 		role.setLevelName(levelName);
 		role.setStatus(status);
-		role.setAgency(agency);
-		return role;
+		role.setAgency(createNewAgency());
+		return roleService.save(role);
 	}
 
 	private Agency createNewAgency() {
 		Agency agency = new Agency();
-		Company company = createNewCompany();
 		agency.setAddressOne(addressOne);
 		agency.setAddressTwo(addressTwo);
-		AgencyType agencyType = createNewAgencyType();
-		agency.setAgencyType(agencyType);
+		agency.setAgencyType(createNewAgencyType());
 		agency.setCity(city);
 		agency.setCompany(company);
 		agency.setCompany1(company);
@@ -183,6 +254,6 @@ public class RoleServiceTest {
 		AgencyType agencyType = new AgencyType();
 		agencyType.setName("Agency Type Name");
 		agencyType.setStatus(1);
-		return agencyTypeService.save(agencyType);
+		return agencyTpeService.save(agencyType);
 	}
 }

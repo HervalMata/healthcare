@@ -18,38 +18,37 @@ import io.jsonwebtoken.lang.Collections;
 @Service
 @Transactional
 public class AgencyServiceImpl implements AgencyService {
+	private static final String KEY = Agency.class.getSimpleName();
+
 	@Autowired
 	AgencyRepository agencyRepository;
 
 	@Autowired
 	private RedisTemplate<String, Agency> agencyRedisTemplate;
 
-	private static String AGENCY_KEY = "Agency";
-
 	@Override
 	public Agency save(Agency agency) {
 		agency = agencyRepository.save(agency);
-		agencyRedisTemplate.opsForHash().put(AGENCY_KEY, agency.getId(), agency);
+		agencyRedisTemplate.opsForHash().put(KEY, agency.getId(), agency);
 		return agency;
 	}
 
 	@Override
 	public void deleteById(Long id) {
 		agencyRepository.delete(id);
-		agencyRedisTemplate.opsForHash().delete(AGENCY_KEY, id);
+		agencyRedisTemplate.opsForHash().delete(KEY, id);
 	}
 
 	@Override
 	public Agency findById(Long id) {
-		Agency agency = (Agency) agencyRedisTemplate.opsForHash().get(AGENCY_KEY, id);
-		if (agency == null)
-			agency = agencyRepository.findOne(id);
-		return agency;
+		if (agencyRedisTemplate.opsForHash().hasKey(KEY, id))
+			return (Agency) agencyRedisTemplate.opsForHash().get(KEY, id);
+		return agencyRepository.findOne(id);
 	}
 
 	@Override
 	public List<Agency> findAll() {
-		Map<Object, Object> agencyMap = agencyRedisTemplate.opsForHash().entries(AGENCY_KEY);
+		Map<Object, Object> agencyMap = agencyRedisTemplate.opsForHash().entries(KEY);
 		List<Agency> agencyList = Collections.arrayToList(agencyMap.values().toArray());
 		if (agencyMap.isEmpty())
 			agencyList = agencyRepository.findAll();

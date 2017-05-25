@@ -12,7 +12,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.healthcare.model.entity.Agency;
@@ -33,11 +32,6 @@ import com.healthcare.service.RoleService;
 public class MenuServiceTest {
 	@Autowired
 	private MenuService menuService;
-
-	@Autowired
-	private RedisTemplate<String, Menu> menuRedisTemplate;
-
-	private static String MENU_KEY = "Menu";
 
 	@Autowired
 	private RoleService roleService;
@@ -105,7 +99,6 @@ public class MenuServiceTest {
 		Menu menu = createNewMenu();
 		menuService.save(menu);
 		Assert.assertNotNull(menu.getId());
-		Assert.assertNotNull(menuRedisTemplate.opsForHash().get(MENU_KEY, menu.getId()));
 	}
 
 	@Test
@@ -113,18 +106,6 @@ public class MenuServiceTest {
 		Menu menu = createNewMenu();
 		menuService.save(menu);
 		Assert.assertNotNull(menuService.findById(menu.getId()));
-		Assert.assertNotNull(menuRedisTemplate.opsForHash().get(MENU_KEY, menu.getId()));
-	}
-
-	@Test
-	public void testFindAllMenu() {
-		long size = menuService.findAll().size();
-		Menu menu = createNewMenu();
-		menuService.save(menu);
-		Menu menu2 = createNewMenu();
-		menuService.save(menu2);
-		Assert.assertEquals(size + 2, menuService.findAll().size());
-		Assert.assertEquals(size + 2, menuRedisTemplate.opsForHash().entries(MENU_KEY).size());
 	}
 
 	@Test
@@ -134,13 +115,11 @@ public class MenuServiceTest {
 		Menu menu = createNewMenu();
 		menuService.save(menu);
 		Assert.assertEquals(menu.getImgUrl(), imgUrl);
-		Assert.assertEquals(((Menu) menuRedisTemplate.opsForHash().get(MENU_KEY, menu.getId())).getImgUrl(), imgUrl);
 		Menu menuSaved = menuService.findById(menu.getId());
 		menuSaved.setImgUrl(newImgUrl);
 		menuService.save(menuSaved);
 		Menu menuMofified = menuService.findById(menu.getId());
 		Assert.assertEquals(menuMofified.getImgUrl(), newImgUrl);
-		Assert.assertEquals(((Menu) menuRedisTemplate.opsForHash().get(MENU_KEY, menu.getId())).getImgUrl(), newImgUrl);
 	}
 
 	@Test
@@ -148,10 +127,8 @@ public class MenuServiceTest {
 		Menu menu = createNewMenu();
 		menuService.save(menu);
 		Assert.assertNotNull(menu.getId());
-		Assert.assertNotNull(menuRedisTemplate.opsForHash().get(MENU_KEY, menu.getId()));
 		menuService.deleteById(menu.getId());
 		Assert.assertNull(menuService.findById(menu.getId()));
-		Assert.assertNull(menuRedisTemplate.opsForHash().get(MENU_KEY, menu.getId()));
 	}
 
 	private Menu createNewMenu() {

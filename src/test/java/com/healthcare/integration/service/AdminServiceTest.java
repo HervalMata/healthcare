@@ -12,7 +12,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.healthcare.model.entity.Admin;
@@ -34,11 +33,6 @@ import com.healthcare.service.RoleService;
 public class AdminServiceTest {
 	@Autowired
 	private AdminService adminService;
-
-	@Autowired
-	private RedisTemplate<String, Admin> adminRedisTemplate;
-
-	private static String ADMIN_KEY = "Admin";
 
 	@Autowired
 	private RoleService roleService;
@@ -98,7 +92,6 @@ public class AdminServiceTest {
 		Admin admin = createNewAdmin();
 		adminService.save(admin);
 		Assert.assertNotNull(admin.getId());
-		Assert.assertNotNull(adminRedisTemplate.opsForHash().get(ADMIN_KEY, admin.getId()));
 	}
 
 	@Test
@@ -106,18 +99,6 @@ public class AdminServiceTest {
 		Admin admin = createNewAdmin();
 		adminService.save(admin);
 		Assert.assertNotNull(adminService.findById(admin.getId()));
-		Assert.assertNotNull(adminRedisTemplate.opsForHash().get(ADMIN_KEY, admin.getId()));
-	}
-
-	@Test
-	public void testFindAllAdmin() {
-		long size = adminService.findAll().size();
-		Admin admin = createNewAdmin();
-		adminService.save(admin);
-		Admin admin2 = createNewAdmin();
-		adminService.save(admin2);
-		Assert.assertEquals(size + 2, adminService.findAll().size());
-		Assert.assertEquals(size + 2, adminRedisTemplate.opsForHash().entries(ADMIN_KEY).size());
 	}
 
 	@Test
@@ -128,20 +109,14 @@ public class AdminServiceTest {
 		Admin admin = createNewAdmin();
 		adminService.save(admin);
 		Assert.assertEquals(admin.getPhone(), phone);
-		Assert.assertEquals(((Admin) adminRedisTemplate.opsForHash().get(ADMIN_KEY, admin.getId())).getPhone(), phone);
 		Assert.assertEquals(admin.getEmail(), email);
-		Assert.assertEquals(((Admin) adminRedisTemplate.opsForHash().get(ADMIN_KEY, admin.getId())).getEmail(), email);
 		Admin adminSaved = adminService.findById(admin.getId());
 		adminSaved.setPhone(newPhone);
 		adminSaved.setEmail(newEmail);
 		adminService.save(adminSaved);
 		Admin adminMofified = adminService.findById(admin.getId());
 		Assert.assertEquals(adminMofified.getPhone(), newPhone);
-		Assert.assertEquals(((Admin) adminRedisTemplate.opsForHash().get(ADMIN_KEY, admin.getId())).getPhone(),
-				newPhone);
 		Assert.assertEquals(adminMofified.getEmail(), newEmail);
-		Assert.assertEquals(((Admin) adminRedisTemplate.opsForHash().get(ADMIN_KEY, admin.getId())).getEmail(),
-				newEmail);
 	}
 
 	@Test
@@ -149,10 +124,8 @@ public class AdminServiceTest {
 		Admin admin = createNewAdmin();
 		adminService.save(admin);
 		Assert.assertNotNull(admin.getId());
-		Assert.assertNotNull(adminRedisTemplate.opsForHash().get(ADMIN_KEY, admin.getId()));
 		adminService.deleteById(admin.getId());
 		Assert.assertNull(adminService.findById(admin.getId()));
-		Assert.assertNull(adminRedisTemplate.opsForHash().get(ADMIN_KEY, admin.getId()));
 	}
 
 	private Admin createNewAdmin() {

@@ -10,15 +10,23 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import com.healthcare.model.entity.Admin;
+import com.healthcare.model.entity.AdminPost;
 import com.healthcare.model.entity.Agency;
 import com.healthcare.model.entity.AgencyType;
 import com.healthcare.model.entity.Company;
 import com.healthcare.model.entity.Role;
+import com.healthcare.model.enums.GenderEnum;
 import com.healthcare.model.enums.StateEnum;
+import com.healthcare.repository.AdminPostRepository;
+import com.healthcare.service.AdminPostService;
+import com.healthcare.service.AdminService;
 import com.healthcare.service.AgencyService;
 import com.healthcare.service.AgencyTypeService;
 import com.healthcare.service.CompanyService;
@@ -27,7 +35,16 @@ import com.healthcare.service.RoleService;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @Transactional
-public class RoleServiceTest {
+public class AdminPostServiceRedisTest {
+	@Autowired
+	private AdminPostService adminPostService;
+
+	@MockBean
+	private AdminPostRepository adminPostRepository;
+
+	@Autowired
+	private AdminService adminService;
+
 	@Autowired
 	private RoleService roleService;
 
@@ -38,7 +55,7 @@ public class RoleServiceTest {
 	private AgencyService agencyService;
 
 	@Autowired
-	private AgencyTypeService agencyTypeService;
+	private AgencyTypeService agencyTpeService;
 
 	String username = "username";
 	String password = "password";
@@ -52,8 +69,6 @@ public class RoleServiceTest {
 	String profilePhoto = "XXXXXXXXXX";
 	String deviceAddress = "City ABC";
 	String rememberToken = "00000";
-	String levelName = "Level Name";
-	long level = 1;
 	long status = 1;
 
 	String licenseNo = "12D31";
@@ -77,56 +92,94 @@ public class RoleServiceTest {
 	Calendar worktimeStart = Calendar.getInstance();
 	Calendar worktimeEnd = Calendar.getInstance();
 
-	Agency agency;
+	Calendar postDate = Calendar.getInstance();
+	String postText = "This is post text";
+
+	Admin admin;
 
 	@Before
 	public void setup() {
-		agency = createNewAgency();
+		admin = createNewAdmin();
 	}
 
 	@Test
-	public void testSaveRole() {
-		Role role = createNewRole(level);
-		role = roleService.save(role);
-		Assert.assertNotNull(role.getId());
+	public void testSaveAdminPost() {
+		AdminPost adminPost = createNewAdminPost();
+		adminPost.setId(7L);
+		Mockito.when(adminPostRepository.save(adminPost)).thenReturn(adminPost);
+		adminPostService.save(adminPost);
+		AdminPost savedAdminPost = adminPostService.findById(adminPost.getId());
+		Assert.assertNotNull(savedAdminPost);
 	}
 
 	@Test
-	public void testGetRole() {
-		Role role = createNewRole(level);
-		role = roleService.save(role);
-		Assert.assertNotNull(roleService.findById(role.getId()));
+	public void testUpdateAdminPost() {
+		String newPostText = "This is new post text";
+
+		AdminPost adminPost = createNewAdminPost();
+		adminPost.setId(7L);
+		Mockito.when(adminPostRepository.save(adminPost)).thenReturn(adminPost);
+		adminPostService.save(adminPost);
+		AdminPost savedAdminPost = adminPostService.findById(adminPost.getId());
+		savedAdminPost.setPostText(newPostText);
+		Mockito.when(adminPostRepository.save(savedAdminPost)).thenReturn(savedAdminPost);
+		adminPostService.save(savedAdminPost);
+		AdminPost adminPostMofified = adminPostService.findById(adminPost.getId());
+		Assert.assertEquals(adminPostMofified.getPostText(), newPostText);
 	}
 
 	@Test
-	public void testUpdateRole() {
-		String newLevelName = "new level name";
-		Role role = createNewRole(level);
-		role = roleService.save(role);
-		Assert.assertEquals(role.getLevelName(), levelName);
-		Role roleSaved = roleService.findById(role.getId());
-		roleSaved.setLevelName(newLevelName);
-		roleService.save(roleSaved);
-		Role roleMofified = roleService.findById(role.getId());
-		Assert.assertEquals(roleMofified.getLevelName(), newLevelName);
+	public void testDeleteAdminPost() {
+		AdminPost adminPost = createNewAdminPost();
+		adminPost.setId(7L);
+		Mockito.when(adminPostRepository.save(adminPost)).thenReturn(adminPost);
+		adminPostService.save(adminPost);
+		Mockito.doNothing().when(adminPostRepository).delete(10L);
+		adminPostService.deleteById(adminPost.getId());
+		AdminPost deletedAdminPost = adminPostService.findById(adminPost.getId());
+		Assert.assertNull(deletedAdminPost);
 	}
 
-	@Test
-	public void testDeleteRole() {
-		Role role = createNewRole(level);
-		role = roleService.save(role);
-		Assert.assertNotNull(role.getId());
-		roleService.deleteById(role.getId());
-		Assert.assertNull(roleService.findById(role.getId()));
+	private AdminPost createNewAdminPost() {
+		AdminPost adminPost = new AdminPost();
+		adminPost.setPostDate(new Timestamp(postDate.getTimeInMillis()));
+		adminPost.setPostText(postText);
+		adminPost.setStatus(1);
+		adminPost.setAdmin(admin);
+		return adminPost;
 	}
 
-	private Role createNewRole(long level) {
+	private Admin createNewAdmin() {
+		Admin admin = new Admin();
+		admin.setUsername(username);
+		admin.setPassword(password);
+		admin.setFirstName(firstName);
+		admin.setMiddleName(middleName);
+		admin.setLastName(lastName);
+		admin.setGender(GenderEnum.MAN.name());
+		admin.setPhone(phone);
+		admin.setEmail(email);
+		admin.setDeviceAddress(deviceAddress);
+		admin.setIp(ip);
+		admin.setProfilePhoto(profilePhoto);
+		admin.setRememberToken(rememberToken);
+		admin.setSecondaryPhone(secondaryPhone);
+		admin.setStatus(status);
+		admin.setRole(createNewRole());
+		return adminService.save(admin);
+	}
+
+	private Role createNewRole() {
+		String levelName = "levelName";
+		long level = 1;
+		long status = 1;
+
 		Role role = new Role();
 		role.setLevel(level);
 		role.setLevelName(levelName);
 		role.setStatus(status);
-		role.setAgency(agency);
-		return role;
+		role.setAgency(createNewAgency());
+		return roleService.save(role);
 	}
 
 	private Agency createNewAgency() {
@@ -134,8 +187,7 @@ public class RoleServiceTest {
 		Company company = createNewCompany();
 		agency.setAddressOne(addressOne);
 		agency.setAddressTwo(addressTwo);
-		AgencyType agencyType = createNewAgencyType();
-		agency.setAgencyType(agencyType);
+		agency.setAgencyType(createNewAgencyType());
 		agency.setCity(city);
 		agency.setCompany(company);
 		agency.setCompany1(company);
@@ -183,6 +235,6 @@ public class RoleServiceTest {
 		AgencyType agencyType = new AgencyType();
 		agencyType.setName("Agency Type Name");
 		agencyType.setStatus(1);
-		return agencyTypeService.save(agencyType);
+		return agencyTpeService.save(agencyType);
 	}
 }

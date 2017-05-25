@@ -23,6 +23,7 @@ import io.jsonwebtoken.lang.Collections;
 @Service
 @Transactional
 public class AdminServiceImpl implements AdminService {
+	private static final String KEY = Admin.class.getSimpleName();
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
@@ -83,10 +84,9 @@ public class AdminServiceImpl implements AdminService {
 
 	@Override
 	public Admin findById(Long id) {
-		Admin admin = (Admin) adminRedisTemplate.opsForHash().get(KEY, id);
-		if (admin == null)
-			admin = adminRepository.findOne(id);
-		return admin;
+		if (adminRedisTemplate.opsForHash().hasKey(KEY, id))
+			return (Admin) adminRedisTemplate.opsForHash().get(KEY, id);
+		return adminRepository.findOne(id);
 	}
 
 	@Override
