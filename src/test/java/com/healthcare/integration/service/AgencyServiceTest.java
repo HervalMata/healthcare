@@ -10,26 +10,30 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import com.healthcare.model.entity.Agency;
+import com.healthcare.model.entity.AgencyType;
 import com.healthcare.model.entity.Company;
 import com.healthcare.model.enums.StateEnum;
-import com.healthcare.repository.CompanyRepository;
+import com.healthcare.service.AgencyService;
+import com.healthcare.service.AgencyTypeService;
 import com.healthcare.service.CompanyService;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @Transactional
-public class CompanyServiceRedisTest {
+public class AgencyServiceTest {
+	@Autowired
+	private AgencyService agencyService;
+
 	@Autowired
 	private CompanyService companyService;
 
-	@MockBean
-	private CompanyRepository companyRepository;
+	@Autowired
+	private AgencyTypeService agencyTypeService;
 
 	String username = "username";
 	String password = "password";
@@ -43,6 +47,9 @@ public class CompanyServiceRedisTest {
 	String profilePhoto = "XXXXXXXXXX";
 	String deviceAddress = "City ABC";
 	String rememberToken = "00000";
+	String levelName = "Level Name";
+	long level = 1;
+	long status = 1;
 
 	String licenseNo = "12D31";
 	int trackingMode = 1;
@@ -70,41 +77,63 @@ public class CompanyServiceRedisTest {
 	}
 
 	@Test
-	public void testSaveCompany() {
-		Company company = createNewCompany();
-		company.setId(7L);
-		Mockito.when(companyRepository.save(company)).thenReturn(company);
-		companyService.save(company);
-		Company savedCompany = companyService.findById(company.getId());
-		Assert.assertNotNull(savedCompany);
+	public void testSaveAgency() {
+		Agency agency = createNewAgency();
+		agency = agencyService.save(agency);
+		Assert.assertNotNull(agency.getId());
 	}
 
 	@Test
-	public void testUpdateCompany() {
+	public void testGetAgency() {
+		Agency agency = createNewAgency();
+		agency = agencyService.save(agency);
+		Assert.assertNotNull(agencyService.findById(agency.getId()));
+	}
+
+	@Test
+	public void testUpdateAgency() {
 		String newAddressOne = "25, Green St";
-
-		Company menu = createNewCompany();
-		menu.setId(7L);
-		Mockito.when(companyRepository.save(menu)).thenReturn(menu);
-		companyService.save(menu);
-		Company savedCompany = companyService.findById(menu.getId());
-		savedCompany.setAddressOne(newAddressOne);
-		Mockito.when(companyRepository.save(savedCompany)).thenReturn(savedCompany);
-		companyService.save(savedCompany);
-		Company modifiedCompany = companyService.findById(menu.getId());
-		Assert.assertEquals(modifiedCompany.getAddressOne(), newAddressOne);
+		Agency agency = createNewAgency();
+		agency = agencyService.save(agency);
+		Assert.assertEquals(agency.getAddressOne(), addressOne);
+		Agency savedAgency = agencyService.findById(agency.getId());
+		savedAgency.setAddressOne(newAddressOne);
+		agencyService.save(savedAgency);
+		Agency modifiedAgency = agencyService.findById(agency.getId());
+		Assert.assertEquals(modifiedAgency.getAddressOne(), newAddressOne);
 	}
 
 	@Test
-	public void testDeleteCompany() {
+	public void testDeleteAgency() {
+		Agency agency = createNewAgency();
+		agency = agencyService.save(agency);
+		Assert.assertNotNull(agency.getId());
+		agencyService.deleteById(agency.getId());
+		Assert.assertNull(agencyService.findById(agency.getId()));
+	}
+
+	private Agency createNewAgency() {
+		Agency agency = new Agency();
 		Company company = createNewCompany();
-		company.setId(7L);
-		Mockito.when(companyRepository.save(company)).thenReturn(company);
-		companyService.save(company);
-		Mockito.doNothing().when(companyRepository).delete(company.getId());
-		companyService.deleteById(company.getId());
-		Company deletedCompany = companyService.findById(company.getId());
-		Assert.assertNull(deletedCompany);
+		agency.setAddressOne(addressOne);
+		agency.setAddressTwo(addressTwo);
+		AgencyType agencyType = createNewAgencyType();
+		agency.setAgencyType(agencyType);
+		agency.setCity(city);
+		agency.setCompany(company);
+		agency.setCompany1(company);
+		agency.setContactPerson(contactPerson);
+		agency.setEmail(email);
+		agency.setFax(fax);
+		agency.setHoliday(holiday);
+		agency.setLicenseNo(licenseNo);
+		agency.setName("Agency Name");
+		agency.setPhone(phone);
+		agency.setState(state);
+		agency.setTimezone(timezone);
+		agency.setTrackingMode(trackingMode);
+		agency.setZipcode(zipcode);
+		return agency;
 	}
 
 	private Company createNewCompany() {
@@ -130,6 +159,13 @@ public class CompanyServiceRedisTest {
 		company.setWorktimeEnd(new Time(worktimeEnd.getTimeInMillis()));
 		company.setWorktimeStart(new Time(worktimeStart.getTimeInMillis()));
 		company.setZipcode(zipcode);
-		return company;
+		return companyService.save(company);
+	}
+
+	private AgencyType createNewAgencyType() {
+		AgencyType agencyType = new AgencyType();
+		agencyType.setName("Agency Type Name");
+		agencyType.setStatus(1);
+		return agencyTypeService.save(agencyType);
 	}
 }
