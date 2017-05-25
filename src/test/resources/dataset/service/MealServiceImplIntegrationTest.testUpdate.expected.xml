@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <dataset>
 
-    <Meal id="100"
+    <meal id="100"
           meal_class="Class 1"
           name="Name 1"
           visit_id="100" />

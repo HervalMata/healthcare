@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <dataset>
 
-    <Company id="100"
+    <company id="100"
              license_no="License"
              federal_tax="Federal Tax"
              federal_tax_start="2017-05-01"
@@ -22,11 +22,11 @@
              zipcode="00000"
              status="1" />
 
-    <Agency_type id="100"
+    <agency_type id="100"
                  name="Name"
                  status="1" />
 
-    <Agency id="100"
+    <agency id="100"
             license_no="License"
             company_id="100"
             company_id1="100"
@@ -45,7 +45,7 @@
             holiday="Holiday"
             fax="12345" />
 
-    <User id="100"
+    <user id="100"
           company_id="100"
           agency_id="100"
           user_type="1"
@@ -63,16 +63,16 @@
           family_doctor="Family Doctor"
             />
 
-    <Signature_type id="100"
+    <signature_type id="100"
                     type="test" />
 
-    <Visit id="100"
+    <visit id="100"
            agency_id="100"
            selected_seat="1"
            user_id="100"
            signature_type_id="100" />
 
-    <Meal id="100"
+    <meal id="100"
           meal_class="Class"
           name="Name"
           visit_id="100" />

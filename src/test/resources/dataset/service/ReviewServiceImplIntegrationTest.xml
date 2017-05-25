@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <dataset>
 
-    <Company id="100"
+    <company id="100"
              license_no="License"
              federal_tax="Federal Tax"
              federal_tax_start="2017-05-01"
@@ -22,11 +22,11 @@
              zipcode="00000"
              status="1" />
 
-    <Agency_type id="100"
+    <agency_type id="100"
                  name="Name"
                  status="1" />
 
-    <Agency id="100"
+    <agency id="100"
             license_no="License"
             company_id="100"
             company_id1="100"
@@ -45,7 +45,7 @@
             holiday="Holiday"
             fax="12345" />
 
-    <User id="100"
+    <user id="100"
           company_id="100"
           agency_id="100"
           user_type="1"
@@ -62,7 +62,7 @@
           eligiable_end="2017-05-01"
           family_doctor="Family Doctor" />
 
-    <Employee id="100"
+    <employee id="100"
               first_name="First Name"
               last_name="Last Name"
               gender="Male"
@@ -74,7 +74,7 @@
               type="part-time"
               agency_id="100" />
 
-    <Employee id="101"
+    <employee id="101"
               first_name="First Name"
               last_name="Last Name"
               gender="Male"
@@ -86,7 +86,7 @@
               type="part-time"
               agency_id="100" />
 
-    <Review id="100"
+    <review id="100"
             user_id="100"
             user_id1="100"
             employee_id="100" />

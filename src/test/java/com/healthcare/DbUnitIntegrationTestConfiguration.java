@@ -27,6 +27,7 @@ public class DbUnitIntegrationTestConfiguration {
         DatabaseConfigBean databaseConfig = new DatabaseConfigBean();
         databaseConfig.setDatatypeFactory(new MySqlDataTypeFactory());
         databaseConfig.setMetadataHandler(new MySqlMetadataHandler());
+        databaseConfig.setCaseSensitiveTableNames(true);
 
         return databaseConfig;
     }
