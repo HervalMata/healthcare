@@ -7,8 +7,6 @@ import com.healthcare.model.entity.Admin;
 import com.healthcare.model.response.Response;
 
 public interface AdminService extends IService<Admin> {
-	String KEY = Admin.class.getSimpleName();
-
 	Admin getUser(String username);
 
 	Response login(AuthRequest authenticationRequest);
