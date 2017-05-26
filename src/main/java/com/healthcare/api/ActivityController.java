@@ -2,6 +2,9 @@ package com.healthcare.api;
 
 import com.healthcare.model.entity.Activity;
 import com.healthcare.service.ActivityService;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,6 +33,8 @@ public class ActivityController extends BaseController {
         this.activityService = activityService;
     }
 
+    @ApiOperation(value = "Create activity", notes = "Create an activity")
+    @ApiParam(name = "activity", value = "activity to create", required = true)
     @PostMapping
     public ResponseEntity create(@RequestBody Activity activity) {
 
@@ -38,6 +43,8 @@ public class ActivityController extends BaseController {
         );
     }
 
+    @ApiOperation(value = "Get activity by Id", notes = "Get activity info by activityId")
+    @ApiImplicitParam(name = "id", value = "activity Id", required = true, dataType = "Long")
     @GetMapping("/{id}")
     public ResponseEntity get(@PathVariable("id") String id) {
         Long activityId = parseId(id);
@@ -51,11 +58,15 @@ public class ActivityController extends BaseController {
         );
     }
 
+    @ApiOperation(value = "Update activity", notes = "Update an activity")
+    @ApiParam(name = "activity", value = "activity to update", required = true)
     @PutMapping
     public void save(@RequestBody Activity activity) {
         activityService.save(activity);
     }
 
+    @ApiOperation(value = "Delete activity", notes = "Delete an activity")
+    @ApiImplicitParam(name = "id", value = "activity Id", required = true, dataType = "Long")
     @DeleteMapping("/{id}")
     public void delete(@PathVariable("id") String id, HttpServletResponse response) {
         Long activityId = parseId(id);
