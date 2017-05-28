@@ -18,38 +18,37 @@ import io.jsonwebtoken.lang.Collections;
 @Service
 @Transactional
 public class CompanyServiceImpl implements CompanyService {
+	private static final String KEY = Company.class.getSimpleName();
+
 	@Autowired
 	CompanyRepository companyRepository;
 
 	@Autowired
 	private RedisTemplate<String, Company> companyRedisTemplate;
 
-	private static String COMPANY_KEY = "Company";
-
 	@Override
 	public Company save(Company company) {
 		company = companyRepository.save(company);
-		companyRedisTemplate.opsForHash().put(COMPANY_KEY, company.getId(), company);
+		companyRedisTemplate.opsForHash().put(KEY, company.getId(), company);
 		return company;
 	}
 
 	@Override
 	public void deleteById(Long id) {
 		companyRepository.delete(id);
-		companyRedisTemplate.opsForHash().delete(COMPANY_KEY, id);
+		companyRedisTemplate.opsForHash().delete(KEY, id);
 	}
 
 	@Override
 	public Company findById(Long id) {
-		Company company = (Company) companyRedisTemplate.opsForHash().get(COMPANY_KEY, id);
-		if (company == null)
-			company = companyRepository.findOne(id);
-		return company;
+		if (companyRedisTemplate.opsForHash().hasKey(KEY, id))
+			return (Company) companyRedisTemplate.opsForHash().get(KEY, id);
+		return companyRepository.findOne(id);
 	}
 
 	@Override
 	public List<Company> findAll() {
-		Map<Object, Object> companyMap = companyRedisTemplate.opsForHash().entries(COMPANY_KEY);
+		Map<Object, Object> companyMap = companyRedisTemplate.opsForHash().entries(KEY);
 		List<Company> companyList = Collections.arrayToList(companyMap.values().toArray());
 		if (companyMap.isEmpty())
 			companyList = companyRepository.findAll();

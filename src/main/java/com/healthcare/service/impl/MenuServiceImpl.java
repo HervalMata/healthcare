@@ -18,38 +18,37 @@ import io.jsonwebtoken.lang.Collections;
 @Service
 @Transactional
 public class MenuServiceImpl implements MenuService {
+	private static final String KEY = Menu.class.getSimpleName();
+
 	@Autowired
 	MenuRepository menuRepository;
 
 	@Autowired
 	private RedisTemplate<String, Menu> menuRedisTemplate;
 
-	private static String MENU_KEY = "Menu";
-
 	@Override
 	public Menu save(Menu menu) {
 		menu = menuRepository.save(menu);
-		menuRedisTemplate.opsForHash().put(MENU_KEY, menu.getId(), menu);
+		menuRedisTemplate.opsForHash().put(KEY, menu.getId(), menu);
 		return menu;
 	}
 
 	@Override
 	public void deleteById(Long id) {
 		menuRepository.delete(id);
-		menuRedisTemplate.opsForHash().delete(MENU_KEY, id);
+		menuRedisTemplate.opsForHash().delete(KEY, id);
 	}
 
 	@Override
 	public Menu findById(Long id) {
-		Menu menu = (Menu) menuRedisTemplate.opsForHash().get(MENU_KEY, id);
-		if (menu == null)
-			menu = menuRepository.findOne(id);
-		return menu;
+		if (menuRedisTemplate.opsForHash().hasKey(KEY, id))
+			return (Menu) menuRedisTemplate.opsForHash().get(KEY, id);
+		return menuRepository.findOne(id);
 	}
 
 	@Override
 	public List<Menu> findAll() {
-		Map<Object, Object> menuMap = menuRedisTemplate.opsForHash().entries(MENU_KEY);
+		Map<Object, Object> menuMap = menuRedisTemplate.opsForHash().entries(KEY);
 		List<Menu> menuList = Collections.arrayToList(menuMap.values().toArray());
 		if (menuMap.isEmpty())
 			menuList = menuRepository.findAll();

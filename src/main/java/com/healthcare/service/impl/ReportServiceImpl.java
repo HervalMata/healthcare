@@ -18,40 +18,39 @@ import io.jsonwebtoken.lang.Collections;
 @Service
 @Transactional
 public class ReportServiceImpl implements ReportService {
+	private static final String KEY = Report.class.getSimpleName();
+
 	@Autowired
 	ReportRepository reportRepository;
 
 	@Autowired
 	private RedisTemplate<String, Report> reportRedisTemplate;
-	
-	private static String REPORT_KEY = "Report";
 
 	@Override
 	public Report save(Report report) {
 		report = reportRepository.save(report);
-		reportRedisTemplate.opsForHash().put(REPORT_KEY, report.getId(), report);
+		reportRedisTemplate.opsForHash().put(KEY, report.getId(), report);
 		return report;
 	}
 
 	@Override
 	public void deleteById(Long id) {
 		reportRepository.delete(id);
-		reportRedisTemplate.opsForHash().delete(REPORT_KEY, id);
+		reportRedisTemplate.opsForHash().delete(KEY, id);
 	}
 
 	@Override
 	public Report findById(Long id) {
-		Report report = (Report) reportRedisTemplate.opsForHash().get(REPORT_KEY, id);
-		if (report == null)
-			report = reportRepository.findOne(id);
-		return report;
+		if (reportRedisTemplate.opsForHash().hasKey(KEY, id))
+			return (Report) reportRedisTemplate.opsForHash().get(KEY, id);
+		return reportRepository.findOne(id);
 	}
 
 	@Override
 	public List<Report> findAll() {
-		Map<Object, Object> reportMap = reportRedisTemplate.opsForHash().entries(REPORT_KEY);
+		Map<Object, Object> reportMap = reportRedisTemplate.opsForHash().entries(KEY);
 		List<Report> reportList = Collections.arrayToList(reportMap.values().toArray());
-		if(reportMap.isEmpty())
+		if (reportMap.isEmpty())
 			reportList = reportRepository.findAll();
 		return reportList;
 	}

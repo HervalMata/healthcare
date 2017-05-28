@@ -40,4 +40,11 @@ public @Data class Admin extends Audit implements Serializable {
 	@Column(name = "remember_token")
 	private String rememberToken;
 
+	public String getPassword() {
+		return password;
+	}
+
+	public Long getId() {
+		return id;
+	}
 }
