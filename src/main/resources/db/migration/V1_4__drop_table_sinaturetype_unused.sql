@@ -1,0 +1,1 @@
+DROP TABLE `health_care_v1_dev`.`signature_type`;
