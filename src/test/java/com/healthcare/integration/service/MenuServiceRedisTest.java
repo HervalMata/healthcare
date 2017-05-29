@@ -10,24 +10,35 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.healthcare.model.entity.Agency;
 import com.healthcare.model.entity.AgencyType;
 import com.healthcare.model.entity.Company;
+import com.healthcare.model.entity.Menu;
 import com.healthcare.model.entity.Role;
 import com.healthcare.model.enums.StateEnum;
+import com.healthcare.repository.MenuRepository;
 import com.healthcare.service.AgencyService;
 import com.healthcare.service.AgencyTypeService;
 import com.healthcare.service.CompanyService;
+import com.healthcare.service.MenuService;
 import com.healthcare.service.RoleService;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @Transactional
-public class RoleServiceTest {
+public class MenuServiceRedisTest {
+	@Autowired
+	private MenuService menuService;
+
+	@MockBean
+	private MenuRepository menuRepository;
+
 	@Autowired
 	private RoleService roleService;
 
@@ -38,7 +49,16 @@ public class RoleServiceTest {
 	private AgencyService agencyService;
 
 	@Autowired
-	private AgencyTypeService agencyTypeService;
+	private AgencyTypeService agencyTpeService;
+
+	String name = "Menu A";
+	String url = "/menu/menu";
+	String angularUrl = "/angular/a";
+	String page = "A";
+	String clazz = "Clazz";
+	String imgUrl = "/img/a.jpg";
+	Calendar createdAt = Calendar.getInstance();
+	Integer displayOrder = 1;
 
 	String username = "username";
 	String password = "password";
@@ -52,9 +72,6 @@ public class RoleServiceTest {
 	String profilePhoto = "XXXXXXXXXX";
 	String deviceAddress = "City ABC";
 	String rememberToken = "00000";
-	String levelName = "Level Name";
-	long level = 1;
-	long status = 1;
 
 	String licenseNo = "12D31";
 	int trackingMode = 1;
@@ -76,57 +93,77 @@ public class RoleServiceTest {
 	Calendar stateTaxExpire = Calendar.getInstance();
 	Calendar worktimeStart = Calendar.getInstance();
 	Calendar worktimeEnd = Calendar.getInstance();
-
-	Agency agency;
+	Role role;
 
 	@Before
 	public void setup() {
-		agency = createNewAgency();
+		role = createNewRole();
 	}
 
 	@Test
-	public void testSaveRole() {
-		Role role = createNewRole(level);
-		role = roleService.save(role);
-		Assert.assertNotNull(role.getId());
+	public void testSaveMenu() {
+		Menu menu = createNewMenu();
+		menu.setId(7L);
+		Mockito.when(menuRepository.save(menu)).thenReturn(menu);
+		menuService.save(menu);
+		Menu savedMenu = menuService.findById(menu.getId());
+		Assert.assertNotNull(savedMenu);
 	}
 
 	@Test
-	public void testGetRole() {
-		Role role = createNewRole(level);
-		role = roleService.save(role);
-		Assert.assertNotNull(roleService.findById(role.getId()));
+	public void testUpdateMenu() {
+		String newImgUrl = "/img/new.jpg";
+
+		Menu menu = createNewMenu();
+		menu.setId(7L);
+		Mockito.when(menuRepository.save(menu)).thenReturn(menu);
+		menuService.save(menu);
+		Menu menuSaved = menuService.findById(menu.getId());
+		menuSaved.setImgUrl(newImgUrl);
+		Mockito.when(menuRepository.save(menuSaved)).thenReturn(menuSaved);
+		menuService.save(menuSaved);
+		Menu menuMofified = menuService.findById(menu.getId());
+		Assert.assertEquals(menuMofified.getImgUrl(), newImgUrl);
 	}
 
 	@Test
-	public void testUpdateRole() {
-		String newLevelName = "new level name";
-		Role role = createNewRole(level);
-		role = roleService.save(role);
-		Assert.assertEquals(role.getLevelName(), levelName);
-		Role roleSaved = roleService.findById(role.getId());
-		roleSaved.setLevelName(newLevelName);
-		roleService.save(roleSaved);
-		Role roleMofified = roleService.findById(role.getId());
-		Assert.assertEquals(roleMofified.getLevelName(), newLevelName);
+	public void testDeleteMenu() {
+		Menu menu = createNewMenu();
+		menu.setId(7L);
+		Mockito.when(menuRepository.save(menu)).thenReturn(menu);
+		menuService.save(menu);
+		Mockito.doNothing().when(menuRepository).delete(menu.getId());
+		menuService.deleteById(menu.getId());
+		Menu deletedMenu = menuService.findById(menu.getId());
+		Assert.assertNull(deletedMenu);
 	}
 
-	@Test
-	public void testDeleteRole() {
-		Role role = createNewRole(level);
-		role = roleService.save(role);
-		Assert.assertNotNull(role.getId());
-		roleService.deleteById(role.getId());
-		Assert.assertNull(roleService.findById(role.getId()));
+	private Menu createNewMenu() {
+		Menu menu = new Menu();
+		menu.setAngularUrl(angularUrl);
+		menu.setClazz(clazz);
+		menu.setCreatedAt(new Timestamp(createdAt.getTimeInMillis()));
+		menu.setDisplayOrder(displayOrder);
+		menu.setImgUrl(imgUrl);
+		menu.setName(name);
+		menu.setPage(page);
+		menu.setRole(role);
+		menu.setStatus(1);
+		menu.setUrl(url);
+		return menu;
 	}
 
-	private Role createNewRole(long level) {
+	private Role createNewRole() {
+		String levelName = "levelName";
+		long level = 1;
+		long status = 1;
+
 		Role role = new Role();
 		role.setLevel(level);
 		role.setLevelName(levelName);
 		role.setStatus(status);
-		role.setAgency(agency);
-		return role;
+		role.setAgency(createNewAgency());
+		return roleService.save(role);
 	}
 
 	private Agency createNewAgency() {
@@ -134,8 +171,7 @@ public class RoleServiceTest {
 		Company company = createNewCompany();
 		agency.setAddressOne(addressOne);
 		agency.setAddressTwo(addressTwo);
-		AgencyType agencyType = createNewAgencyType();
-		agency.setAgencyType(agencyType);
+		agency.setAgencyType(createNewAgencyType());
 		agency.setCity(city);
 		agency.setCompany(company);
 		agency.setCompany1(company);
@@ -183,6 +219,6 @@ public class RoleServiceTest {
 		AgencyType agencyType = new AgencyType();
 		agencyType.setName("Agency Type Name");
 		agencyType.setStatus(1);
-		return agencyTypeService.save(agencyType);
+		return agencyTpeService.save(agencyType);
 	}
 }

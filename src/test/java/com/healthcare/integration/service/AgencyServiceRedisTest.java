@@ -10,32 +10,33 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.healthcare.model.entity.Agency;
 import com.healthcare.model.entity.AgencyType;
 import com.healthcare.model.entity.Company;
-import com.healthcare.model.entity.Role;
 import com.healthcare.model.enums.StateEnum;
+import com.healthcare.repository.AgencyRepository;
 import com.healthcare.service.AgencyService;
 import com.healthcare.service.AgencyTypeService;
 import com.healthcare.service.CompanyService;
-import com.healthcare.service.RoleService;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @Transactional
-public class RoleServiceTest {
+public class AgencyServiceRedisTest {
 	@Autowired
-	private RoleService roleService;
+	private AgencyService agencyService;
+	
+	@MockBean
+	private AgencyRepository agencyRepository;
 
 	@Autowired
 	private CompanyService companyService;
-
-	@Autowired
-	private AgencyService agencyService;
 
 	@Autowired
 	private AgencyTypeService agencyTypeService;
@@ -77,56 +78,45 @@ public class RoleServiceTest {
 	Calendar worktimeStart = Calendar.getInstance();
 	Calendar worktimeEnd = Calendar.getInstance();
 
-	Agency agency;
-
 	@Before
 	public void setup() {
-		agency = createNewAgency();
 	}
 
 	@Test
-	public void testSaveRole() {
-		Role role = createNewRole(level);
-		role = roleService.save(role);
-		Assert.assertNotNull(role.getId());
+	public void testSaveAgency() {
+		Agency agency = createNewAgency();
+		agency.setId(7L);
+		Mockito.when(agencyRepository.save(agency)).thenReturn(agency);
+		agency = agencyService.save(agency);
+		Agency savedAgency = agencyService.findById(agency.getId());
+		Assert.assertNotNull(savedAgency);
 	}
 
 	@Test
-	public void testGetRole() {
-		Role role = createNewRole(level);
-		role = roleService.save(role);
-		Assert.assertNotNull(roleService.findById(role.getId()));
+	public void testUpdateAgency() {
+		String newAddressOne = "25, Green St";
+		Agency agency = createNewAgency();
+		agency.setId(7L);
+		Mockito.when(agencyRepository.save(agency)).thenReturn(agency);
+		agency = agencyService.save(agency);
+		Agency savedAgency = agencyService.findById(agency.getId());
+		savedAgency.setAddressOne(newAddressOne);
+		Mockito.when(agencyRepository.save(savedAgency)).thenReturn(savedAgency);
+		agencyService.save(savedAgency);
+		Agency modifiedAgency = agencyService.findById(agency.getId());
+		Assert.assertEquals(modifiedAgency.getAddressOne(), newAddressOne);
 	}
 
 	@Test
-	public void testUpdateRole() {
-		String newLevelName = "new level name";
-		Role role = createNewRole(level);
-		role = roleService.save(role);
-		Assert.assertEquals(role.getLevelName(), levelName);
-		Role roleSaved = roleService.findById(role.getId());
-		roleSaved.setLevelName(newLevelName);
-		roleService.save(roleSaved);
-		Role roleMofified = roleService.findById(role.getId());
-		Assert.assertEquals(roleMofified.getLevelName(), newLevelName);
-	}
-
-	@Test
-	public void testDeleteRole() {
-		Role role = createNewRole(level);
-		role = roleService.save(role);
-		Assert.assertNotNull(role.getId());
-		roleService.deleteById(role.getId());
-		Assert.assertNull(roleService.findById(role.getId()));
-	}
-
-	private Role createNewRole(long level) {
-		Role role = new Role();
-		role.setLevel(level);
-		role.setLevelName(levelName);
-		role.setStatus(status);
-		role.setAgency(agency);
-		return role;
+	public void testDeleteAgency() {
+		Agency agency = createNewAgency();
+		agency.setId(7L);
+		Mockito.when(agencyRepository.save(agency)).thenReturn(agency);
+		agency = agencyService.save(agency);
+		Mockito.doNothing().when(agencyRepository).delete(agency.getId());
+		agencyService.deleteById(agency.getId());
+		Agency deletedAgency = agencyService.findById(agency.getId());
+		Assert.assertNull(deletedAgency);
 	}
 
 	private Agency createNewAgency() {
@@ -150,7 +140,7 @@ public class RoleServiceTest {
 		agency.setTimezone(timezone);
 		agency.setTrackingMode(trackingMode);
 		agency.setZipcode(zipcode);
-		return agencyService.save(agency);
+		return agency;
 	}
 
 	private Company createNewCompany() {

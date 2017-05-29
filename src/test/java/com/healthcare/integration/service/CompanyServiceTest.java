@@ -14,31 +14,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.healthcare.model.entity.Agency;
-import com.healthcare.model.entity.AgencyType;
 import com.healthcare.model.entity.Company;
-import com.healthcare.model.entity.Role;
 import com.healthcare.model.enums.StateEnum;
-import com.healthcare.service.AgencyService;
-import com.healthcare.service.AgencyTypeService;
 import com.healthcare.service.CompanyService;
-import com.healthcare.service.RoleService;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @Transactional
-public class RoleServiceTest {
-	@Autowired
-	private RoleService roleService;
-
+public class CompanyServiceTest {
 	@Autowired
 	private CompanyService companyService;
-
-	@Autowired
-	private AgencyService agencyService;
-
-	@Autowired
-	private AgencyTypeService agencyTypeService;
 
 	String username = "username";
 	String password = "password";
@@ -52,9 +37,6 @@ public class RoleServiceTest {
 	String profilePhoto = "XXXXXXXXXX";
 	String deviceAddress = "City ABC";
 	String rememberToken = "00000";
-	String levelName = "Level Name";
-	long level = 1;
-	long status = 1;
 
 	String licenseNo = "12D31";
 	int trackingMode = 1;
@@ -77,80 +59,45 @@ public class RoleServiceTest {
 	Calendar worktimeStart = Calendar.getInstance();
 	Calendar worktimeEnd = Calendar.getInstance();
 
-	Agency agency;
-
 	@Before
 	public void setup() {
-		agency = createNewAgency();
 	}
 
 	@Test
-	public void testSaveRole() {
-		Role role = createNewRole(level);
-		role = roleService.save(role);
-		Assert.assertNotNull(role.getId());
-	}
-
-	@Test
-	public void testGetRole() {
-		Role role = createNewRole(level);
-		role = roleService.save(role);
-		Assert.assertNotNull(roleService.findById(role.getId()));
-	}
-
-	@Test
-	public void testUpdateRole() {
-		String newLevelName = "new level name";
-		Role role = createNewRole(level);
-		role = roleService.save(role);
-		Assert.assertEquals(role.getLevelName(), levelName);
-		Role roleSaved = roleService.findById(role.getId());
-		roleSaved.setLevelName(newLevelName);
-		roleService.save(roleSaved);
-		Role roleMofified = roleService.findById(role.getId());
-		Assert.assertEquals(roleMofified.getLevelName(), newLevelName);
-	}
-
-	@Test
-	public void testDeleteRole() {
-		Role role = createNewRole(level);
-		role = roleService.save(role);
-		Assert.assertNotNull(role.getId());
-		roleService.deleteById(role.getId());
-		Assert.assertNull(roleService.findById(role.getId()));
-	}
-
-	private Role createNewRole(long level) {
-		Role role = new Role();
-		role.setLevel(level);
-		role.setLevelName(levelName);
-		role.setStatus(status);
-		role.setAgency(agency);
-		return role;
-	}
-
-	private Agency createNewAgency() {
-		Agency agency = new Agency();
+	public void testSaveCompany() {
 		Company company = createNewCompany();
-		agency.setAddressOne(addressOne);
-		agency.setAddressTwo(addressTwo);
-		AgencyType agencyType = createNewAgencyType();
-		agency.setAgencyType(agencyType);
-		agency.setCity(city);
-		agency.setCompany(company);
-		agency.setCompany1(company);
-		agency.setContactPerson(contactPerson);
-		agency.setEmail(email);
-		agency.setFax(fax);
-		agency.setHoliday(holiday);
-		agency.setLicenseNo(licenseNo);
-		agency.setName("Agency Name");
-		agency.setPhone(phone);
-		agency.setState(state);
-		agency.setTimezone(timezone);
-		agency.setTrackingMode(trackingMode);
-		agency.setZipcode(zipcode);
-		return agencyService.save(agency);
+		companyService.save(company);
+		Assert.assertNotNull(company.getId());
+	}
+
+	@Test
+	public void testGetCompany() {
+		Company company = createNewCompany();
+		companyService.save(company);
+		Assert.assertNotNull(companyService.findById(company.getId()));
+	}
+
+	@Test
+	public void testUpdateCompany() {
+		String newAddressOne = "25, Green St";
+
+		Company company = createNewCompany();
+		companyService.save(company);
+		Assert.assertEquals(company.getAddressOne(), addressOne);
+		Company savedCompany = companyService.findById(company.getId());
+		savedCompany.setAddressOne(newAddressOne);
+		companyService.save(savedCompany);
+		Company modifiedCompany = companyService.findById(company.getId());
+		Assert.assertEquals(modifiedCompany.getAddressOne(), newAddressOne);
+	}
+
+	@Test
+	public void testDeleteCompany() {
+		Company company = createNewCompany();
+		companyService.save(company);
+		Assert.assertNotNull(company.getId());
+		companyService.deleteById(company.getId());
+		Assert.assertNull(companyService.findById(company.getId()));
 	}
 
 	private Company createNewCompany() {
@@ -176,13 +123,6 @@ public class RoleServiceTest {
 		company.setWorktimeEnd(new Time(worktimeEnd.getTimeInMillis()));
 		company.setWorktimeStart(new Time(worktimeStart.getTimeInMillis()));
 		company.setZipcode(zipcode);
-		return companyService.save(company);
-	}
-
-	private AgencyType createNewAgencyType() {
-		AgencyType agencyType = new AgencyType();
-		agencyType.setName("Agency Type Name");
-		agencyType.setStatus(1);
-		return agencyTypeService.save(agencyType);
+		return company;
 	}
 }
