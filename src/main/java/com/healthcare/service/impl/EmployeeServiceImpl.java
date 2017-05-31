@@ -3,12 +3,18 @@ package com.healthcare.service.impl;
 import com.healthcare.model.entity.Employee;
 import com.healthcare.repository.EmployeeRepository;
 import com.healthcare.service.EmployeeService;
+import io.jsonwebtoken.lang.Collections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.List;
+import java.util.Map;
+
+import static sun.security.x509.CertificateX509Key.KEY;
 
 /**
  * Created by Jean Antunes on 11/05/17.
@@ -22,18 +28,36 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Autowired
     EmployeeRepository employeeRepository;
 
+    @Autowired
+    private RedisTemplate<String, Employee> employeeRedisTemplate;
+
     @Override
     public Employee save(Employee employee) {
+        employee = employeeRepository.save(employee);
+        employeeRedisTemplate.opsForHash().put(KEY, employee.getId(), employee);
         return employee;
     }
 
     @Override
     public Employee findById(Long id) {
-        return employeeRepository.findOne(id);
+        Employee employee = (Employee) employeeRedisTemplate.opsForHash().get(KEY, id);
+        if (employee == null)
+            employee = employeeRepository.findOne(id);
+        return employee;
     }
 
     @Override
     public void deleteById(Long id) {
-        logger.info("id: " + id + " DELETED");
+        employeeRepository.delete(id);
+        employeeRedisTemplate.opsForHash().delete(KEY, id);
+    }
+
+    @Override
+    public List<Employee> findAll() {
+        Map<Object, Object> employeeMap = employeeRedisTemplate.opsForHash().entries(KEY);
+        List<Employee> employeeList = Collections.arrayToList(employeeMap.values().toArray());
+        if (employeeMap.isEmpty())
+            employeeList = employeeRepository.findAll();
+        return employeeList;
     }
 }
