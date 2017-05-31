@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.healthcare.model.entity.Agency;
 import com.healthcare.service.AgencyService;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -58,7 +57,6 @@ public class AgencyControllerTest {
 	}
 
 	@Test
-	@Ignore
 	public void testFindAllAgency() throws Exception {
 		Mockito.when(agencyService.findAll()).thenReturn(new ArrayList<Agency>());
 		this.mockMvc.perform(get("/api/agency")).andExpect(status().isOk());
