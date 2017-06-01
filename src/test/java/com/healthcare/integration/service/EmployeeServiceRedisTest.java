@@ -2,7 +2,6 @@ package com.healthcare.integration.service;
 
 import com.healthcare.model.entity.Agency;
 import com.healthcare.model.entity.Employee;
-import com.healthcare.model.entity.Review;
 import com.healthcare.repository.EmployeeRepository;
 import com.healthcare.service.EmployeeService;
 import org.junit.Assert;
@@ -38,9 +37,9 @@ public class EmployeeServiceRedisTest {
         Employee employee = createNewEmployee();
         employee.setId(1L);
         Mockito.when(employeeRepository.save(employee)).thenReturn(employee);
-        employeeRepository.save(employee);
-        Employee employeeSaved = employeeRepository.findById(1L);
-        Assert.assertNull(employeeSaved);
+        employeeService.save(employee);
+        Employee employeeSaved = employeeService.findById(1L);
+        Assert.assertNotNull(employeeSaved);
     }
 
     @Test
@@ -113,7 +112,6 @@ public class EmployeeServiceRedisTest {
         String backgroundCheck = "backgroundCheck";
         employee.setBackgroundCheck(backgroundCheck);
         employee.setAgency(new Agency());
-        employee.setReview(new Review());
 
         return employee;
     }

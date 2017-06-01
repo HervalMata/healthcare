@@ -4,8 +4,6 @@ import com.healthcare.model.entity.Employee;
 import com.healthcare.repository.EmployeeRepository;
 import com.healthcare.service.EmployeeService;
 import io.jsonwebtoken.lang.Collections;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -14,16 +12,11 @@ import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Map;
 
-import static sun.security.x509.CertificateX509Key.KEY;
 
-/**
- * Created by Jean Antunes on 11/05/17.
- */
 @Service
 @Transactional
 public class EmployeeServiceImpl implements EmployeeService {
-
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private static final String KEY = Employee.class.getSimpleName();
 
     @Autowired
     EmployeeRepository employeeRepository;
