@@ -57,8 +57,4 @@ public @Data class Employee extends Audit implements Serializable {
 	@ManyToOne
 	@JoinColumn(name = "agency_id")
 	private Agency agency;
-	@ManyToOne
-	@JoinColumn(name = "review_id")
-	private Review review;
-
 }

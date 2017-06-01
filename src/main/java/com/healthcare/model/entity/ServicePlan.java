@@ -29,8 +29,9 @@ public @Data class ServicePlan extends Audit implements Serializable {
 	private Long id;
 	@Column(name = "approvedby")
 	private String approvedBy;
-	@Column(name = "employee_id")
-	private Long employeeId;
+	@ManyToOne
+	@JoinColumn(name = "employee_id")
+	private Employee employee;
 	@Column(name = "plan_start")
 	private Timestamp planStart;
 	@Column(name = "plan_end")
