@@ -8,21 +8,17 @@ import com.healthcare.DbUnitIntegrationTestConfiguration;
 import com.healthcare.model.entity.Meal;
 import com.healthcare.model.entity.Visit;
 import com.healthcare.service.MealService;
-import org.hamcrest.CoreMatchers;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 
-import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsNull.notNullValue;
 import static org.junit.Assert.assertThat;
@@ -36,94 +32,79 @@ import static org.junit.Assert.assertThat;
 @ContextConfiguration(classes = {DbUnitIntegrationTestConfiguration.class})
 @Transactional
 @SpringBootTest
-public class MealServiceImplRedisIntegrationTest {
-
-    private static final String REDIS_KEY = Meal.class.getSimpleName();
+public class MealServiceImplTest {
 
     @Autowired
     private MealService sut;
 
     @Autowired
-    private RedisTemplate<String, Meal> redisTemplate;
-
-    @Before
-    public void setUp() {
-        redisTemplate.delete(REDIS_KEY);
-    }
-
-    @After
-    public void tearDown() {
-        redisTemplate.delete(REDIS_KEY);
-    }
+    private EntityManager em;
 
     @Test
     public void testCreate() {
         // given
-        final Meal meal = getMeal();
+        final Long visitId = 100L;
+        Meal meal = new Meal();
+        meal.setMealClass("Class");
+        meal.setName("Name");
+
+        Visit visit = new Visit();
+        visit.setId(visitId);
+        meal.setVisit(visit);
         // when
         Meal result = sut.save(meal);
         // then
         assertThat(result, notNullValue());
         assertThat(result.getId(), notNullValue());
+    }
 
+    @Test
+    @ExpectedDatabase(
+            value = "/dataset/service/MealServiceImplIntegrationTest.testUpdate.expected.xml",
+            assertionMode = DatabaseAssertionMode.NON_STRICT
+    )
+    public void testUpdate() {
+        // given
+        final Long visitId = 100L;
+        final Long mealId = 100L;
+        Meal meal = new Meal();
+        meal.setId(mealId);
+        meal.setMealClass("Class 1");
+        meal.setName("Name 1");
+
+        Visit visit = new Visit();
+        visit.setId(visitId);
+        meal.setVisit(visit);
         // when
-        Object redisResult = redisTemplate.opsForHash().get(REDIS_KEY, result.getId());
+        Meal result = sut.save(meal);
         // then
-        assertThat(redisResult, notNullValue());
-        assertThat(redisResult, equalTo(result));
+        assertThat(result, notNullValue());
+
+        em.flush();
     }
 
     @Test
     public void testFindById() {
         // given
         final Long mealId = 100L;
-        final Meal result = loadMealInRedis(mealId);
         // when
-        sut.findById(mealId);
+        Meal result = sut.findById(mealId);
         // then
-
-        // when
-        Object redisResult = redisTemplate.opsForHash().get(REDIS_KEY, mealId);
-        // then
-        assertThat(redisResult, notNullValue());
-        assertThat(redisResult, equalTo(result));
-
+        assertThat(result, notNullValue());
+        assertThat(result.getId(), equalTo(mealId));
     }
 
     @Test
+    @ExpectedDatabase(
+            value = "/dataset/service/MealServiceImplIntegrationTest.testDeleteById.expected.xml",
+            assertionMode = DatabaseAssertionMode.NON_STRICT
+    )
     public void testDeleteById() {
         // given
         final Long mealId = 100L;
-        loadMealInRedis(mealId);
         // when
         sut.deleteById(mealId);
         // then
-
-        // when
-        Object redisResult = redisTemplate.opsForHash().get(REDIS_KEY, mealId);
-        // then
-        assertThat(redisResult, nullValue());
-    }
-
-    private Meal getMeal() {
-        final Meal meal = new Meal();
-        meal.setMealClass("Class");
-        meal.setName("Name");
-
-        final Long visitId = 100L;
-        final Visit visit = new Visit();
-        visit.setId(visitId);
-        meal.setVisit(visit);
-
-        return meal;
-    }
-
-    private Meal loadMealInRedis(Long mealId) {
-        final Meal result = getMeal();
-        result.setId(mealId);
-
-        redisTemplate.opsForHash().put(REDIS_KEY, mealId, result);
-
-        return result;
+        em.flush();
     }
 }
