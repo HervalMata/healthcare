@@ -4,8 +4,6 @@ import com.healthcare.model.entity.Training;
 import com.healthcare.repository.TrainingRepository;
 import com.healthcare.service.TrainingService;
 import io.jsonwebtoken.lang.Collections;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -14,8 +12,6 @@ import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Map;
 
-import static sun.security.x509.CertificateX509Key.KEY;
-
 /**
  * Created by Jean Antunes on 24/05/17.
  */
@@ -23,7 +19,7 @@ import static sun.security.x509.CertificateX509Key.KEY;
 @Service
 @Transactional
 public class TrainingServiceImpl implements TrainingService {
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private static final String KEY = Training.class.getSimpleName();
 
     @Autowired
     TrainingRepository trainingRepository;

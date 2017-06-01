@@ -50,9 +50,9 @@ public class TrainingServiceRedisTest {
         Training training = createNewTraining();
         training.setId(1L);
         Mockito.when(trainingRepository.save(training)).thenReturn(training);
-        trainingRepository.save(training);
-        Training trainingSaved = trainingRepository.findById(1L);
-        Assert.assertNull(trainingSaved);
+        trainingService.save(training);
+        Training trainingSaved = trainingService.findById(1L);
+        Assert.assertNotNull(trainingSaved);
     }
 
     @Test
