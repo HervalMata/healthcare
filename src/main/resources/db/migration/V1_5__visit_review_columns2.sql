@@ -1,1 +1,0 @@
-ALTER TABLE `health_care_v1_dev`.`visit` DROP COLUMN `meal_id`;

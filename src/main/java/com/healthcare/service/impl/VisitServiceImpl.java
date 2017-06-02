@@ -2,31 +2,32 @@ package com.healthcare.service.impl;
 
 import javax.transaction.Transactional;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.healthcare.model.entity.Visit;
+import com.healthcare.repository.VisitRepository;
 import com.healthcare.service.VisitService;
 
 @Service
 @Transactional
 public class VisitServiceImpl implements VisitService {
+	@Autowired
+	public VisitRepository visitRepository;
 
 	@Override
 	public Visit save(Visit visit) {
-		// TODO Auto-generated method stub
-		return null;
+		return visitRepository.save(visit);
 	}
 
 	@Override
 	public Visit findById(Long id) {
-		// TODO Auto-generated method stub
-		return null;
+		return visitRepository.findOne(id);
 	}
 
 	@Override
 	public void deleteById(Long id) {
-		// TODO Auto-generated method stub
-
+		visitRepository.delete(id);
 	}
 
 }
