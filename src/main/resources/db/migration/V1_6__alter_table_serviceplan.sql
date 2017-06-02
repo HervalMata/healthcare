@@ -8,11 +8,3 @@ ALTER TABLE `health_care_v1_dev`.`serviceplan`
     REFERENCES `health_care_v1_dev`.`employee` (`id`)
     ON DELETE RESTRICT
     ON UPDATE RESTRICT;
-    
--- -----------------------------------------------------
--- Alter Table `health_care_v1_dev`.`employee`
--- -----------------------------------------------------
-ALTER TABLE `health_care_v1_dev`.`employee`
-	DROP FOREIGN KEY `fk_employee_review1`,
-	DROP INDEX `fk_employee_review1_idx`,
-	DROP COLUMN review_id;
