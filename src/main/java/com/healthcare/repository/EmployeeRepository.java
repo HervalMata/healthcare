@@ -9,4 +9,6 @@ import com.healthcare.model.entity.Employee;
 @Repository
 public interface EmployeeRepository extends CrudRepository<Employee, Long>, JpaRepository<Employee, Long> {
 
+    Employee findById(long l);
+
 }
