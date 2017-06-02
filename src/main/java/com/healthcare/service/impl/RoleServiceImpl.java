@@ -34,9 +34,9 @@ public class RoleServiceImpl implements RoleService {
 	}
 
 	@Override
-	public void deleteById(Long id) {
+	public Long deleteById(Long id) {
 		roleRepository.delete(id);
-		roleRedisTemplate.opsForHash().delete(KEY, id);
+		return roleRedisTemplate.opsForHash().delete(KEY, id);
 	}
 
 	@Override

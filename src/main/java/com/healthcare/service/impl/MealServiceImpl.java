@@ -21,8 +21,9 @@ public class MealServiceImpl implements MealService {
 	}
 
 	@Override
-	public void deleteById(Long id) {
+	public Long deleteById(Long id) {
 		mealRepository.delete(id);
+		return null;
 	}
 
 }

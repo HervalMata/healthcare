@@ -34,9 +34,9 @@ public class AdminPostServiceImpl implements AdminPostService {
 	}
 
 	@Override
-	public void deleteById(Long id) {
+	public Long deleteById(Long id) {
 		adminPostRepository.delete(id);
-		adminPostRedisTemplate.opsForHash().delete(KEY, id);
+		return adminPostRedisTemplate.opsForHash().delete(KEY, id);
 	}
 
 	@Override

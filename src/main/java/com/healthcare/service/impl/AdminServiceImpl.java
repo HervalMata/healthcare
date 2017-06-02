@@ -77,9 +77,9 @@ public class AdminServiceImpl implements AdminService {
 	}
 
 	@Override
-	public void deleteById(Long id) {
+	public Long deleteById(Long id) {
 		adminRepository.delete(id);
-		adminRedisTemplate.opsForHash().delete(KEY, id);
+		return adminRedisTemplate.opsForHash().delete(KEY, id);
 	}
 
 	@Override

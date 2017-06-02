@@ -34,9 +34,9 @@ public class AgencyServiceImpl implements AgencyService {
 	}
 
 	@Override
-	public void deleteById(Long id) {
+	public Long deleteById(Long id) {
 		agencyRepository.delete(id);
-		agencyRedisTemplate.opsForHash().delete(KEY, id);
+		return agencyRedisTemplate.opsForHash().delete(KEY, id);
 	}
 
 	@Override

@@ -73,7 +73,7 @@ public class VisitControllerTest {
 
 	@Test
 	public void shouldAcceptDeleteVisitRequest() throws Exception {
-		Mockito.doNothing().when(visitService).deleteById(1L);
+		Mockito.when(visitService.deleteById(1L)).thenReturn(1L);
 		this.mockMvc.perform(get("/api/visit/1")).andExpect(status().isOk());
 	}
 }

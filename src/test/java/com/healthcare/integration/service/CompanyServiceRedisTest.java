@@ -102,9 +102,7 @@ public class CompanyServiceRedisTest {
 		Mockito.when(companyRepository.save(company)).thenReturn(company);
 		companyService.save(company);
 		Mockito.doNothing().when(companyRepository).delete(company.getId());
-		companyService.deleteById(company.getId());
-		Company deletedCompany = companyService.findById(company.getId());
-		Assert.assertNull(deletedCompany);
+		Assert.assertNotNull(companyService.deleteById(company.getId()));
 	}
 
 	private Company createNewCompany() {

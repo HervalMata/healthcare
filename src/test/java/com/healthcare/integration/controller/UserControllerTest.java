@@ -74,7 +74,7 @@ public class UserControllerTest {
 
 	@Test
 	public void shouldAcceptDeleteUserRequest() throws Exception {
-		Mockito.doNothing().when(userService).deleteById(1L);
+		Mockito.when(userService.deleteById(1L)).thenReturn(1L);
 		this.mockMvc.perform(get("/api/user/1")).andExpect(status().isOk());
 	}
 }

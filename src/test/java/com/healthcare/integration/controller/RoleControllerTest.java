@@ -78,7 +78,7 @@ public class RoleControllerTest {
 
 	@Test
 	public void testDeleteAdmin() throws Exception {
-		Mockito.doNothing().when(roleService).deleteById(1L);
+		Mockito.when(roleService.deleteById(1L)).thenReturn(1L);
 		this.mockMvc.perform(get("/api/role/1")).andExpect(status().isOk());
 	}
 

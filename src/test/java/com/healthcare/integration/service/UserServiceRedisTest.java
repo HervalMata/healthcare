@@ -122,9 +122,7 @@ public class UserServiceRedisTest {
 		Mockito.when(userRepository.save(user)).thenReturn(user);
 		userService.save(user);
 		Mockito.doNothing().when(userRepository).delete(10L);
-		userService.deleteById(user.getId());
-		User userDeleted = userService.findById(10L);
-		Assert.assertNull(userDeleted);
+		Assert.assertNotNull(userService.deleteById(user.getId()));
 	}
 
 	private User createNewUser() {
