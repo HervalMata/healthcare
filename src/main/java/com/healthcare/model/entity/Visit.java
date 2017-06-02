@@ -36,9 +36,6 @@ public @Data class Visit implements Serializable {
 	@ManyToOne
 	@JoinColumn(name = "selected_meal_id")
 	private Meal selectedMeal;
-	@ManyToOne
-	@JoinColumn(name = "selected_activity_id")
-	private Activity selectedActivity;
 	@Column(name = "selected_table")
 	private String selectedTable;
 	@Column(name = "selected_seat")

@@ -3,14 +3,17 @@ package com.healthcare;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Calendar;
+import java.util.Date;
 
 import com.healthcare.model.entity.Agency;
 import com.healthcare.model.entity.AgencyType;
 import com.healthcare.model.entity.Company;
 import com.healthcare.model.entity.User;
+import com.healthcare.model.entity.Visit;
 import com.healthcare.model.enums.GenderEnum;
 import com.healthcare.model.enums.LanguageEnum;
 import com.healthcare.model.enums.StateEnum;
+import com.healthcare.model.enums.VisitStatusEnum;
 
 public class EntityFactory {
 	public Calendar eligiableStart = Calendar.getInstance();
@@ -47,7 +50,7 @@ public class EntityFactory {
 	public String familyDoctorTel = "9996663334";
 	public String comment = "No comments";
 	public String vacationNote = ".";
-	
+
 	public String licenseNo = "12D31";
 	public int trackingMode = 1;
 	public String contactPerson = "Joe";
@@ -65,6 +68,32 @@ public class EntityFactory {
 	public Calendar stateTaxExpire = Calendar.getInstance();
 	public Calendar worktimeStart = Calendar.getInstance();
 	public Calendar worktimeEnd = Calendar.getInstance();
+
+	public Timestamp checkInTime = new Timestamp(new Date().getTime());
+	public Timestamp checkOutTime = new Timestamp(new Date().getTime());
+	public String userComments = "all ok";
+	public String notes = ".";
+	public String selectedTable = "TABLE 1";
+	public String selectedSeat = "AB";
+	public String userSignature = "userSignature";
+
+	protected void init() {
+		eligiableStart.set(Calendar.YEAR, 2017);
+		eligiableStart.set(Calendar.MONTH, 1);
+		eligiableStart.set(Calendar.DAY_OF_MONTH, 1);
+		eligiableEnd.set(Calendar.YEAR, 2017);
+		eligiableEnd.set(Calendar.MONTH, 12);
+		eligiableEnd.set(Calendar.DAY_OF_MONTH, 31);
+		insuranceStart.set(Calendar.YEAR, 2016);
+		insuranceStart.set(Calendar.MONTH, 1);
+		insuranceStart.set(Calendar.DAY_OF_MONTH, 1);
+		insuranceEnd.set(Calendar.YEAR, 2018);
+		insuranceEnd.set(Calendar.MONTH, 12);
+		insuranceEnd.set(Calendar.DAY_OF_MONTH, 31);
+		dob.set(Calendar.YEAR, 1950);
+		dob.set(Calendar.MONTH, 1);
+		dob.set(Calendar.DAY_OF_MONTH, 1);
+	}
 
 	protected Agency createNewAgency(AgencyType agencyType, Company company) {
 		Agency agency = new Agency();
@@ -130,7 +159,7 @@ public class EntityFactory {
 		user.setInsuranceEnd(new Timestamp(insuranceEnd.getTimeInMillis()));
 		user.setUsername(username);
 		user.setPassword(password);
-	
+
 		user.setFirstName(firstName);
 		user.setMiddleName(middleName);
 		user.setLastName(lastName);
@@ -147,7 +176,7 @@ public class EntityFactory {
 		user.setState(StateEnum.FLORIDA.name());
 		user.setZipcode(zipcode);
 		user.setPhone(phone);
-	
+
 		user.setEmergencyContactPhone(emergencyContactPhone);
 		user.setEmergencyContactFirstName(emergencyContactFirstName);
 		user.setEmergencyContactMiddleName(emergencyContactMiddleName);
@@ -156,15 +185,33 @@ public class EntityFactory {
 		user.setEmergencyContactCity(emergencyContactCity);
 		user.setEmergencyContactState(emergencyContactState);
 		user.setEmergencyContactZipcode(emergencyContactZipcode);
-	
+
 		user.setFamilyDoctor(familyDoctor);
 		user.setFamilyDoctorTel(familyDoctorTel);
 		user.setFamilyDoctorAddress(familyDoctorAddress);
-	
+
 		user.setComment(comment);
 		user.setVacationNote(vacationNote);
-	
+
 		return user;
+	}
+
+	protected Visit createNewVisit(User user, Agency agency) {
+		Visit visit = new Visit();
+		visit.setUser(user);
+		visit.setAgency(agency);
+		visit.setCheckInTime(checkInTime);
+		visit.setCheckOutTime(checkOutTime);
+		visit.setSelectedSeat(selectedTable);
+		visit.setSelectedSeat(selectedSeat);
+		visit.setUserSignature(userSignature);
+        // visit.setServicePlan(servicePlan);// TODO not yet finished ServicePlan CRUD
+		// visit.setSelectedMeal(selectedMeal);// TODO not yet finished Meal CRUD
+		// visit.setUserBarcodeId(userBarcodeId);// TODO not yet validates there is asigned when agency accepts Patient
+		visit.setUserComments(userComments);
+		visit.setNotes(notes);
+		visit.setStatus(VisitStatusEnum.BOOKED.name());
+		return visit;
 	}
 
 }

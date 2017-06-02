@@ -1,8 +1,5 @@
 package com.healthcare.integration.service;
 
-import java.sql.Timestamp;
-import java.util.Date;
-
 import javax.transaction.Transactional;
 
 import org.junit.Assert;
@@ -19,7 +16,6 @@ import com.healthcare.model.entity.AgencyType;
 import com.healthcare.model.entity.Company;
 import com.healthcare.model.entity.User;
 import com.healthcare.model.entity.Visit;
-import com.healthcare.model.enums.VisitStatusEnum;
 import com.healthcare.service.AgencyService;
 import com.healthcare.service.AgencyTypeService;
 import com.healthcare.service.CompanyService;
@@ -33,7 +29,7 @@ public class VisitServiceTest extends EntityFactory {
 
 	@Autowired
 	private UserService userService;
-	
+
 	@Autowired
 	private AgencyService agencyService;
 
@@ -42,17 +38,18 @@ public class VisitServiceTest extends EntityFactory {
 
 	@Autowired
 	public AgencyTypeService agencyTypeService;
-	
+
 	@Autowired
 	private VisitService visitService;
 
 	private Company company;
 	private AgencyType agencyType;
-	private Agency agency;
-	private User user;
-	
+	public Agency agency;
+	public User user;
+
 	@Before
 	public void setup() {
+		init();
 		company = createNewCompany();
 		companyService.save(company);
 		agencyType = createNewAgencyType();
@@ -65,33 +62,43 @@ public class VisitServiceTest extends EntityFactory {
 
 	@Test
 	public void shouldSaveAVisit() {
-		Visit visit = createNewVisit();
+		Visit visit = createNewVisit(user, agency);
 		visitService.save(visit);
 		Assert.assertNotNull(visit.getId());
 	}
 
-	private Visit createNewVisit() {
-		Timestamp checkInTime = new Timestamp(new Date().getTime());
-		Timestamp checkOutTime = new Timestamp(new Date().getTime());
-		String userComments = "all ok";
-		String notes = ".";
-		String selectedTable = "TABLE 1";
-		String selectedSeat = "AB";
-		String userSignature = "userSignature";
-		Visit visit = new Visit();
-		visit.setUser(user);
-		visit.setAgency(agency);
-		visit.setCheckInTime(checkInTime);
-		visit.setCheckOutTime(checkOutTime);
-		visit.setSelectedSeat(selectedTable);
-		visit.setSelectedSeat(selectedSeat);
-		visit.setUserSignature(userSignature);
-		// visit.setSelectedMeal(selectedMeal);// TODO not yet finished Meal CRUD
-		// visit.setUserBarcodeId(userBarcodeId);// TODO not yet finished Meal CRUD
-		visit.setUserComments(userComments);
-		visit.setNotes(notes);
-		visit.setStatus(VisitStatusEnum.BOOKED.name());
-		return visit;
+	@Test
+	public void shouldGetAVisit() {
+		Visit visit = createNewVisit(user, agency);
+		visitService.save(visit);
+		Assert.assertNotNull(visitService.findById(visit.getId()));
+	}
+
+	@Test
+	public void shouldUpdateAVisit() {
+		String newUserSignature = "Dr. Abc Junior";
+		String newNotes = "seems so quiet";
+
+		Visit visit = createNewVisit(user, agency);
+		visitService.save(visit);
+		Assert.assertEquals(visit.getUserSignature(), userSignature);
+		Assert.assertEquals(visit.getNotes(), notes);
+		Visit visitSaved = visitService.findById(visit.getId());
+		visitSaved.setUserSignature(newUserSignature);
+		visitSaved.setNotes(newNotes);
+		visitService.save(visitSaved);
+		Visit visitMofified = visitService.findById(visit.getId());
+		Assert.assertEquals(visitMofified.getUserSignature(), newUserSignature);
+		Assert.assertEquals(visitMofified.getNotes(), newNotes);
+	}
+
+	@Test
+	public void shouldDeleteAVisit() {
+		Visit visit = createNewVisit(user, agency);
+		visitService.save(visit);
+		Assert.assertNotNull(visit.getId());
+		visitService.deleteById(visit.getId());
+		Assert.assertNull(visitService.findById(visit.getId()));
 	}
 
 }

@@ -1,7 +1,5 @@
 package com.healthcare.integration.service;
 
-import java.util.Calendar;
-
 import javax.transaction.Transactional;
 
 import org.junit.Assert;
@@ -25,21 +23,7 @@ public class UserServiceTest extends EntityFactory {
 
 	@Before
 	public void setup() {
-		eligiableStart.set(Calendar.YEAR, 2017);
-		eligiableStart.set(Calendar.MONTH, 1);
-		eligiableStart.set(Calendar.DAY_OF_MONTH, 1);
-		eligiableEnd.set(Calendar.YEAR, 2017);
-		eligiableEnd.set(Calendar.MONTH, 12);
-		eligiableEnd.set(Calendar.DAY_OF_MONTH, 31);
-		insuranceStart.set(Calendar.YEAR, 2016);
-		insuranceStart.set(Calendar.MONTH, 1);
-		insuranceStart.set(Calendar.DAY_OF_MONTH, 1);
-		insuranceEnd.set(Calendar.YEAR, 2018);
-		insuranceEnd.set(Calendar.MONTH, 12);
-		insuranceEnd.set(Calendar.DAY_OF_MONTH, 31);
-		dob.set(Calendar.YEAR, 1950);
-		dob.set(Calendar.MONTH, 1);
-		dob.set(Calendar.DAY_OF_MONTH, 1);
+		init();
 	}
 
 	@Test
