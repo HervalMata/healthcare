@@ -1,8 +1,8 @@
 package com.healthcare.integration.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.healthcare.model.entity.Company;
-import com.healthcare.service.CompanyService;
+import com.healthcare.model.entity.Employee;
+import com.healthcare.service.EmployeeService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,11 +26,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = WebEnvironment.MOCK)
 @Transactional
-public class CompanyControllerTest {
+public class EmployeeControllerTest {
 	private MockMvc mockMvc;
 
 	@MockBean
-	private CompanyService companyService;
+	private EmployeeService employeeService;
 
 	@Autowired
 	private WebApplicationContext wac;
@@ -41,40 +41,40 @@ public class CompanyControllerTest {
 	}
 
 	@Test
-	public void testSaveCompany() throws Exception {
-		Company company = new Company();
-		Mockito.when(companyService.save(company)).thenReturn(company);
+	public void testSaveEmployee() throws Exception {
+		Employee employee = new Employee();
+		Mockito.when(employeeService.save(employee)).thenReturn(employee);
 		ObjectMapper mapper = new ObjectMapper();
-		String jsonInString = mapper.writeValueAsString(company);
-		this.mockMvc.perform(post("/api/company").contentType(MediaType.APPLICATION_JSON).content(jsonInString))
+		String jsonInString = mapper.writeValueAsString(employee);
+		this.mockMvc.perform(post("/api/employee").contentType(MediaType.APPLICATION_JSON).content(jsonInString))
 				.andExpect(status().isOk());
 	}
 
 	@Test
-	public void testGetCompany() throws Exception {
-		Mockito.when(companyService.findById(1L)).thenReturn(new Company());
-		this.mockMvc.perform(get("/api/company/1")).andExpect(status().isOk());
+	public void testGetEmployee() throws Exception {
+		Mockito.when(employeeService.findById(1L)).thenReturn(new Employee());
+		this.mockMvc.perform(get("/api/employee/")).andExpect(status().isOk());
 	}
 
 	@Test
-	public void testFindAllCompany() throws Exception {
-		Mockito.when(companyService.findAll()).thenReturn(new ArrayList<Company>());
-		this.mockMvc.perform(get("/api/company")).andExpect(status().isOk());
+	public void testFindAllEmployee() throws Exception {
+		Mockito.when(employeeService.findAll()).thenReturn(new ArrayList<Employee>());
+		this.mockMvc.perform(get("/api/employee")).andExpect(status().isOk());
 	}
 
 	@Test
-	public void testUpdateCompany() throws Exception {
-		Company company = new Company();
-		Mockito.when(companyService.save(company)).thenReturn(company);
+	public void testUpdateEmployee() throws Exception {
+		Employee employee = new Employee();
+		Mockito.when(employeeService.save(employee)).thenReturn(employee);
 		ObjectMapper mapper = new ObjectMapper();
-		String jsonInString = mapper.writeValueAsString(company);
-		this.mockMvc.perform(put("/api/company").contentType(MediaType.APPLICATION_JSON).content(jsonInString))
+		String jsonInString = mapper.writeValueAsString(employee);
+		this.mockMvc.perform(put("/api/employee").contentType(MediaType.APPLICATION_JSON).content(jsonInString))
 				.andExpect(status().isOk());
 	}
 
 	@Test
-	public void testDeleteCompany() throws Exception {
-		Mockito.when(companyService.deleteById(1L)).thenReturn(1L);
-		this.mockMvc.perform(get("/api/company/1")).andExpect(status().isOk());
+	public void testDeleteEmployee() throws Exception {
+		Mockito.when(employeeService.deleteById(1L)).thenReturn(1L);
+		this.mockMvc.perform(delete("/api/employee/1")).andExpect(status().isOk());
 	}
 }
