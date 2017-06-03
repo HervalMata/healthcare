@@ -83,12 +83,13 @@ public class MealServiceImplRedisTest {
                 .willReturn(meal);
         sut.save(meal);
         // when
-        sut.deleteById(meal.getId());
+        Long result = sut.deleteById(meal.getId());
         // then
         verify(mealRepository).delete(meal.getId());
+        assertThat(result, notNullValue());
 
-        Meal result = sut.findById(meal.getId());
+        Meal savedMeal = sut.findById(meal.getId());
 
-        assertThat(result, nullValue());
+        assertThat(savedMeal, nullValue());
     }
 }

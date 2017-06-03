@@ -60,17 +60,13 @@
           insurance_eligiable="Eligiable"
           eligiable_start="2017-05-01"
           eligiable_end="2017-05-01"
-          family_doctor="Family Doctor"
-            />
-
-    <signature_type id="100"
-                    type="test" />
+          family_doctor="Family Doctor" />
 
     <visit id="100"
            agency_id="100"
            selected_seat="1"
            user_id="100"
-           signature_type_id="100" />
+           status="Status" />
 
     <meal id="100"
           meal_class="Class"

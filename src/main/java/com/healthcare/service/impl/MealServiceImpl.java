@@ -48,7 +48,8 @@ public class MealServiceImpl implements MealService {
 	@Override
 	public Long deleteById(Long id) {
 		mealRepository.delete(id);
-        redisTemplate.opsForHash().delete(REDIS_KEY, id);
+
+        return redisTemplate.opsForHash().delete(REDIS_KEY, id);
     }
 
 }
