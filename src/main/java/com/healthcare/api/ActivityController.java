@@ -54,7 +54,7 @@ public class ActivityController extends BaseController {
         }
 
         return ResponseEntity.ok(
-                activityService.get(activityId)
+                activityService.findById(activityId)
         );
     }
 
@@ -76,6 +76,6 @@ public class ActivityController extends BaseController {
             return;
         }
 
-        activityService.delete(activityId);
+        activityService.deleteById(activityId);
     }
 }

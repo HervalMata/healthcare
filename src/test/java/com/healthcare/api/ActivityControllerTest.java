@@ -87,7 +87,7 @@ public class ActivityControllerTest {
                     "\"note\":null" +
                 "}";
 
-        given(activityService.get(anyLong()))
+        given(activityService.findById(anyLong()))
                 .willReturn(activity);
         // when
         mockMvc.perform(
@@ -95,7 +95,7 @@ public class ActivityControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().string(expectedContent));
         // then
-        verify(activityService, only()).get(activityId);
+        verify(activityService, only()).findById(activityId);
     }
 
     @Test
@@ -142,7 +142,7 @@ public class ActivityControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().string(isEmptyString()));
         // then
-        verify(activityService, only()).delete(activityId);
+        verify(activityService, only()).deleteById(activityId);
     }
 
     @Test

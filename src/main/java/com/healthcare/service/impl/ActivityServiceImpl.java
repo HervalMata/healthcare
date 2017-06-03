@@ -44,7 +44,7 @@ public class ActivityServiceImpl implements ActivityService {
 
     @Nullable
     @Override
-    public Activity get(@Nonnull Long id) {
+    public Activity findById(@Nonnull Long id) {
         notNull(id, "Activity Id must not be null");
 
         Object activity = redisTemplate.opsForHash().get(REDIS_KEY, id);
@@ -56,10 +56,10 @@ public class ActivityServiceImpl implements ActivityService {
     }
 
     @Override
-    public void delete(@Nonnull Long id) {
+    public Long deleteById(@Nonnull Long id) {
         notNull(id, "Activity Id must not be null");
 
         activityRepository.delete(id);
-        redisTemplate.opsForHash().delete(REDIS_KEY, id);
+        return redisTemplate.opsForHash().delete(REDIS_KEY, id);
     }
 }

@@ -64,7 +64,7 @@ public class ActivityServiceImplTest {
     }
 
     @Test
-    public void testGetWhenRedisHaveData() {
+    public void testFindByIdWhenRedisHaveData() {
         // given
         final Long activityId = 1L;
         final Activity expected = new Activity();
@@ -74,7 +74,7 @@ public class ActivityServiceImplTest {
         given(hashOperations.get(anyString(), anyLong()))
                 .willReturn(expected);
         // when
-        Activity result = sut.get(activityId);
+        Activity result = sut.findById(activityId);
         // then
         verify(redisTemplate, only()).opsForHash();
         verify(hashOperations, only()).get(REDIS_KEY, activityId);
@@ -84,7 +84,7 @@ public class ActivityServiceImplTest {
     }
 
     @Test
-    public void testGetWhenRedisNotHaveData() {
+    public void testFindByIdWhenRedisNotHaveData() {
         // given
         final Long activityId = 1L;
         final Activity expected = new Activity();
@@ -96,7 +96,7 @@ public class ActivityServiceImplTest {
         given(activityRepository.findOne(anyLong()))
                 .willReturn(expected);
         // when
-        Activity result = sut.get(activityId);
+        Activity result = sut.findById(activityId);
         // then
         verify(redisTemplate, only()).opsForHash();
         verify(hashOperations, only()).get(REDIS_KEY, activityId);
@@ -107,14 +107,14 @@ public class ActivityServiceImplTest {
     }
 
     @Test
-    public void testDelete() {
+    public void testDeleteById() {
         // given
         final Long activityId = 1L;
 
         given(redisTemplate.opsForHash())
                 .willReturn(hashOperations);
         // when
-        sut.delete(activityId);
+        sut.deleteById(activityId);
         // then
         verify(activityRepository, only()).delete(activityId);
         verify(redisTemplate, only()).opsForHash();

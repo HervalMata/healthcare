@@ -81,11 +81,11 @@ public class ActivityServiceImplTest {
     }
 
     @Test
-    public void testGet() {
+    public void testFindById() {
         // given
         final Long activityId = 100L;
         // when
-        Activity result = sut.get(activityId);
+        Activity result = sut.findById(activityId);
         // then
         assertThat(result, notNullValue());
     }
@@ -95,11 +95,11 @@ public class ActivityServiceImplTest {
             value = "/dataset/service/ActivityServiceImplIntegrationTest.testDelete.expected.xml",
             assertionMode = DatabaseAssertionMode.NON_STRICT
     )
-    public void testDelete() {
+    public void testDeleteById() {
         // given
         final Long activityId = 100L;
         // when
-        sut.delete(activityId);
+        sut.deleteById(activityId);
         // then
         em.flush();
     }

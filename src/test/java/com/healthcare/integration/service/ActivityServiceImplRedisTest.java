@@ -4,7 +4,6 @@ import com.healthcare.model.entity.Activity;
 import com.healthcare.repository.ActivityRepository;
 import com.healthcare.service.ActivityService;
 import org.hamcrest.core.IsEqual;
-import org.hamcrest.core.IsNull;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +12,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.hamcrest.core.IsNull.notNullValue;
+import static org.hamcrest.core.IsNull.nullValue;
 import static org.junit.Assert.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Matchers.any;
@@ -44,7 +44,7 @@ public class ActivityServiceImplRedisTest {
         // then
         verify(activityRepository, only()).save(activity);
 
-        Activity result = sut.get(activity.getId());
+        Activity result = sut.findById(activity.getId());
 
         assertThat(result, notNullValue());
     }
@@ -66,7 +66,7 @@ public class ActivityServiceImplRedisTest {
         // then
         verify(activityRepository, atLeast(1)).save(activity);
 
-        Activity result = sut.get(activity.getId());
+        Activity result = sut.findById(activity.getId());
 
         assertThat(result, notNullValue());
         assertThat(result.getName(), IsEqual.equalTo(name));
@@ -83,12 +83,13 @@ public class ActivityServiceImplRedisTest {
                 .willReturn(activity);
         sut.save(activity);
         // when
-        sut.delete(activity.getId());
+        Long result = sut.deleteById(activity.getId());
         // then
         verify(activityRepository).delete(activity.getId());
+        assertThat(result, notNullValue());
 
-        Activity result = sut.get(activity.getId());
+        Activity savedActivity = sut.findById(activity.getId());
 
-        assertThat(result, IsNull.nullValue());
+        assertThat(savedActivity, nullValue());
     }
 }
