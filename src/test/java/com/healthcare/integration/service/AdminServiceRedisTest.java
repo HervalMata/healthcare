@@ -129,9 +129,7 @@ public class AdminServiceRedisTest {
 		Mockito.when(adminRepository.save(admin)).thenReturn(admin);
 		adminService.save(admin);
 		Mockito.doNothing().when(adminRepository).delete(admin.getId());
-		adminService.deleteById(admin.getId());
-		Admin deletedAdmin = adminService.findById(admin.getId());
-		Assert.assertNull(deletedAdmin);
+		Assert.assertNotNull(adminService.deleteById(admin.getId()));
 	}
 
 	private Admin createNewAdmin() {

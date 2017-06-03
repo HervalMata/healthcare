@@ -1,65 +1,107 @@
 package com.healthcare.integration.service;
 
+import javax.transaction.Transactional;
+
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
+
+import com.healthcare.EntityFactory;
 import com.healthcare.model.entity.Agency;
-import com.healthcare.model.entity.Meal;
+import com.healthcare.model.entity.AgencyType;
+import com.healthcare.model.entity.Company;
 import com.healthcare.model.entity.User;
 import com.healthcare.model.entity.Visit;
-import com.healthcare.service.MealService;
+import com.healthcare.service.AgencyService;
+import com.healthcare.service.AgencyTypeService;
+import com.healthcare.service.CompanyService;
+import com.healthcare.service.UserService;
 import com.healthcare.service.VisitService;
 import org.junit.Assert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import javax.transaction.Transactional;
-import java.sql.Timestamp;
-import java.util.Date;
-
-//@RunWith(SpringRunner.class)
+@RunWith(SpringRunner.class)
 @SpringBootTest
 @Transactional
-public class VisitServiceTest {
+public class VisitServiceTest extends EntityFactory {
+
 	@Autowired
-	private MealService mealService;
+	private UserService userService;
+
+	@Autowired
+	private AgencyService agencyService;
+
+	@Autowired
+	public CompanyService companyService;
+
+	@Autowired
+	public AgencyTypeService agencyTypeService;
 
 	@Autowired
 	private VisitService visitService;
 
-	// @Test
+	private Company company;
+	private AgencyType agencyType;
+	private Agency agency;
+	private User user;
+
+	@Before
+	public void setup() {
+		init();
+		company = createNewCompany();
+		companyService.save(company);
+		agencyType = createNewAgencyType();
+		agencyTypeService.save(agencyType);
+		agency = createNewAgency(agencyType, company);
+		agencyService.save(agency);
+		user = createNewUser();
+		userService.save(user);
+	}
+
+	@Test
 	public void shouldSaveAVisit() {
-		Timestamp checkInTime = new Timestamp(new Date().getTime());
-		Timestamp checkOutTime = new Timestamp(new Date().getTime());
-		String userComments = "all ok";
-		String notes = ".";
-		Visit visit = new Visit();
-		Meal meal = new Meal();
-		meal.setMealClass("meal class 1");
-		meal.setName("meal A");
-		mealService.save(meal);
-//		visit.setMeal(meal);
-		Agency agency = new Agency();
-		User user = new User();
-		visit.setUser(user);
-		visit.setCheckInTime(checkInTime);
-		visit.setCheckOutTime(checkOutTime);
-		// visit.setVitiAgency(vitiAgency);//whats is that..transportation
-		// agency?
-		// visit.setSelectedActivity(selectedActivity);// enum or enum by
-		// catalog
-		// visit.setSelectedSeat(selectedSeat);// enum or enum by catalog
-		// visit.setSelectedMeal(selectedMeal);// enum or enum by catalog
-		// visit.setSignatureType(signatureType);// what is this and enum or
-		// enum by catalog
-		// visit.setStatus(status);// what is this and enum or enum by catalog
-		// visit.setUser1(user1);// it is different from user and user2 ??
-		// visit.setUser2(user2);// it is different from user and user1 ??
-		// visit.setUserBarcodeId(userBarcodeId);// just a string really?
-		visit.setUserComments(userComments);
-		// visit.setUserSignature(userSignature); // what is this
-		// visit.setUserSignatureType(userSignatureType);// what is this and
-		// enum or enum by catalog
-		visit.setNotes(notes);
+		Visit visit = createNewVisit(user, agency);
 		visitService.save(visit);
 		Assert.assertNotNull(visit.getId());
+	}
+
+	@Test
+	public void shouldGetAVisit() {
+		Visit visit = createNewVisit(user, agency);
+		visitService.save(visit);
+		Assert.assertNotNull(visitService.findById(visit.getId()));
+	}
+
+	@Test
+	public void shouldUpdateAVisit() {
+		String newUserSignature = "Dr. Abc Junior";
+		String newNotes = "seems so quiet";
+
+		Visit visit = createNewVisit(user, agency);
+		visitService.save(visit);
+		Assert.assertEquals(visit.getUserSignature(), userSignature);
+		Assert.assertEquals(visit.getNotes(), notes);
+		Visit visitSaved = visitService.findById(visit.getId());
+		visitSaved.setUserSignature(newUserSignature);
+		visitSaved.setNotes(newNotes);
+		visitService.save(visitSaved);
+		Visit visitMofified = visitService.findById(visit.getId());
+		Assert.assertEquals(visitMofified.getUserSignature(), newUserSignature);
+		Assert.assertEquals(visitMofified.getNotes(), newNotes);
+	}
+
+	@Test
+	public void shouldDeleteAVisit() {
+		Visit visit = createNewVisit(user, agency);
+		visitService.save(visit);
+		Assert.assertNotNull(visit.getId());
+		visitService.deleteById(visit.getId());
+		Assert.assertNull(visitService.findById(visit.getId()));
 	}
 
 }

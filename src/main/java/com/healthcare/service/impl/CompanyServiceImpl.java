@@ -34,9 +34,9 @@ public class CompanyServiceImpl implements CompanyService {
 	}
 
 	@Override
-	public void deleteById(Long id) {
+	public Long deleteById(Long id) {
 		companyRepository.delete(id);
-		companyRedisTemplate.opsForHash().delete(KEY, id);
+		return companyRedisTemplate.opsForHash().delete(KEY, id);
 	}
 
 	@Override

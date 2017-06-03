@@ -1,24 +1,21 @@
 package com.healthcare.service.impl;
 
-import java.util.List;
-import java.util.Map;
-
-import javax.transaction.Transactional;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.stereotype.Service;
-
 import com.healthcare.api.auth.model.AuthRequest;
 import com.healthcare.model.entity.Admin;
 import com.healthcare.model.response.Response;
 import com.healthcare.repository.AdminRepository;
 import com.healthcare.service.AdminService;
 import com.healthcare.util.PasswordUtils;
-
 import io.jsonwebtoken.lang.Collections;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.stereotype.Service;
+
+import javax.transaction.Transactional;
+import java.util.List;
+import java.util.Map;
 
 @Service
 @Transactional
@@ -77,9 +74,9 @@ public class AdminServiceImpl implements AdminService {
 	}
 
 	@Override
-	public void deleteById(Long id) {
+	public Long deleteById(Long id) {
 		adminRepository.delete(id);
-		adminRedisTemplate.opsForHash().delete(KEY, id);
+		return adminRedisTemplate.opsForHash().delete(KEY, id);
 	}
 
 	@Override

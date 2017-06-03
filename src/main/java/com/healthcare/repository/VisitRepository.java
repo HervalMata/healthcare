@@ -1,9 +1,9 @@
 package com.healthcare.repository;
 
-import org.springframework.data.repository.Repository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.healthcare.model.entity.Visit;
 
-public interface VisitRepository extends Repository<Visit, Long> {
+public interface VisitRepository extends JpaRepository<Visit, Long> {
 
 }

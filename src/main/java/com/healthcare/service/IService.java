@@ -5,5 +5,12 @@ public interface IService<T> {
 
 	T findById(Long id);
 
-	void deleteById(Long id);
+	/**
+	 * Delete the entity
+	 * @return TODO
+	 * 
+	 * @return the Redis id deleted
+	 * @param id identificator
+	 */
+	Long deleteById(Long id);
 }

@@ -122,9 +122,7 @@ public class RoleServiceRedisTest {
 		Mockito.when(roleRepository.save(role)).thenReturn(role);
 		role = roleService.save(role);
 		Mockito.doNothing().when(roleRepository).delete(role.getId());
-		roleService.deleteById(role.getId());
-		Role deletedRole = roleService.findById(role.getId());
-		Assert.assertNull(deletedRole);
+		Assert.assertNotNull(roleService.deleteById(role.getId()));
 	}
 
 	private Role createNewRole(long level) {

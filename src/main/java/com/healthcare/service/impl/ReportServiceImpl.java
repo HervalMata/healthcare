@@ -34,9 +34,9 @@ public class ReportServiceImpl implements ReportService {
 	}
 
 	@Override
-	public void deleteById(Long id) {
+	public Long deleteById(Long id) {
 		reportRepository.delete(id);
-		reportRedisTemplate.opsForHash().delete(KEY, id);
+		return reportRedisTemplate.opsForHash().delete(KEY, id);
 	}
 
 	@Override
