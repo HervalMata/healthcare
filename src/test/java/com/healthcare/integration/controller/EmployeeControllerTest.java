@@ -74,7 +74,7 @@ public class EmployeeControllerTest {
 
 	@Test
 	public void testDeleteEmployee() throws Exception {
-		Mockito.doNothing().when(employeeService).deleteById(1L);
+		Mockito.when(employeeService.deleteById(1L)).thenReturn(1L);
 		this.mockMvc.perform(delete("/api/employee/1")).andExpect(status().isOk());
 	}
 }

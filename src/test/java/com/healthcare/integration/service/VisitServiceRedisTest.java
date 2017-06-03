@@ -6,8 +6,10 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.healthcare.EntityFactory;
@@ -16,6 +18,7 @@ import com.healthcare.model.entity.AgencyType;
 import com.healthcare.model.entity.Company;
 import com.healthcare.model.entity.User;
 import com.healthcare.model.entity.Visit;
+import com.healthcare.repository.VisitRepository;
 import com.healthcare.service.AgencyService;
 import com.healthcare.service.AgencyTypeService;
 import com.healthcare.service.CompanyService;
@@ -25,7 +28,9 @@ import com.healthcare.service.VisitService;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @Transactional
-public class VisitServiceTest extends EntityFactory {
+public class VisitServiceRedisTest extends EntityFactory {
+	@MockBean
+	private VisitRepository visitRepository;
 
 	@Autowired
 	private UserService userService;
@@ -61,31 +66,28 @@ public class VisitServiceTest extends EntityFactory {
 	}
 
 	@Test
-	public void shouldSaveAVisit() {
+	public void shouldSaveAVisitToRedisAndRetrievedItFromRedis() {
 		Visit visit = createNewVisit(user, agency);
+		visit.setId(10L);
+		Mockito.when(visitRepository.save(visit)).thenReturn(visit);
 		visitService.save(visit);
-		Assert.assertNotNull(visit.getId());
+		Visit visitSaved = visitService.findById(10L);
+		Assert.assertNotNull(visitSaved);
 	}
 
 	@Test
-	public void shouldGetAVisit() {
-		Visit visit = createNewVisit(user, agency);
-		visitService.save(visit);
-		Assert.assertNotNull(visitService.findById(visit.getId()));
-	}
-
-	@Test
-	public void shouldUpdateAVisit() {
+	public void shouldUpdateAVisitToRedis() {
 		String newUserSignature = "Dr. Abc Junior";
 		String newNotes = "seems so quiet";
 
 		Visit visit = createNewVisit(user, agency);
+		visit.setId(10L);
+		Mockito.when(visitRepository.save(visit)).thenReturn(visit);
 		visitService.save(visit);
-		Assert.assertEquals(visit.getUserSignature(), userSignature);
-		Assert.assertEquals(visit.getNotes(), notes);
 		Visit visitSaved = visitService.findById(visit.getId());
 		visitSaved.setUserSignature(newUserSignature);
 		visitSaved.setNotes(newNotes);
+		Mockito.when(visitRepository.save(visitSaved)).thenReturn(visitSaved);
 		visitService.save(visitSaved);
 		Visit visitMofified = visitService.findById(visit.getId());
 		Assert.assertEquals(visitMofified.getUserSignature(), newUserSignature);
@@ -95,10 +97,11 @@ public class VisitServiceTest extends EntityFactory {
 	@Test
 	public void shouldDeleteAVisit() {
 		Visit visit = createNewVisit(user, agency);
+		visit.setId(10L);
+		Mockito.when(visitRepository.save(visit)).thenReturn(visit);
 		visitService.save(visit);
-		Assert.assertNotNull(visit.getId());
-		visitService.deleteById(visit.getId());
-		Assert.assertNull(visitService.findById(visit.getId()));
+		Mockito.doNothing().when(visitRepository).delete(10L);
+		Assert.assertNotNull(visitService.deleteById(visit.getId()));
 	}
 
 }

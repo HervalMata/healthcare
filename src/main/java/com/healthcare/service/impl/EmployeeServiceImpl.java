@@ -40,9 +40,9 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public void deleteById(Long id) {
+    public Long deleteById(Long id) {
         employeeRepository.delete(id);
-        employeeRedisTemplate.opsForHash().delete(KEY, id);
+        return employeeRedisTemplate.opsForHash().delete(KEY, id);
     }
 
     @Override

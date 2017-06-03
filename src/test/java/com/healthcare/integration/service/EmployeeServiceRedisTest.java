@@ -69,10 +69,7 @@ public class EmployeeServiceRedisTest {
         Mockito.when(employeeRepository.save(employee)).thenReturn(employee);
         employeeService.save(employee);
         Mockito.doNothing().when(employeeRepository).delete(1L);
-        employeeService.deleteById(employee.getId());
-
-        Employee employeeDeleted = employeeService.findById(1L);
-        Assert.assertNull(employeeDeleted);
+        Assert.assertNotNull(employeeService.deleteById(employee.getId()));
     }
 
     private Employee createNewEmployee() {

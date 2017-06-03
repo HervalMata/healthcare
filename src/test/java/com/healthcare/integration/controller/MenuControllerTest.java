@@ -78,7 +78,7 @@ public class MenuControllerTest {
 
 	@Test
 	public void testDeleteMenu() throws Exception {
-		Mockito.doNothing().when(menuService).deleteById(1L);
+		Mockito.when(menuService.deleteById(1L)).thenReturn(1L);
 		this.mockMvc.perform(get("/api/menu/1")).andExpect(status().isOk());
 	}
 }

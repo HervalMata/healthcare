@@ -114,9 +114,7 @@ public class AgencyServiceRedisTest {
 		Mockito.when(agencyRepository.save(agency)).thenReturn(agency);
 		agency = agencyService.save(agency);
 		Mockito.doNothing().when(agencyRepository).delete(agency.getId());
-		agencyService.deleteById(agency.getId());
-		Agency deletedAgency = agencyService.findById(agency.getId());
-		Assert.assertNull(deletedAgency);
+		Assert.assertNotNull(agencyService.deleteById(agency.getId()));
 	}
 
 	private Agency createNewAgency() {

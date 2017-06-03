@@ -78,7 +78,7 @@ public class ReportControllerTest {
 
 	@Test
 	public void testDeleteReport() throws Exception {
-		Mockito.doNothing().when(reportService).deleteById(1L);
+		Mockito.when(reportService.deleteById(1L)).thenReturn(1L);
 		this.mockMvc.perform(get("/api/report/1")).andExpect(status().isOk());
 	}
 }

@@ -81,9 +81,7 @@ public class TrainingServiceRedisTest {
         Mockito.when(trainingRepository.save(training)).thenReturn(training);
         trainingService.save(training);
         Mockito.doNothing().when(trainingRepository).delete(1L);
-        trainingService.deleteById(training.getId());
-        Training trainingDeleted = trainingService.findById(1L);
-        Assert.assertNull(trainingDeleted);
+        Assert.assertNotNull(trainingService.deleteById(training.getId()));
     }
 
     private Training createNewTraining() {

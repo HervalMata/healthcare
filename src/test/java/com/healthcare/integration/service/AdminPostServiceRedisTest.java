@@ -135,9 +135,7 @@ public class AdminPostServiceRedisTest {
 		Mockito.when(adminPostRepository.save(adminPost)).thenReturn(adminPost);
 		adminPostService.save(adminPost);
 		Mockito.doNothing().when(adminPostRepository).delete(10L);
-		adminPostService.deleteById(adminPost.getId());
-		AdminPost deletedAdminPost = adminPostService.findById(adminPost.getId());
-		Assert.assertNull(deletedAdminPost);
+		Assert.assertNotNull(adminPostService.deleteById(adminPost.getId()));
 	}
 
 	private AdminPost createNewAdminPost() {

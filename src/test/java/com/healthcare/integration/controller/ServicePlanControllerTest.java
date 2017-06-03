@@ -78,7 +78,7 @@ public class ServicePlanControllerTest {
 
 	@Test
 	public void testDeleteServicePlan() throws Exception {
-		Mockito.doNothing().when(servicePlanService).deleteById(1L);
+		Mockito.when(servicePlanService.deleteById(1L)).thenReturn(1L);
 		this.mockMvc.perform(get("/api/serviceplan/1")).andExpect(status().isOk());
 	}
 }

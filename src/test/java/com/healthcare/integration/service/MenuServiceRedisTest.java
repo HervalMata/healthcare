@@ -133,9 +133,7 @@ public class MenuServiceRedisTest {
 		Mockito.when(menuRepository.save(menu)).thenReturn(menu);
 		menuService.save(menu);
 		Mockito.doNothing().when(menuRepository).delete(menu.getId());
-		menuService.deleteById(menu.getId());
-		Menu deletedMenu = menuService.findById(menu.getId());
-		Assert.assertNull(deletedMenu);
+		Assert.assertNotNull(menuService.deleteById(menu.getId()));
 	}
 
 	private Menu createNewMenu() {

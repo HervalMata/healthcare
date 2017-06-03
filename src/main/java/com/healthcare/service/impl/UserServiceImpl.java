@@ -36,8 +36,8 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public void deleteById(Long id) {
+	public Long deleteById(Long id) {
 		userRepository.delete(id);
-		redisTemplate.opsForHash().delete(KEY, id);
+		return redisTemplate.opsForHash().delete(KEY, id);
 	}
 }

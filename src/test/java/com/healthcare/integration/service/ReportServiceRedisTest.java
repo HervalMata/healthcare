@@ -149,9 +149,7 @@ public class ReportServiceRedisTest {
 		Mockito.when(reportRepository.save(report)).thenReturn(report);
 		reportService.save(report);
 		Mockito.doNothing().when(reportRepository).delete(report.getId());
-		reportService.deleteById(report.getId());
-		Report deletedReport = reportService.findById(report.getId());
-		Assert.assertNull(deletedReport);
+		Assert.assertNotNull(reportService.deleteById(report.getId()));
 	}
 
 	private Report createNewReport() {

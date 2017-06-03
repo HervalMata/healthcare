@@ -26,19 +26,18 @@ public @Data class Visit implements Serializable {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 	@ManyToOne
-	@JoinColumn(name = "meal_id")
-	private Meal meal;
-	@ManyToOne
 	@JoinColumn(name = "agency_id")
 	private Agency agency;
 	@Column(name = "check_in_time")
 	private Timestamp checkInTime;
 	@ManyToOne
+	@JoinColumn(name = "serviceplan_id")
+	private ServicePlan servicePlan;;
+	@ManyToOne
 	@JoinColumn(name = "selected_meal_id")
 	private Meal selectedMeal;
-	@ManyToOne
-	@JoinColumn(name = "selected_activity_id")
-	private Activity selectedActivity;
+	@Column(name = "selected_table")
+	private String selectedTable;
 	@Column(name = "selected_seat")
 	private String selectedSeat;
 	@Column(name = "user_signature")
@@ -50,12 +49,9 @@ public @Data class Visit implements Serializable {
 	@Column(name = "user_comments")
 	private String userComments;
 	private String notes;
-	private Integer status;
+	private String status;
 	@ManyToOne
 	@JoinColumn(name = "user_id")
 	private User user;
-	@ManyToOne
-	@JoinColumn(name = "signature_type_id")
-	private SignatureType signatureType;
-
+	
 }

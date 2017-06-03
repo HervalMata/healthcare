@@ -78,7 +78,7 @@ public class AdminPostControllerTest {
 
 	@Test
 	public void testDeleteAdminPost() throws Exception {
-		Mockito.doNothing().when(adminPostService).deleteById(1L);
+		Mockito.when(adminPostService.deleteById(1L)).thenReturn(1L);
 		this.mockMvc.perform(get("/api/adminpost/1")).andExpect(status().isOk());
 	}
 }

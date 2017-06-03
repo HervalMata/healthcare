@@ -34,9 +34,9 @@ public class ReviewServiceImpl implements ReviewService {
 	}
 
 	@Override
-	public void deleteById(Long id) {
+	public Long deleteById(Long id) {
 		reviewRepository.delete(id);
-		reviewRedisTemplate.opsForHash().delete(KEY, id);
+		return reviewRedisTemplate.opsForHash().delete(KEY, id);
 	}
 
 	@Override

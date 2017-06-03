@@ -34,9 +34,9 @@ public class MenuServiceImpl implements MenuService {
 	}
 
 	@Override
-	public void deleteById(Long id) {
+	public Long deleteById(Long id) {
 		menuRepository.delete(id);
-		menuRedisTemplate.opsForHash().delete(KEY, id);
+		return menuRedisTemplate.opsForHash().delete(KEY, id);
 	}
 
 	@Override

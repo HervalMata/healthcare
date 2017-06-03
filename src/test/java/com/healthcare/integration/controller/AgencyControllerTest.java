@@ -74,7 +74,7 @@ public class AgencyControllerTest {
 
 	@Test
 	public void testDeleteAgency() throws Exception {
-		Mockito.doNothing().when(agencyService).deleteById(1L);
+		Mockito.when(agencyService.deleteById(1L)).thenReturn(1L);
 		this.mockMvc.perform(get("/api/agency/1")).andExpect(status().isOk());
 	}
 }

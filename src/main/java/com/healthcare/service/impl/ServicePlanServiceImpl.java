@@ -34,9 +34,9 @@ public class ServicePlanServiceImpl implements ServicePlanService {
 	}
 
 	@Override
-	public void deleteById(Long id) {
+	public Long deleteById(Long id) {
 		servicePlanRepository.delete(id);
-		servicePlanRedisTemplate.opsForHash().delete(KEY, id);
+		return servicePlanRedisTemplate.opsForHash().delete(KEY, id);
 	}
 
 	@Override

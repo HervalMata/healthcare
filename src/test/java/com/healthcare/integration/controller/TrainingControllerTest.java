@@ -74,7 +74,7 @@ public class TrainingControllerTest {
 
 	@Test
 	public void testDeleteTraining() throws Exception {
-		Mockito.doNothing().when(trainingService).deleteById(1L);
+		Mockito.when(trainingService.deleteById(1L)).thenReturn(1L);
 		this.mockMvc.perform(get("/api/training/1")).andExpect(status().isOk());
 	}
 }

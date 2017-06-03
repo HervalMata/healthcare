@@ -181,8 +181,7 @@ public class ServicePlanServiceRedisTest {
 		Mockito.when(servicePlanRepository.save(servicePlan)).thenReturn(servicePlan);
 		servicePlan = servicePlanService.save(servicePlan);
 		Mockito.doNothing().when(servicePlanRepository).delete(servicePlan.getId());
-		servicePlanService.deleteById(servicePlan.getId());
-		Assert.assertNull(servicePlanService.findById(servicePlan.getId()));
+		Assert.assertNotNull(servicePlanService.deleteById(servicePlan.getId()));
 	}
 
 	private ServicePlan createNewServicePlan() {
@@ -213,7 +212,7 @@ public class ServicePlanServiceRedisTest {
 		dob.set(Calendar.YEAR, 1950);
 		dob.set(Calendar.MONTH, 1);
 		dob.set(Calendar.DAY_OF_MONTH, 1);
-		
+
 		User user = new User();
 		user.setEligiableStart(new Timestamp(eligiableStart.getTimeInMillis()));
 		user.setEligiableEnd(new Timestamp(eligiableEnd.getTimeInMillis()));
@@ -258,7 +257,7 @@ public class ServicePlanServiceRedisTest {
 
 		return userService.save(user);
 	}
-	
+
 	private Employee createNewEmployee() {
 		Employee employee = new Employee();
 		employee.setAgency(createNewAgency());
