@@ -1,15 +1,13 @@
 package com.healthcare.repository;
 
-import java.util.List;
-
+import com.healthcare.model.entity.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 
-import com.healthcare.model.entity.Role;
+import java.util.List;
 
-public interface RoleRepository extends CrudRepository<Role, Long>, JpaRepository<Role, Long> {
+public interface RoleRepository extends JpaRepository<Role, Long> {
 
 	Role findByLevel(long level);
 

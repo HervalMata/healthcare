@@ -1,12 +1,10 @@
 package com.healthcare.repository;
 
+import com.healthcare.model.entity.AgencyType;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
-import com.healthcare.model.entity.AgencyType;
-
 @Repository
-public interface AgencyTypeRepository extends CrudRepository<AgencyType, Long>, JpaRepository<AgencyType, Long> {
+public interface AgencyTypeRepository extends JpaRepository<AgencyType, Long> {
 
 }

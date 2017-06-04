@@ -1,12 +1,13 @@
 package com.healthcare.model.entity;
 
-import java.sql.Timestamp;
+import lombok.Data;
 
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
+import java.sql.Timestamp;
 
 @MappedSuperclass
-public class Audit {
+public @Data class Audit {
 	@Column(name = "created_at")
 	protected Timestamp createdAt;
 	@Column(name = "updated_at")

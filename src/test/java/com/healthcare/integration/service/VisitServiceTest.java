@@ -21,6 +21,9 @@ import com.healthcare.service.AgencyTypeService;
 import com.healthcare.service.CompanyService;
 import com.healthcare.service.UserService;
 import com.healthcare.service.VisitService;
+import org.junit.Assert;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
