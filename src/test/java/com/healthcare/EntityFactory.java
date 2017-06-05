@@ -8,6 +8,7 @@ import java.util.Date;
 import com.healthcare.model.entity.Agency;
 import com.healthcare.model.entity.AgencyType;
 import com.healthcare.model.entity.Company;
+import com.healthcare.model.entity.ServicePlan;
 import com.healthcare.model.entity.User;
 import com.healthcare.model.entity.Visit;
 import com.healthcare.model.enums.GenderEnum;
@@ -76,6 +77,12 @@ public class EntityFactory {
 	public String selectedTable = "TABLE 1";
 	public String selectedSeat = "AB";
 	public String userSignature = "userSignature";
+	
+	String approvedBy = "Manager";
+	Calendar planStart = Calendar.getInstance();
+	Calendar planEnd = Calendar.getInstance();
+	String days = "Monday";
+	String docUrl = "/doc/a";
 
 	protected void init() {
 		eligiableStart.set(Calendar.YEAR, 2017);
@@ -196,6 +203,18 @@ public class EntityFactory {
 		return user;
 	}
 
+	protected ServicePlan createNewServicePlan(User user){
+		ServicePlan servicePlan = new ServicePlan();
+		servicePlan.setApprovedBy(approvedBy);
+		servicePlan.setDays(days);
+		servicePlan.setDocUrl(docUrl);
+		servicePlan.setEmployee(null);
+		servicePlan.setPlanEnd(new Timestamp(planEnd.getTimeInMillis()));
+		servicePlan.setPlanStart(new Timestamp(planStart.getTimeInMillis()));
+		servicePlan.setUser(user);
+		return servicePlan;
+	}
+	
 	protected Visit createNewVisit(User user, Agency agency) {
 		Visit visit = new Visit();
 		visit.setUser(user);
@@ -213,5 +232,4 @@ public class EntityFactory {
 		visit.setStatus(VisitStatusEnum.BOOKED.name());
 		return visit;
 	}
-
 }

@@ -14,16 +14,15 @@ import com.healthcare.EntityFactory;
 import com.healthcare.model.entity.Agency;
 import com.healthcare.model.entity.AgencyType;
 import com.healthcare.model.entity.Company;
+import com.healthcare.model.entity.ServicePlan;
 import com.healthcare.model.entity.User;
 import com.healthcare.model.entity.Visit;
 import com.healthcare.service.AgencyService;
 import com.healthcare.service.AgencyTypeService;
 import com.healthcare.service.CompanyService;
+import com.healthcare.service.ServicePlanService;
 import com.healthcare.service.UserService;
 import com.healthcare.service.VisitService;
-import org.junit.Assert;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -41,6 +40,9 @@ public class VisitServiceTest extends EntityFactory {
 
 	@Autowired
 	public AgencyTypeService agencyTypeService;
+	
+	@Autowired
+	public ServicePlanService servicePlanService;
 
 	@Autowired
 	private VisitService visitService;
@@ -49,6 +51,7 @@ public class VisitServiceTest extends EntityFactory {
 	private AgencyType agencyType;
 	private Agency agency;
 	private User user;
+	private ServicePlan servicePlan;
 
 	@Before
 	public void setup() {
@@ -59,8 +62,10 @@ public class VisitServiceTest extends EntityFactory {
 		agencyTypeService.save(agencyType);
 		agency = createNewAgency(agencyType, company);
 		agencyService.save(agency);
-		user = createNewUser();
+		user = createNewUser();		
 		userService.save(user);
+		servicePlan = createNewServicePlan(user);
+		servicePlanService.save(servicePlan);
 	}
 
 	@Test
@@ -75,6 +80,13 @@ public class VisitServiceTest extends EntityFactory {
 		Visit visit = createNewVisit(user, agency);
 		visitService.save(visit);
 		Assert.assertNotNull(visitService.findById(visit.getId()));
+	}
+	
+	@Test
+	public void shouldFindAllVisitByServiceId() {
+		Visit visit = createNewVisit(user, agency);
+		visitService.save(visit);
+		Assert.assertNotNull(visitService.findAllByServicePlanId(servicePlan.getId()));
 	}
 
 	@Test

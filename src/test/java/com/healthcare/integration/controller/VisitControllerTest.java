@@ -5,6 +5,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.util.ArrayList;
+
 import javax.transaction.Transactional;
 
 import org.junit.Before;
@@ -58,6 +60,12 @@ public class VisitControllerTest {
 	public void shouldAcceptGetVisitRequest() throws Exception {
 		Mockito.when(visitService.findById(1L)).thenReturn(visit);
 		this.mockMvc.perform(get("/api/visit/1")).andExpect(status().isOk());
+	}
+	
+	@Test
+	public void shouldAcceptFindAllByServicePlanIdRequest() throws Exception {
+		Mockito.when(visitService.findAllByServicePlanId(1L)).thenReturn(new ArrayList<Visit>());
+		this.mockMvc.perform(get("/api/visit/serviceplan/1")).andExpect(status().isOk());
 	}
 
 	@Test

@@ -1,5 +1,7 @@
 package com.healthcare.service.impl;
 
+import java.util.List;
+
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,4 +45,8 @@ public class VisitServiceImpl implements VisitService {
 		return redisTemplate.opsForHash().delete(KEY, id);
 	}
 
+	@Override
+	public List<Visit> findAllByServicePlanId(Long servicePlanId) {
+		return visitRepository.findAllByServicePlanId(servicePlanId);
+	}
 }

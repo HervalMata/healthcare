@@ -1,5 +1,7 @@
 package com.healthcare.api;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,5 +56,12 @@ public class VisitController {
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
 	public void delete(@PathVariable Long id) {
 		visitService.deleteById(id);
+	}
+
+	@ApiOperation(value = "get all visit by service plan id", notes = "get all visit by service plan id")
+	@ApiImplicitParam(name = "servicePlanId", value = "service plan id", required = true, dataType = "Long")
+	@RequestMapping(value = "/serviceplan/{servicePlanId}", method = RequestMethod.GET)
+	public List<Visit> findAllByServicePlanId(@PathVariable Long servicePlanId) {
+		return visitService.findAllByServicePlanId(servicePlanId);
 	}
 }
