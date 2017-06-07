@@ -74,18 +74,6 @@
               type="part-time"
               agency_id="100" />
 
-    <employee id="101"
-              first_name="First Name"
-              last_name="Last Name"
-              gender="Male"
-              social_security_number="12345"
-              date_of_birth="2000-01-01"
-              physical_exam="Physical Exam"
-              work_start="2015-01-01"
-              manager="part-time"
-              type="part-time"
-              agency_id="100" />
-
     <review id="100"
             user_id="100"
             user_id1="100"

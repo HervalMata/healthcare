@@ -1,58 +1,64 @@
 package com.healthcare.service.impl;
 
-import java.util.List;
-import java.util.Map;
-
-import javax.transaction.Transactional;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.stereotype.Service;
-
 import com.healthcare.model.entity.Review;
 import com.healthcare.repository.ReviewRepository;
 import com.healthcare.service.ReviewService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
-import io.jsonwebtoken.lang.Collections;
+import javax.transaction.Transactional;
+import java.util.List;
+import java.util.Map;
 
 @Service
 @Transactional
 public class ReviewServiceImpl implements ReviewService {
-	private static final String KEY = Review.class.getSimpleName();
 
-	@Autowired
-	ReviewRepository reviewRepository;
+	private static final String REDIS_KEY = Review.class.getSimpleName();
 
-	@Autowired
-	private RedisTemplate<String, Review> reviewRedisTemplate;
+	private ReviewRepository reviewRepository;
+	private RedisTemplate<String, Review> redisTemplate;
 
-	@Override
+    @Autowired
+    public ReviewServiceImpl(ReviewRepository reviewRepository, RedisTemplate<String, Review> redisTemplate) {
+        this.reviewRepository = reviewRepository;
+        this.redisTemplate = redisTemplate;
+    }
+
+    @Override
 	public Review save(Review review) {
-		review = reviewRepository.save(review);
-		reviewRedisTemplate.opsForHash().put(KEY, review.getId(), review);
-		return review;
+		Review savedReview = reviewRepository.save(review);
+		redisTemplate.opsForHash().put(REDIS_KEY, savedReview.getId(), savedReview);
+
+		return savedReview;
 	}
 
 	@Override
 	public Long deleteById(Long id) {
 		reviewRepository.delete(id);
-		return reviewRedisTemplate.opsForHash().delete(KEY, id);
+
+		return redisTemplate.opsForHash().delete(REDIS_KEY, id);
 	}
 
 	@Override
 	public Review findById(Long id) {
-		if (reviewRedisTemplate.opsForHash().hasKey(KEY, id)) {
-			return (Review) reviewRedisTemplate.opsForHash().get(KEY, id);
-		}
+        Object review = redisTemplate.opsForHash().get(REDIS_KEY, id);
+        if (review != null) {
+            return (Review) review;
+        }
+
 		return reviewRepository.findOne(id);
 	}
 
 	@Override
 	public List<Review> findAll() {
-		Map<Object, Object> reviewMap = reviewRedisTemplate.opsForHash().entries(KEY);
-		List<Review> reviewList = Collections.arrayToList(reviewMap.values().toArray());
-		if (reviewMap.isEmpty())
-			reviewList = reviewRepository.findAll();
-		return reviewList;
+		Map<Object, Object> reviewMap = redisTemplate.opsForHash().entries(REDIS_KEY);
+		if (!reviewMap.isEmpty()) {
+            return CollectionUtils.arrayToList(reviewMap.values().toArray());
+        }
+
+        return reviewRepository.findAll();
 	}
 }
