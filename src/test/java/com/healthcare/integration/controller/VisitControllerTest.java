@@ -88,4 +88,15 @@ public class VisitControllerTest {
 				.andExpect(status().isOk());
 	}
 	
+	@Test
+	public void shouldCheckoutVisitRequest() throws Exception {
+		Mockito.when(visitService.save(visit)).thenReturn(visit);
+		
+		ObjectMapper mapper = new ObjectMapper();
+		String jsonInString = mapper.writeValueAsString(visit);
+		
+		this.mockMvc.perform(put("/api/visit/checkout").contentType(MediaType.APPLICATION_JSON).content(jsonInString))
+		.andExpect(status().isOk());
+	}
+	
 }
