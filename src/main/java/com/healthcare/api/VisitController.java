@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.healthcare.api.model.VisitRequest;
 import com.healthcare.model.entity.Visit;
 import com.healthcare.service.VisitService;
 
@@ -55,4 +56,23 @@ public class VisitController {
 	public void delete(@PathVariable Long id) {
 		visitService.deleteById(id);
 	}
+
+	@ApiOperation(value = "check in", notes = "check in")
+	@ApiParam(name = "visit", value = "visit to update", required = true)
+	@RequestMapping(value="/checkin", method = RequestMethod.PUT)
+	public ResponseEntity<Visit> checkIn(@RequestBody VisitRequest visitRequest) {
+		if(visitRequest.getId() != null || visitRequest.getUserBarcodeId() != null)
+		{
+			Visit visit = new Visit();
+			visit.setId(visitRequest.getId());
+			visit.setUserBarcodeId(visitRequest.getUserBarcodeId());
+			visit = visitService.checkIn(visit);
+			return new ResponseEntity<Visit>(visit, HttpStatus.OK);
+		}
+		else{
+			return  new ResponseEntity<Visit>(HttpStatus.NO_CONTENT);
+		}
+	}
+	
+
 }

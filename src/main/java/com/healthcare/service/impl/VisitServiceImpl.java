@@ -1,5 +1,8 @@
 package com.healthcare.service.impl;
 
+import java.sql.Timestamp;
+import java.util.Date;
+
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.healthcare.model.entity.User;
 import com.healthcare.model.entity.Visit;
+import com.healthcare.model.enums.VisitStatusEnum;
 import com.healthcare.repository.VisitRepository;
 import com.healthcare.service.VisitService;
 
@@ -43,4 +47,34 @@ public class VisitServiceImpl implements VisitService {
 		return redisTemplate.opsForHash().delete(KEY, id);
 	}
 
+	@Override
+	public Visit findByUserBarcodeId(String userBarcodeId) {
+		return visitRepository.findByUserBarcodeId(userBarcodeId);
+	}
+	
+	@Override
+	public Visit checkIn(Visit visit) {
+		if (visit.getId() != null) {
+			visit = findById(visit.getId());
+		} else {
+			visit = findByUserBarcodeId(visit.getUserBarcodeId());
+		}
+		visit.setCheckInTime(new Timestamp(new Date().getTime()));
+
+		// Status
+		switch (VisitStatusEnum.valueOf(visit.getStatus())) {
+		case BOOKED:
+			visit.setStatus(VisitStatusEnum.REGISTERED.name());
+			break;
+		case REGISTERED:
+			visit.setStatus(VisitStatusEnum.FINISHED.name());
+			break;
+		default:
+			visit.setStatus(VisitStatusEnum.BOOKED.name());
+			break;
+		}
+		// save visit
+		return save(visit);
+	}
+	
 }
