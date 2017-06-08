@@ -77,4 +77,17 @@ public class VisitServiceImpl implements VisitService {
 		return save(visit);
 	}
 	
+	
+	@Override
+	public Visit checkOut(Visit visit) {
+		if (visit.getId() != null) {
+			visit = findById(visit.getId());
+		} else {
+			visit = findByUserBarcodeId(visit.getUserBarcodeId());
+		}
+		visit.setCheckOutTime(new Timestamp(new Date().getTime()));
+
+		// save visit
+		return save(visit);
+	}	
 }

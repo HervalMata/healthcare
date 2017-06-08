@@ -4,7 +4,9 @@ import com.healthcare.model.entity.Visit;
 
 public interface VisitService extends IService<Visit> {
 
-	Visit checkIn(Visit visit); 
+	Visit checkIn(Visit visit);
+	
+	Visit checkOut(Visit visit); 
 		
 	Visit findByUserBarcodeId(String userBarcodeId);
 }

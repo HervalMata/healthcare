@@ -74,5 +74,21 @@ public class VisitController {
 		}
 	}
 	
-
+	@ApiOperation(value = "check out", notes = "check out")
+	@ApiParam(name = "visit", value = "visit to update", required = true)
+	@RequestMapping(value="/checkout", method = RequestMethod.PUT)
+	public ResponseEntity<Visit> checkOut(@RequestBody VisitRequest visitRequest) {
+		if(visitRequest.getId() != null || visitRequest.getUserBarcodeId() != null)
+		{
+			Visit visit = new Visit();
+			visit.setId(visitRequest.getId());
+			visit.setUserBarcodeId(visitRequest.getUserBarcodeId());
+			visit = visitService.checkOut(visit);
+			return new ResponseEntity<Visit>(visit, HttpStatus.OK);
+		}
+		else{
+			return  new ResponseEntity<Visit>(HttpStatus.NO_CONTENT);
+		}
+	}
+	
 }
