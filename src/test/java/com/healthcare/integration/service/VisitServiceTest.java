@@ -125,5 +125,21 @@ public class VisitServiceTest extends EntityFactory {
 		Assert.assertNotEquals(visitCHeckIn.getCheckInTime(), oldCheckInTime);
 		Assert.assertNotEquals(visitCHeckIn.getStatus(), oldStatus);
 	}
+	
+	@Test
+	public void shouldCheckOutAVisit() {
+		Visit visit = createNewVisit(user, agency);
+		visit.setCheckOutTime(new Timestamp(new Date(0).getTime()));  
+		visitService.save(visit);
+		Visit visitSaved = visitService.findById(visit.getId());
+		
+		// Values before check out
+		Date oldCheckOutTime = visitSaved.getCheckOutTime();
+		
+		visitService.checkOut(visitSaved);
+		Visit visitCHeckOut = visitService.findById(visitSaved.getId());
+		
+		Assert.assertNotEquals(visitCHeckOut.getCheckOutTime(), oldCheckOutTime);
+	}
 
 }

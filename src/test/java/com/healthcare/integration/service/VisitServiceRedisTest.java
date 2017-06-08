@@ -127,6 +127,7 @@ public class VisitServiceRedisTest extends EntityFactory {
 		Assert.assertNotEquals(visitCHeckIn.getStatus(), oldStatus);
 	}
 	
+	
 	@Test
 	public void shouldCheckOutAVisitToRedis() {
 		Visit visit = createNewVisit(user, agency);
