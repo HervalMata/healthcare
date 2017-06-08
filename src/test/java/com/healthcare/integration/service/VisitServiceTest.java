@@ -1,11 +1,15 @@
 package com.healthcare.integration.service;
 
+import java.sql.Timestamp;
+import java.util.Date;
+
 import javax.transaction.Transactional;
 
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -102,6 +106,24 @@ public class VisitServiceTest extends EntityFactory {
 		Assert.assertNotNull(visit.getId());
 		visitService.deleteById(visit.getId());
 		Assert.assertNull(visitService.findById(visit.getId()));
+	}
+	
+	@Test
+	public void shouldCheckInAVisit() {
+		Visit visit = createNewVisit(user, agency);
+		visit.setCheckInTime(new Timestamp(new Date(0).getTime()));  
+		visitService.save(visit);
+		Visit visitSaved = visitService.findById(visit.getId());
+		
+		// Values before check in
+		Date oldCheckInTime = visitSaved.getCheckInTime();
+		String oldStatus = visitSaved.getStatus();
+		
+		visitService.checkIn(visitSaved);
+		Visit visitCHeckIn = visitService.findById(visitSaved.getId());
+		
+		Assert.assertNotEquals(visitCHeckIn.getCheckInTime(), oldCheckInTime);
+		Assert.assertNotEquals(visitCHeckIn.getStatus(), oldStatus);
 	}
 
 }

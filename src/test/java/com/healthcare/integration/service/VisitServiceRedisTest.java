@@ -1,5 +1,8 @@
 package com.healthcare.integration.service;
 
+import java.sql.Timestamp;
+import java.util.Date;
+
 import javax.transaction.Transactional;
 
 import org.junit.Assert;
@@ -102,6 +105,44 @@ public class VisitServiceRedisTest extends EntityFactory {
 		visitService.save(visit);
 		Mockito.doNothing().when(visitRepository).delete(10L);
 		Assert.assertNotNull(visitService.deleteById(visit.getId()));
+	}
+	
+	@Test
+	public void shouldCheckInAVisitToRedis() {
+		Visit visit = createNewVisit(user, agency);
+		visit.setId(11L);
+		visit.setCheckInTime(new Timestamp(new Date(0).getTime()));  
+		Mockito.when(visitRepository.save(visit)).thenReturn(visit);
+		visitService.save(visit);
+		
+		Visit visitSaved = visitService.findById(visit.getId());
+		// Values before check in
+		Date oldCheckInTime = visitSaved.getCheckInTime();
+		String oldStatus = visitSaved.getStatus();
+		
+		visitService.checkIn(visitSaved);
+		Visit visitCHeckIn = visitService.findById(visitSaved.getId());
+		
+		Assert.assertNotEquals(visitCHeckIn.getCheckInTime(), oldCheckInTime);
+		Assert.assertNotEquals(visitCHeckIn.getStatus(), oldStatus);
+	}
+	
+	@Test
+	public void shouldCheckOutAVisitToRedis() {
+		Visit visit = createNewVisit(user, agency);
+		visit.setId(11L);
+		visit.setCheckOutTime(new Timestamp(new Date(0).getTime()));  
+		Mockito.when(visitRepository.save(visit)).thenReturn(visit);
+		visitService.save(visit);
+		
+		Visit visitSaved = visitService.findById(visit.getId());
+		// Values before check out
+		Date oldCheckOutTime = visitSaved.getCheckOutTime();
+		
+		visitService.checkIn(visitSaved);
+		Visit visitCHeckOut = visitService.findById(visitSaved.getId());
+		
+		Assert.assertNotEquals(visitCHeckOut.getCheckOutTime(), oldCheckOutTime);
 	}
 
 }
