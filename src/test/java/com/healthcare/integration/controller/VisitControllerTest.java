@@ -76,4 +76,16 @@ public class VisitControllerTest {
 		Mockito.when(visitService.deleteById(1L)).thenReturn(1L);
 		this.mockMvc.perform(get("/api/visit/1")).andExpect(status().isOk());
 	}
+	
+	@Test
+	public void shouldCheckinVisitRequest() throws Exception {
+		Mockito.when(visitService.save(visit)).thenReturn(visit);
+
+		ObjectMapper mapper = new ObjectMapper();
+		String jsonInString = mapper.writeValueAsString(visit);
+
+		this.mockMvc.perform(put("/api/visit/checkin").contentType(MediaType.APPLICATION_JSON).content(jsonInString))
+				.andExpect(status().isOk());
+	}
+	
 }
