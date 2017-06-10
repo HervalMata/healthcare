@@ -1,5 +1,7 @@
 package com.healthcare.service.impl;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -53,5 +55,13 @@ public class ServicePlanServiceImpl implements ServicePlanService {
 		if (servicePlanMap.isEmpty())
 			servicePlanList = servicePlanRepository.findAll();
 		return servicePlanList;
+	}
+
+	@Override
+	public List<Date> getServiceCalendar(Long servicePlanId) {
+		ServicePlan servicePlan = findById(servicePlanId);
+		if (servicePlan != null)
+			return servicePlanRepository.getServiceCalendar(servicePlan);
+		return new ArrayList<Date>();
 	}
 }

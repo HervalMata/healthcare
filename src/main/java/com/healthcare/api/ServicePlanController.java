@@ -1,5 +1,6 @@
 package com.healthcare.api;
 
+import java.util.Date;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -51,6 +52,14 @@ public class ServicePlanController {
 	@GetMapping()
 	public List<ServicePlan> readAll() {
 		return servicePlanService.findAll();
+	}
+	
+	@ApiOperation(value = "get service calendar by servce plan id", notes = "get service calendar by service plan id")
+	@ApiImplicitParam(name = "servicePlanId", value = "service plan id", required = true, dataType = "Long")
+	@GetMapping("/calendar/{servicePlanId}")
+	public List<Date> getServiceCalendar(@PathVariable Long servicePlanId) {
+		logger.info("id : " + servicePlanId);
+		return servicePlanService.getServiceCalendar(servicePlanId);
 	}
 
 	@ApiOperation(value = "update service plan", notes = "update service plan")
