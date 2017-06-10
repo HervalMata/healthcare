@@ -63,10 +63,7 @@ public class VisitController {
 	public ResponseEntity<Visit> checkIn(@RequestBody VisitRequest visitRequest) {
 		if(visitRequest.getId() != null || visitRequest.getUserBarcodeId() != null)
 		{
-			Visit visit = new Visit();
-			visit.setId(visitRequest.getId());
-			visit.setUserBarcodeId(visitRequest.getUserBarcodeId());
-			visit = visitService.checkIn(visit);
+			Visit visit = visitService.checkIn(visitRequest);
 			return new ResponseEntity<Visit>(visit, HttpStatus.OK);
 		}
 		else{
@@ -80,10 +77,7 @@ public class VisitController {
 	public ResponseEntity<Visit> checkOut(@RequestBody VisitRequest visitRequest) {
 		if(visitRequest.getId() != null || visitRequest.getUserBarcodeId() != null)
 		{
-			Visit visit = new Visit();
-			visit.setId(visitRequest.getId());
-			visit.setUserBarcodeId(visitRequest.getUserBarcodeId());
-			visit = visitService.checkOut(visit);
+			Visit visit = visitService.checkOut(visitRequest);
 			return new ResponseEntity<Visit>(visit, HttpStatus.OK);
 		}
 		else{
