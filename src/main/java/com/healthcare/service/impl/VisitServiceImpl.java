@@ -48,16 +48,11 @@ public class VisitServiceImpl implements VisitService {
 	}
 
 	@Override
-	public Visit findByUserBarcodeId(String userBarcodeId) {
-		return visitRepository.findByUserBarcodeId(userBarcodeId);
-	}
-	
-	@Override
 	public Visit checkIn(Visit visit) {
 		if (visit.getId() != null) {
 			visit = findById(visit.getId());
 		} else {
-			visit = findByUserBarcodeId(visit.getUserBarcodeId());
+			visit = visitRepository.findByUserBarcodeId(visit.getUserBarcodeId());
 		}
 		visit.setCheckInTime(new Timestamp(new Date().getTime()));
 
@@ -83,7 +78,7 @@ public class VisitServiceImpl implements VisitService {
 		if (visit.getId() != null) {
 			visit = findById(visit.getId());
 		} else {
-			visit = findByUserBarcodeId(visit.getUserBarcodeId());
+			visit = visitRepository.findByUserBarcodeId(visit.getUserBarcodeId());
 		}
 		visit.setCheckOutTime(new Timestamp(new Date().getTime()));
 

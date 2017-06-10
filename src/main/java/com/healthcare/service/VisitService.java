@@ -8,5 +8,4 @@ public interface VisitService extends IService<Visit> {
 	
 	Visit checkOut(Visit visit); 
 		
-	Visit findByUserBarcodeId(String userBarcodeId);
 }
