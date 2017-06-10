@@ -9,9 +9,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
+import com.healthcare.api.model.VisitRequest;
+import com.healthcare.exception.ApplicationException;
 import com.healthcare.model.entity.User;
 import com.healthcare.model.entity.Visit;
 import com.healthcare.model.enums.VisitStatusEnum;
+import com.healthcare.model.response.Response;
 import com.healthcare.repository.VisitRepository;
 import com.healthcare.service.VisitService;
 
@@ -48,41 +51,46 @@ public class VisitServiceImpl implements VisitService {
 	}
 
 	@Override
-	public Visit checkIn(Visit visit) {
-		if (visit.getId() != null) {
-			visit = findById(visit.getId());
+	public Visit checkIn(VisitRequest visitRequest) {
+		Visit visit = null;
+		if (visitRequest.getId() != null) {
+			visit = findById(visitRequest.getId());
 		} else {
-			visit = visitRepository.findByUserBarcodeId(visit.getUserBarcodeId());
+			visit = visitRepository.findByUserBarcodeId(visitRequest.getUserBarcodeId());
 		}
 		visit.setCheckInTime(new Timestamp(new Date().getTime()));
 
 		// Status
-		switch (VisitStatusEnum.valueOf(visit.getStatus())) {
-		case BOOKED:
+		if (VisitStatusEnum.BOOKED.equals(VisitStatusEnum.valueOf(visit.getStatus()))) {
 			visit.setStatus(VisitStatusEnum.REGISTERED.name());
-			break;
-		case REGISTERED:
-			visit.setStatus(VisitStatusEnum.FINISHED.name());
-			break;
-		default:
-			visit.setStatus(VisitStatusEnum.BOOKED.name());
-			break;
+		}
+		else
+		{
+			throw new ApplicationException(Response.ResultCode.INVALID_STATUS, "Invalid visit status");
 		}
 		// save visit
 		return save(visit);
 	}
-	
-	
+
 	@Override
-	public Visit checkOut(Visit visit) {
-		if (visit.getId() != null) {
-			visit = findById(visit.getId());
+	public Visit checkOut(VisitRequest visitRequest) {
+		Visit visit = null;
+		if (visitRequest.getId() != null) {
+			visit = findById(visitRequest.getId());
 		} else {
-			visit = visitRepository.findByUserBarcodeId(visit.getUserBarcodeId());
+			visit = visitRepository.findByUserBarcodeId(visitRequest.getUserBarcodeId());
 		}
+		
 		visit.setCheckOutTime(new Timestamp(new Date().getTime()));
 
+		if (VisitStatusEnum.REGISTERED.equals(VisitStatusEnum.valueOf(visit.getStatus()))) {
+			visit.setStatus(VisitStatusEnum.FINISHED.name());
+		}
+		else
+		{
+			throw new ApplicationException(Response.ResultCode.INVALID_STATUS, "Invalid visit status");
+		}
 		// save visit
 		return save(visit);
-	}	
+	}
 }
