@@ -22,13 +22,8 @@ public @Data class Review extends Audit implements Serializable {
 	@ManyToOne
 	@JoinColumn(name = "user_id")
 	private User user;
-	@JoinColumn(name = "affect_start")
-	private Timestamp affectStart;
-	@JoinColumn(name = "affect_end")
-	private Timestamp affectEnd;
-	private Integer content;
 	@ManyToOne
-	@JoinColumn(name = "user_id1")
-	private User user1;
+	@JoinColumn(name = "employee_id")
+	private Employee employee;
 
 }
