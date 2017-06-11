@@ -157,6 +157,12 @@ public class VisitServiceTest extends EntityFactory {
 		visitService.checkIn(visitRequest);
 	}
 	
+	@Test(expected = ApplicationException.class)
+	public void shouldNotCheckInAVisit2() {
+		VisitRequest visitRequest = new VisitRequest();
+		visitService.checkIn(visitRequest);
+	}
+	
 	@Test
 	public void shouldCheckOutAVisit() {
 		Visit visit = createNewVisit(user, agency);
@@ -204,6 +210,12 @@ public class VisitServiceTest extends EntityFactory {
 		
 		VisitRequest visitRequest = new VisitRequest();
 		visitRequest.setId(visit.getId());
+		visitService.checkOut(visitRequest);
+	}
+	
+	@Test(expected = ApplicationException.class)
+	public void shouldNotCheckOutAVisit2() {
+		VisitRequest visitRequest = new VisitRequest();
 		visitService.checkOut(visitRequest);
 	}
 
