@@ -30,22 +30,8 @@ public @Data class Review extends Audit implements Serializable {
 	@ManyToOne
 	@JoinColumn(name = "user_id")
 	private User user;
-    @ManyToOne
-    @JoinColumn(name = "user_id1")
-    private User user1;
-    @ManyToOne
-    @JoinColumn(name = "employee_id")
-    private Employee employee;
-
-	@JoinColumn(name = "affect_start")
-	private Timestamp affectStart;
-	@JoinColumn(name = "affect_end")
-	private Timestamp affectEnd;
-
-    @Column(name = "form_data")
-    @Type(type = "com.healthcare.model.entity.usertype.ReviewFormDataUserType")
-    private ReviewForm formData;
-
-	private Integer content;
+	@ManyToOne
+	@JoinColumn(name = "employee_id")
+	private Employee employee;
 
 }
