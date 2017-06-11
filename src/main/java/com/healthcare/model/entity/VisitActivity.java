@@ -3,6 +3,7 @@ package com.healthcare.model.entity;
 import java.io.Serializable;
 import java.sql.Timestamp;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -25,11 +26,11 @@ public @Data class VisitActivity implements Serializable {
 	 */
 	private static final long serialVersionUID = -4384670103126314525L;
 	@Id
-	@ManyToOne
+	@ManyToOne(cascade = CascadeType.MERGE)
 	@JoinColumn(name = "visit_id")
 	private Visit visit;
 	@Id
-	@ManyToOne
+	@ManyToOne(cascade = CascadeType.MERGE)
 	@JoinColumn(name = "activity_id")
 	private Activity activity;
 	private String table;
@@ -38,5 +39,4 @@ public @Data class VisitActivity implements Serializable {
 	private Timestamp startTime;
 	@Column(name = "end_time")
 	private Timestamp endTime;
-
 }

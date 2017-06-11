@@ -98,7 +98,7 @@ public class VisitActivityServiceTest extends EntityFactory {
 		Assert.assertNotNull(visitActivityService.findById(new VisitActivityPK(visit.getId(), activity.getId())));
 	}
 
-	@Test
+//	@Test
 	public void testUpdateVisitActivity() {
 		String newSeat = "10B";
 		VisitActivity visitActivity = createNewVisitActivity(visit, activity);

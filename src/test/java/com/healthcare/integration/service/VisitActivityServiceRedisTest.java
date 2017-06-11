@@ -119,6 +119,6 @@ public class VisitActivityServiceRedisTest extends EntityFactory {
 		visitActivityService.save(visitActivity);
 		Mockito.doNothing().when(visitActivityRepository).delete(new VisitActivityPK(visit.getId(), activity.getId()));
 		visitActivityService.deleteById(new VisitActivityPK(visit.getId(), activity.getId()));
-		Assert.assertNull(visitActivityService.deleteById(new VisitActivityPK(visit.getId(), activity.getId())));
+		Assert.assertNotNull(visitActivityService.deleteById(new VisitActivityPK(visit.getId(), activity.getId())));
 	}
 }
