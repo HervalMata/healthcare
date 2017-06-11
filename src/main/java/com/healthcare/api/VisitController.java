@@ -58,31 +58,28 @@ public class VisitController {
 	}
 
 	@ApiOperation(value = "check in", notes = "check in")
-	@ApiParam(name = "visit", value = "visit to update", required = true)
-	@RequestMapping(value="/checkin", method = RequestMethod.PUT)
+	@ApiParam(name = "visitRequest", value = "visit Id or userBarecodeId", required = true)
+	@RequestMapping(value = "/checkin", method = RequestMethod.PUT)
 	public ResponseEntity<Visit> checkIn(@RequestBody VisitRequest visitRequest) {
-		if(visitRequest.getId() != null || visitRequest.getUserBarcodeId() != null)
-		{
+		if (visitRequest.getId() != null || visitRequest.getUserBarcodeId() != null) {
 			Visit visit = visitService.checkIn(visitRequest);
 			return new ResponseEntity<Visit>(visit, HttpStatus.OK);
-		}
-		else{
-			return  new ResponseEntity<Visit>(HttpStatus.NO_CONTENT);
+		} else {
+			return new ResponseEntity<Visit>(HttpStatus.BAD_REQUEST);
 		}
 	}
-	
+
 	@ApiOperation(value = "check out", notes = "check out")
-	@ApiParam(name = "visit", value = "visit to update", required = true)
-	@RequestMapping(value="/checkout", method = RequestMethod.PUT)
+	@ApiParam(name = "visitRequest", value = "visit Id or userBarecodeId", required = true)
+	@RequestMapping(value = "/checkout", method = RequestMethod.PUT)
 	public ResponseEntity<Visit> checkOut(@RequestBody VisitRequest visitRequest) {
-		if(visitRequest.getId() != null || visitRequest.getUserBarcodeId() != null)
-		{
+		if ((visitRequest.getId() != null && visitRequest.getId() > 0)
+				|| (visitRequest.getUserBarcodeId() != null && !visitRequest.getUserBarcodeId().trim().equals(""))) {
 			Visit visit = visitService.checkOut(visitRequest);
 			return new ResponseEntity<Visit>(visit, HttpStatus.OK);
-		}
-		else{
-			return  new ResponseEntity<Visit>(HttpStatus.NO_CONTENT);
+		} else {
+			return new ResponseEntity<Visit>(HttpStatus.BAD_REQUEST);
 		}
 	}
-	
+
 }
