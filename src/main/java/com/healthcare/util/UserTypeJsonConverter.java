@@ -6,15 +6,14 @@ import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.google.common.base.Strings;
-import com.healthcare.model.ReviewForm;
 
 import javax.annotation.Nullable;
 import java.io.IOException;
 
 /**
- * JSON-converter for {@link com.healthcare.model.ReviewForm}
+ * JSON-converter
  */
-public class ReviewFormJsonConverter {
+public class UserTypeJsonConverter {
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper()
             .setSerializationInclusion(JsonInclude.Include.NON_NULL)
@@ -29,22 +28,22 @@ public class ReviewFormJsonConverter {
         );
     }
 
-    private ReviewFormJsonConverter() {
+    private UserTypeJsonConverter() {
     }
 
     /**
      * Convert bean to json string
      *
-     * @param reviewForm    review form
+     * @param object    object to convert
      *
      * @return json string
      */
-    public static String toJsonString(@Nullable ReviewForm reviewForm){
+    public static String toJsonString(@Nullable Object object){
         String result = "{}";
 
         try {
-            if (null != reviewForm) {
-                result = OBJECT_MAPPER.writeValueAsString(reviewForm);
+            if (null != object) {
+                result = OBJECT_MAPPER.writeValueAsString(object);
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -58,14 +57,14 @@ public class ReviewFormJsonConverter {
      *
      * @param string json string
      *
-     * @return review form
+     * @return converted object
      */
-    public static ReviewForm fromJsonString(@Nullable String string){
-        ReviewForm result = null;
+    public static Object fromJsonString(@Nullable String string, Class targetClass){
+        Object result = null;
 
         try {
             if (!Strings.isNullOrEmpty(string)) {
-                result = OBJECT_MAPPER.readValue(string, ReviewForm.class);
+                result = OBJECT_MAPPER.readValue(string, targetClass);
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
