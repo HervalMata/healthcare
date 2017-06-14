@@ -76,7 +76,10 @@
 
     <review id="100"
             user_id="100"
-            user_id1="100"
-            employee_id="100" />
+            employee_id="100"
+            assessment_reason="Assessment Reason"
+            assessment_source_information="Assessment Source Information"
+            assessment_date="2017-05-01 00:00:00"
+            state="State" />
 
 </dataset>

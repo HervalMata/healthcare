@@ -3,8 +3,9 @@
 
     <review id="100"
             user_id="100"
-            user_id1="100"
             employee_id="100"
-            form_data='{"body_status":{"pulse":70,"weight":90,"height":180,"systolic":120,"diastolic":80}}' />
+            assessment_reason="New Assessment Reason"
+            assessment_source_information="Assessment Source Information"
+            state="State" />
 
 </dataset>

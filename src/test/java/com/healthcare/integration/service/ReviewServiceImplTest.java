@@ -5,8 +5,6 @@ import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.github.springtestdbunit.annotation.ExpectedDatabase;
 import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
 import com.healthcare.DbUnitIntegrationTestConfiguration;
-import com.healthcare.model.BodyStatus;
-import com.healthcare.model.ReviewForm;
 import com.healthcare.model.entity.Employee;
 import com.healthcare.model.entity.Review;
 import com.healthcare.model.entity.User;
@@ -21,6 +19,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import java.sql.Timestamp;
+import java.util.Date;
 
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsNull.notNullValue;
@@ -49,6 +49,10 @@ public class ReviewServiceImplTest {
         final Long employeeId = 100L;
         final Long userId = 100L;
         final Review review = new Review();
+        review.setAssessmentReason("Assessment Reason");
+        review.setAssessmentSourceInformation("Assessment Source Information");
+        review.setAssessmentDate(new Timestamp(new Date().getTime()));
+        review.setState("State");
 
         final Employee employee = new Employee();
         employee.setId(employeeId);
@@ -57,7 +61,6 @@ public class ReviewServiceImplTest {
         final User user = new User();
         user.setId(userId);
         review.setUser(user);
-        review.setUser1(user);
         // when
         Review result = sut.save(review);
         // then
@@ -77,7 +80,10 @@ public class ReviewServiceImplTest {
         final Long userId = 100L;
         final Review review = new Review();
         review.setId(reviewId);
-        review.setFormData(getReviewForm());
+        review.setAssessmentReason("New Assessment Reason");
+        review.setAssessmentSourceInformation("Assessment Source Information");
+        review.setAssessmentDate(new Timestamp(new Date().getTime()));
+        review.setState("State");
 
         final Employee employee = new Employee();
         employee.setId(employeeId);
@@ -86,7 +92,6 @@ public class ReviewServiceImplTest {
         final User user = new User();
         user.setId(userId);
         review.setUser(user);
-        review.setUser1(user);
         // when
         Review result = sut.save(review);
         // then
@@ -118,19 +123,5 @@ public class ReviewServiceImplTest {
         sut.deleteById(reviewId);
         // then
         em.flush();
-    }
-
-    private ReviewForm getReviewForm() {
-        ReviewForm result = new ReviewForm();
-
-        BodyStatus bodyStatus = new BodyStatus();
-        bodyStatus.setBloodPressureDiastolic(80);
-        bodyStatus.setBloodPressureSystolic(120);
-        bodyStatus.setPulse(70);
-        bodyStatus.setHeight(180);
-        bodyStatus.setWeight(90);
-        result.setBodyStatus(bodyStatus);
-
-        return result;
     }
 }

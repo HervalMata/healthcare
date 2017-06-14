@@ -53,14 +53,15 @@ public class ReviewServiceImplRedisTest {
     public void testUpdate() {
         // given
         final Long reviewId = 1L;
-        final Integer content = 2;
+        final String assessmentReason = "New Assessment Reason";
         final Review review = new Review();
         review.setId(reviewId);
+        review.setAssessmentReason("Assessment Reason");
 
         given(reviewRepository.save(any(Review.class)))
                 .willReturn(review);
         sut.save(review);
-        review.setContent(content);
+        review.setAssessmentReason(assessmentReason);
         // when
         sut.save(review);
         // then
@@ -69,7 +70,7 @@ public class ReviewServiceImplRedisTest {
         Review result = sut.findById(review.getId());
 
         assertThat(result, notNullValue());
-        assertThat(result.getContent(), equalTo(content));
+        assertThat(result.getAssessmentReason(), equalTo(assessmentReason));
     }
 
     @Test
