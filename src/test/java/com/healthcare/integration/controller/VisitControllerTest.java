@@ -22,6 +22,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.healthcare.api.model.VisitRequest;
 import com.healthcare.model.entity.Visit;
 import com.healthcare.service.VisitService;
 
@@ -31,6 +32,7 @@ import com.healthcare.service.VisitService;
 public class VisitControllerTest {
 	private MockMvc mockMvc;
 	private Visit visit;
+	private VisitRequest visitRequest;
 
 	@Autowired
 	private WebApplicationContext wac;
@@ -41,6 +43,7 @@ public class VisitControllerTest {
 	public void setup() {
 		this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
 		visit = new Visit();
+		visitRequest = new VisitRequest();
 	}
 
 	@Test
@@ -75,5 +78,45 @@ public class VisitControllerTest {
 	public void shouldAcceptDeleteVisitRequest() throws Exception {
 		Mockito.when(visitService.deleteById(1L)).thenReturn(1L);
 		this.mockMvc.perform(get("/api/visit/1")).andExpect(status().isOk());
+	}
+	
+	@Test
+	public void shouldCheckInVisitRequest() throws Exception {
+		visitRequest.setId(11L); 
+		ObjectMapper mapper = new ObjectMapper();
+		String jsonInString = mapper.writeValueAsString(visitRequest);
+
+		this.mockMvc.perform(put("/api/visit/checkin").contentType(MediaType.APPLICATION_JSON).content(jsonInString))
+				.andExpect(status().isOk());
+	}
+	
+	@Test
+	public void shouldNotCheckInVisitRequest() throws Exception {
+		visitRequest.setId(null); 
+		ObjectMapper mapper = new ObjectMapper();
+		String jsonInString = mapper.writeValueAsString(visitRequest);
+		
+		this.mockMvc.perform(put("/api/visit/checkin").contentType(MediaType.APPLICATION_JSON).content(jsonInString))
+		.andExpect(status().isBadRequest());
+	}
+	
+	@Test
+	public void shouldCheckoutVisitRequest() throws Exception {
+		ObjectMapper mapper = new ObjectMapper();
+		visitRequest.setId(11L); 
+		String jsonInString = mapper.writeValueAsString(visitRequest);
+		
+		this.mockMvc.perform(put("/api/visit/checkout").contentType(MediaType.APPLICATION_JSON).content(jsonInString))
+		.andExpect(status().isOk());
+	}
+	
+	@Test
+	public void shouldNotCheckOutVisitRequest() throws Exception {
+		visitRequest.setId(null); 
+		ObjectMapper mapper = new ObjectMapper();
+		String jsonInString = mapper.writeValueAsString(visitRequest);
+		
+		this.mockMvc.perform(put("/api/visit/checkout").contentType(MediaType.APPLICATION_JSON).content(jsonInString))
+		.andExpect(status().isBadRequest());
 	}
 }

@@ -6,4 +6,6 @@ import com.healthcare.model.entity.Visit;
 
 public interface VisitRepository extends JpaRepository<Visit, Long> {
 
+	Visit findByUserBarcodeId(String userBarcodeId); 
+
 }
