@@ -8,6 +8,17 @@ import com.healthcare.DbUnitIntegrationTestConfiguration;
 import com.healthcare.model.entity.Employee;
 import com.healthcare.model.entity.Review;
 import com.healthcare.model.entity.User;
+import com.healthcare.model.entity.review.ActivityDetails;
+import com.healthcare.model.entity.review.BodyStatus;
+import com.healthcare.model.entity.review.CardPulmCondition;
+import com.healthcare.model.entity.review.CommunicationHearingCondition;
+import com.healthcare.model.entity.review.FunctionalStatus;
+import com.healthcare.model.entity.review.HealthCondition;
+import com.healthcare.model.entity.review.HealthConditionIndicators;
+import com.healthcare.model.entity.review.HealthProblems;
+import com.healthcare.model.entity.review.NutritionCondition;
+import com.healthcare.model.entity.review.PainDetails;
+import com.healthcare.model.entity.review.PsychologicalSocialCondition;
 import com.healthcare.service.ReviewService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -84,6 +95,7 @@ public class ReviewServiceImplTest {
         review.setAssessmentSourceInformation("Assessment Source Information");
         review.setAssessmentDate(new Timestamp(new Date().getTime()));
         review.setState("State");
+        completeReview(review);
 
         final Employee employee = new Employee();
         employee.setId(employeeId);
@@ -104,11 +116,26 @@ public class ReviewServiceImplTest {
     public void testGet() {
         // given
         final Long reviewId = 100L;
+        final ActivityDetails activityDetails = new ActivityDetails();
+        activityDetails.setAmbulation("Ambulation");
+        final HealthCondition healthCondition = new HealthCondition();
+        healthCondition.setSmoker(true);
+        final HealthConditionIndicators healthConditionIndicators = new HealthConditionIndicators();
+        healthConditionIndicators.setAlzheimer(true);
+        healthCondition.setHealthConditionIndicators(healthConditionIndicators);
+        final BodyStatus bodyStatus = new BodyStatus();
+        bodyStatus.setComments("Comment");
+        healthCondition.setBodyStatus(bodyStatus);
+        final HealthProblems healthProblems = new HealthProblems();
+        healthProblems.setAsthma(true);
+        healthCondition.setHealthProblems(healthProblems);
         // when
         Review result = sut.findById(reviewId);
         // then
         assertThat(result, notNullValue());
         assertThat(result.getId(), equalTo(reviewId));
+        assertThat(result.getHealthCondition(), equalTo(healthCondition));
+        assertThat(result.getActivityDetails(), equalTo(activityDetails));
     }
 
     @Test
@@ -123,5 +150,48 @@ public class ReviewServiceImplTest {
         sut.deleteById(reviewId);
         // then
         em.flush();
+    }
+
+    private void completeReview(Review review) {
+        HealthCondition healthCondition = new HealthCondition();
+        healthCondition.setSmoker(true);
+        HealthConditionIndicators healthConditionIndicators = new HealthConditionIndicators();
+        healthConditionIndicators.setAlzheimer(true);
+        healthCondition.setHealthConditionIndicators(healthConditionIndicators);
+        BodyStatus bodyStatus = new BodyStatus();
+        bodyStatus.setComments("Comment");
+        healthCondition.setBodyStatus(bodyStatus);
+        HealthProblems healthProblems = new HealthProblems();
+        healthProblems.setAsthma(true);
+        healthCondition.setHealthProblems(healthProblems);
+        review.setHealthCondition(healthCondition);
+
+        CardPulmCondition cardPulmCondition = new CardPulmCondition();
+        cardPulmCondition.setChestPain(true);
+        review.setCardPulmCondition(cardPulmCondition);
+
+        ActivityDetails activityDetails = new ActivityDetails();
+        activityDetails.setAmbulation("Ambulation");
+        review.setActivityDetails(activityDetails);
+
+        PainDetails painDetails = new PainDetails();
+        painDetails.setBodyLocation("Body location");
+        review.setPainDetails(painDetails);
+
+        FunctionalStatus functionalStatus = new FunctionalStatus();
+        functionalStatus.setEating(false);
+        review.setFunctionalStatus(functionalStatus);
+
+        NutritionCondition nutritionCondition = new NutritionCondition();
+        nutritionCondition.setAppetite("Appetite");
+        review.setNutritionCondition(nutritionCondition);
+
+        CommunicationHearingCondition communicationHearingCondition = new CommunicationHearingCondition();
+        communicationHearingCondition.setQuality("Quality");
+        review.setCommunicationHearingCondition(communicationHearingCondition);
+
+        PsychologicalSocialCondition psychologicalSocialCondition = new PsychologicalSocialCondition();
+        psychologicalSocialCondition.setAnger(false);
+        review.setPsychologicalSocialCondition(psychologicalSocialCondition);
     }
 }

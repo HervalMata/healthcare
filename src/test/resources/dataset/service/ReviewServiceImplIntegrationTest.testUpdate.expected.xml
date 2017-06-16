@@ -6,6 +6,14 @@
             employee_id="100"
             assessment_reason="New Assessment Reason"
             assessment_source_information="Assessment Source Information"
-            state="State" />
+            state="State"
+            health_condition='{"hc_alzheimer":true,"bs_comments":"Comment","hp_asthma":true,"hc_smoker":true}'
+            card_pulm_condition='{"cp_chest_pain":true}'
+            activity_details='{"act_ambulation":"Ambulation"}'
+            pain_details='{"pain_body_location":"Body location"}'
+            functional_status='{"fs_eating":false}'
+            nutrition_condition='{"nutrition_appetite":"Appetite"}'
+            communication_hearing_condition='{"comhea_quality":"Quality"}'
+            psychological_social_condition='{"psysoc_anger":false}' />
 
 </dataset>
