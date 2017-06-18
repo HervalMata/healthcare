@@ -1,16 +1,18 @@
 package com.healthcare.service.impl;
 
-import com.healthcare.model.entity.Review;
-import com.healthcare.repository.ReviewRepository;
-import com.healthcare.service.ReviewService;
+import java.util.List;
+import java.util.Map;
+
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import javax.transaction.Transactional;
-import java.util.List;
-import java.util.Map;
+import com.healthcare.model.entity.Review;
+import com.healthcare.repository.ReviewRepository;
+import com.healthcare.service.ReviewService;
 
 @Service
 @Transactional
@@ -21,13 +23,13 @@ public class ReviewServiceImpl implements ReviewService {
 	private ReviewRepository reviewRepository;
 	private RedisTemplate<String, Review> redisTemplate;
 
-    @Autowired
-    public ReviewServiceImpl(ReviewRepository reviewRepository, RedisTemplate<String, Review> redisTemplate) {
-        this.reviewRepository = reviewRepository;
-        this.redisTemplate = redisTemplate;
-    }
+	@Autowired
+	public ReviewServiceImpl(ReviewRepository reviewRepository, RedisTemplate<String, Review> redisTemplate) {
+		this.reviewRepository = reviewRepository;
+		this.redisTemplate = redisTemplate;
+	}
 
-    @Override
+	@Override
 	public Review save(Review review) {
 		Review savedReview = reviewRepository.save(review);
 		redisTemplate.opsForHash().put(REDIS_KEY, savedReview.getId(), savedReview);
@@ -44,10 +46,10 @@ public class ReviewServiceImpl implements ReviewService {
 
 	@Override
 	public Review findById(Long id) {
-        Object review = redisTemplate.opsForHash().get(REDIS_KEY, id);
-        if (review != null) {
-            return (Review) review;
-        }
+		Object review = redisTemplate.opsForHash().get(REDIS_KEY, id);
+		if (review != null) {
+			return (Review) review;
+		}
 
 		return reviewRepository.findOne(id);
 	}
@@ -56,9 +58,9 @@ public class ReviewServiceImpl implements ReviewService {
 	public List<Review> findAll() {
 		Map<Object, Object> reviewMap = redisTemplate.opsForHash().entries(REDIS_KEY);
 		if (!reviewMap.isEmpty()) {
-            return CollectionUtils.arrayToList(reviewMap.values().toArray());
-        }
+			return CollectionUtils.arrayToList(reviewMap.values().toArray());
+		}
 
-        return reviewRepository.findAll();
+		return reviewRepository.findAll();
 	}
 }

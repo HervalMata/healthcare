@@ -53,24 +53,22 @@ public class VisitServiceImpl implements VisitService {
 	@Override
 	public Visit checkIn(VisitRequest visitRequest) {
 		Visit visit = null;
-		if (visitRequest.getId() != null && visitRequest.getId()>0) {
+		if (visitRequest.getId() != null && visitRequest.getId() > 0) {
 			visit = findById(visitRequest.getId());
 		} else {
 			visit = visitRepository.findByUserBarcodeId(visitRequest.getUserBarcodeId());
 		}
-		
+
 		// if no visit found
-		if(visit==null){
+		if (visit == null) {
 			throw new ApplicationException(Response.ResultCode.VISIT_NOT_FOUND, "Visit not found");
 		}
-		
+
 		// check in
 		if (VisitStatusEnum.BOOKED.equals(VisitStatusEnum.valueOf(visit.getStatus()))) {
 			visit.setCheckInTime(new Timestamp(new Date().getTime()));
 			visit.setStatus(VisitStatusEnum.REGISTERED.name());
-		}
-		else
-		{
+		} else {
 			throw new ApplicationException(Response.ResultCode.INVALID_STATUS, "Invalid visit status");
 		}
 		// save visit
@@ -80,13 +78,13 @@ public class VisitServiceImpl implements VisitService {
 	@Override
 	public Visit checkOut(VisitRequest visitRequest) {
 		Visit visit = null;
-		if (visitRequest.getId() != null && visitRequest.getId()>0) {
+		if (visitRequest.getId() != null && visitRequest.getId() > 0) {
 			visit = findById(visitRequest.getId());
 		} else {
 			visit = visitRepository.findByUserBarcodeId(visitRequest.getUserBarcodeId());
 		}
 		// if no visit found
-		if(visit==null){
+		if (visit == null) {
 			throw new ApplicationException(Response.ResultCode.VISIT_NOT_FOUND, "Visit not found");
 		}
 
@@ -94,9 +92,7 @@ public class VisitServiceImpl implements VisitService {
 		if (VisitStatusEnum.REGISTERED.equals(VisitStatusEnum.valueOf(visit.getStatus()))) {
 			visit.setCheckOutTime(new Timestamp(new Date().getTime()));
 			visit.setStatus(VisitStatusEnum.FINISHED.name());
-		}
-		else
-		{
+		} else {
 			throw new ApplicationException(Response.ResultCode.INVALID_STATUS, "Invalid visit status");
 		}
 		// save visit

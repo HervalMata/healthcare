@@ -16,9 +16,6 @@ import lombok.Data;
 @Table(name = "signature_type", schema = "health_care_v1_dev", catalog = "")
 public @Data class SignatureType implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -93362933217847648L;
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)

@@ -7,10 +7,12 @@ public interface IService<T> {
 
 	/**
 	 * Delete the entity
+	 * 
 	 * @return TODO
 	 * 
 	 * @return the Redis id deleted
-	 * @param id identificator
+	 * @param id
+	 *            identificator
 	 */
 	Long deleteById(Long id);
 }

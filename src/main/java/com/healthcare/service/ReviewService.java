@@ -4,6 +4,6 @@ import java.util.List;
 
 import com.healthcare.model.entity.Review;
 
-public interface ReviewService extends IService<Review> {	
+public interface ReviewService extends IService<Review> {
 	List<Review> findAll();
 }

@@ -1,10 +1,7 @@
 package com.healthcare.api;
 
-import com.healthcare.model.entity.Review;
-import com.healthcare.service.ReviewService;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +14,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletResponse;
+import com.healthcare.model.entity.Review;
+import com.healthcare.service.ReviewService;
+
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 
 /**
  * Review controller
@@ -26,56 +28,52 @@ import javax.servlet.http.HttpServletResponse;
 @RequestMapping("/api/review")
 public class ReviewController extends BaseController {
 
-    private ReviewService reviewService;
+	private ReviewService reviewService;
 
-    @Autowired
-    public ReviewController(ReviewService reviewService) {
-        this.reviewService = reviewService;
-    }
+	@Autowired
+	public ReviewController(ReviewService reviewService) {
+		this.reviewService = reviewService;
+	}
 
-    @ApiOperation(value = "Create review", notes = "Create review")
-    @ApiParam(name = "review", value = "review to create", required = true)
-    @PostMapping
-    public ResponseEntity create(@RequestBody Review review) {
+	@ApiOperation(value = "Create review", notes = "Create review")
+	@ApiParam(name = "review", value = "review to create", required = true)
+	@PostMapping
+	public ResponseEntity create(@RequestBody Review review) {
 
-        return ResponseEntity.ok(
-                reviewService.save(review).getId()
-        );
-    }
+		return ResponseEntity.ok(reviewService.save(review).getId());
+	}
 
-    @ApiOperation(value = "Get review by Id", notes = "Get review info by reviewId")
-    @ApiImplicitParam(name = "id", value = "review Id", required = true, dataType = "Long")
-    @GetMapping("/{id}")
-    public ResponseEntity get(@PathVariable("id") String id) {
-        Long reviewId = parseId(id);
+	@ApiOperation(value = "Get review by Id", notes = "Get review info by reviewId")
+	@ApiImplicitParam(name = "id", value = "review Id", required = true, dataType = "Long")
+	@GetMapping("/{id}")
+	public ResponseEntity get(@PathVariable("id") String id) {
+		Long reviewId = parseId(id);
 
-        if (reviewId == null) {
-            return ResponseEntity.badRequest().build();
-        }
+		if (reviewId == null) {
+			return ResponseEntity.badRequest().build();
+		}
 
-        return ResponseEntity.ok(
-                reviewService.findById(reviewId)
-        );
-    }
+		return ResponseEntity.ok(reviewService.findById(reviewId));
+	}
 
-    @ApiOperation(value = "Update review", notes = "Update review")
-    @ApiParam(name = "review", value = "review to update", required = true)
-    @PutMapping
-    public void save(@RequestBody Review review) {
-        reviewService.save(review);
-    }
+	@ApiOperation(value = "Update review", notes = "Update review")
+	@ApiParam(name = "review", value = "review to update", required = true)
+	@PutMapping
+	public void save(@RequestBody Review review) {
+		reviewService.save(review);
+	}
 
-    @ApiOperation(value = "Delete review", notes = "Delete review")
-    @ApiImplicitParam(name = "id", value = "review Id", required = true, dataType = "Long")
-    @DeleteMapping("/{id}")
-    public void delete(@PathVariable("id") String id, HttpServletResponse response) {
-        Long reviewId = parseId(id);
+	@ApiOperation(value = "Delete review", notes = "Delete review")
+	@ApiImplicitParam(name = "id", value = "review Id", required = true, dataType = "Long")
+	@DeleteMapping("/{id}")
+	public void delete(@PathVariable("id") String id, HttpServletResponse response) {
+		Long reviewId = parseId(id);
 
-        if (reviewId == null) {
-            response.setStatus(HttpStatus.BAD_REQUEST.value());
-            return;
-        }
+		if (reviewId == null) {
+			response.setStatus(HttpStatus.BAD_REQUEST.value());
+			return;
+		}
 
-        reviewService.deleteById(reviewId);
-    }
+		reviewService.deleteById(reviewId);
+	}
 }
