@@ -19,6 +19,7 @@ import com.healthcare.model.enums.GenderEnum;
 import com.healthcare.model.enums.LanguageEnum;
 import com.healthcare.model.enums.StateEnum;
 import com.healthcare.model.enums.VisitStatusEnum;
+import com.healthcare.util.DateUtils;
 
 public class EntityFactory {
 	public Calendar eligiableStart = Calendar.getInstance();
@@ -81,13 +82,13 @@ public class EntityFactory {
 	public String selectedTable = "TABLE 1";
 	public String selectedSeat = "AB";
 	public String userSignature = "userSignature";
-	
+
 	public String approvedBy = "Manager";
-	public Calendar planStart = Calendar.getInstance();
-	public Calendar planEnd = Calendar.getInstance();
+	public Timestamp planStart = new Timestamp(DateUtils.stringToDate("yyyy-MM-dd", "2017-06-01").getTime());
+	public Timestamp planEnd = new Timestamp(DateUtils.stringToDate("yyyy-MM-dd", "2017-12-01").getTime());
 	String days = DayEnum.MONDAY.name() + "," + DayEnum.THURSDAY.name();
 	public String docUrl = "/doc/a";
-	
+
 	public String gender = GenderEnum.MAN.name();
 	public String physicalExam = "physicalExam";
 	public String certificateName = "certificateName";
@@ -100,7 +101,7 @@ public class EntityFactory {
 	public String type = "type";
 	public String statusString = "status";
 	public String backgroundCheck = "backgroundCheck";
-	
+
 	public String seat = "10A";
 
 	protected void init() {
@@ -119,12 +120,6 @@ public class EntityFactory {
 		dob.set(Calendar.YEAR, 1950);
 		dob.set(Calendar.MONTH, 1);
 		dob.set(Calendar.DAY_OF_MONTH, 1);
-		planStart.set(Calendar.YEAR, 2017);
-		planStart.set(Calendar.MONTH, 6);
-		planStart.set(Calendar.DAY_OF_MONTH, 1);
-		planEnd.set(Calendar.YEAR, 2017);
-		planEnd.set(Calendar.MONTH, 12);
-		planEnd.set(Calendar.DAY_OF_MONTH, 1);
 	}
 
 	protected Agency createNewAgency(AgencyType agencyType, Company company) {
@@ -228,18 +223,18 @@ public class EntityFactory {
 		return user;
 	}
 
-	protected ServicePlan createNewServicePlan(User user){
+	protected ServicePlan createNewServicePlan(User user) {
 		ServicePlan servicePlan = new ServicePlan();
 		servicePlan.setApprovedBy(approvedBy);
 		servicePlan.setDays(days);
 		servicePlan.setDocUrl(docUrl);
 		servicePlan.setEmployee(null);
-		servicePlan.setPlanEnd(new Timestamp(planEnd.getTimeInMillis()));
-		servicePlan.setPlanStart(new Timestamp(planStart.getTimeInMillis()));
+		servicePlan.setPlanEnd(planEnd);
+		servicePlan.setPlanStart(planStart);
 		servicePlan.setUser(user);
 		return servicePlan;
 	}
-	
+
 	protected Visit createNewVisit(User user, Agency agency) {
 		Visit visit = new Visit();
 		visit.setUser(user);
@@ -249,15 +244,18 @@ public class EntityFactory {
 		visit.setSelectedSeat(selectedTable);
 		visit.setSelectedSeat(selectedSeat);
 		visit.setUserSignature(userSignature);
-        // visit.setServicePlan(servicePlan);// TODO not yet finished ServicePlan CRUD
-		// visit.setSelectedMeal(selectedMeal);// TODO not yet finished Meal CRUD
-		// visit.setUserBarcodeId(userBarcodeId);// TODO not yet validates there is asigned when agency accepts Patient
+		// visit.setServicePlan(servicePlan);// TODO not yet finished
+		// ServicePlan CRUD
+		// visit.setSelectedMeal(selectedMeal);// TODO not yet finished Meal
+		// CRUD
+		// visit.setUserBarcodeId(userBarcodeId);// TODO not yet validates there
+		// is asigned when agency accepts Patient
 		visit.setUserComments(userComments);
 		visit.setNotes(notes);
 		visit.setStatus(VisitStatusEnum.BOOKED.name());
 		return visit;
 	}
-	
+
 	protected Employee createNewEmployee(Agency agency) {
 		Employee employee = new Employee();
 		employee.setAgency(agency);
@@ -279,17 +277,17 @@ public class EntityFactory {
 		employee.setBackgroundCheck(backgroundCheck);
 		return employee;
 	}
-	
-	protected Activity createNewActivity(Employee employee){
+
+	protected Activity createNewActivity(Employee employee) {
 		Activity activity = new Activity();
 		activity.setCreatedAt(new Timestamp(workStart.getTimeInMillis()));
 		activity.setInstructorEmployee(employee);
 		activity.setName(firstName);
 		activity.setStatus(Integer.getInteger("1"));
-		return activity; 		
+		return activity;
 	}
-	
-	protected VisitActivity createNewVisitActivity(Visit visit, Activity activity){
+
+	protected VisitActivity createNewVisitActivity(Visit visit, Activity activity) {
 		VisitActivity visitActivity = new VisitActivity();
 		visitActivity.setActivity(activity);
 		visitActivity.setSeat(seat);

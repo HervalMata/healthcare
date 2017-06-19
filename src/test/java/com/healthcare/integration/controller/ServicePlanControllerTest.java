@@ -6,7 +6,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.ArrayList;
-import java.util.Date;
 
 import javax.transaction.Transactional;
 
@@ -60,10 +59,10 @@ public class ServicePlanControllerTest {
 		Mockito.when(servicePlanService.findById(1L)).thenReturn(new ServicePlan());
 		this.mockMvc.perform(get("/api/serviceplan/1")).andExpect(status().isOk());
 	}
-	
+
 	@Test
 	public void testGetServiceCalendar() throws Exception {
-		Mockito.when(servicePlanService.getServiceCalendar(1L)).thenReturn(new ArrayList<Date>());
+		Mockito.when(servicePlanService.getServiceCalendar(1L)).thenReturn(new ArrayList<String>());
 		this.mockMvc.perform(get("/api/serviceplan/calendar/1")).andExpect(status().isOk());
 	}
 

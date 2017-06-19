@@ -3,11 +3,14 @@ package com.healthcare.model.entity;
 import java.io.Serializable;
 import java.util.Objects;
 
+import javax.persistence.Embeddable;
+
 import lombok.Data;
 
 /**
  * Created by pazfernando on 4/30/17.
  */
+//@Embeddable
 public @Data class VisitActivityPK implements Serializable {
 	/**
 	 * 
@@ -65,12 +68,27 @@ public @Data class VisitActivityPK implements Serializable {
 	
 	@Override
     public boolean equals(Object o) {
-        if (o == this) return true;
-        if (!(o instanceof VisitActivityPK)) {
-            return false;
-        }
-        VisitActivityPK other = (VisitActivityPK) o;
-        return Objects.equals(visit, other.visit) && Objects.equals(activity, other.activity);
+		if(o == null)
+	        return false;
+
+	    if(!(o instanceof VisitActivityPK))
+	        return false;
+
+	    VisitActivityPK other = (VisitActivityPK) o;
+	    if(!(getVisit().equals(other.getVisit())))
+	        return false;
+
+	    if(!(getActivity().equals(other.getActivity())))
+	        return false;
+
+	    return true;
+	    
+//        if (o == this) return true;
+//        if (!(o instanceof VisitActivityPK)) {
+//            return false;
+//        }
+//        VisitActivityPK other = (VisitActivityPK) o;
+//        return Objects.equals(visit, other.visit) && Objects.equals(activity, other.activity);
     }
 
 }
