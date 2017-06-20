@@ -49,7 +49,7 @@ public class AdminController extends AbstractBasedAPI {
 		logger.info("id : " + id);
 		return adminService.findById(id);
 	}
-	
+
 	@ApiOperation(value = "get all admin", notes = "get all admin")
 	@GetMapping()
 	public List<Admin> readAll() {

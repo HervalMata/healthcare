@@ -18,9 +18,6 @@ import lombok.Data;
 @Table(name = "visit")
 public @Data class Visit implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -5449963759010972006L;
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -53,5 +50,5 @@ public @Data class Visit implements Serializable {
 	@ManyToOne
 	@JoinColumn(name = "user_id")
 	private User user;
-	
+
 }

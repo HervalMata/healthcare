@@ -20,9 +20,6 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 public @Data class ServicePlan extends Audit implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -8777670249499595658L;
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)

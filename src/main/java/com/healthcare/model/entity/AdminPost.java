@@ -18,9 +18,7 @@ import lombok.Data;
 @Table(name = "admin_post")
 public @Data class AdminPost implements Serializable {
 
-	/**
-	 * 
-	 */
+	
 	private static final long serialVersionUID = 2716722834559934023L;
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)

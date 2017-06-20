@@ -1,5 +1,8 @@
 package com.healthcare.integration.service;
 
+import java.sql.Timestamp;
+import java.util.Date;
+
 import javax.transaction.Transactional;
 
 import org.junit.Assert;
@@ -11,12 +14,15 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.healthcare.EntityFactory;
+import com.healthcare.api.model.VisitRequest;
+import com.healthcare.exception.ApplicationException;
 import com.healthcare.model.entity.Agency;
 import com.healthcare.model.entity.AgencyType;
 import com.healthcare.model.entity.Company;
 import com.healthcare.model.entity.ServicePlan;
 import com.healthcare.model.entity.User;
 import com.healthcare.model.entity.Visit;
+import com.healthcare.model.enums.VisitStatusEnum;
 import com.healthcare.service.AgencyService;
 import com.healthcare.service.AgencyTypeService;
 import com.healthcare.service.CompanyService;
@@ -62,7 +68,7 @@ public class VisitServiceTest extends EntityFactory {
 		agencyTypeService.save(agencyType);
 		agency = createNewAgency(agencyType, company);
 		agencyService.save(agency);
-		user = createNewUser();		
+		user = createNewUser();
 		userService.save(user);
 		servicePlan = createNewServicePlan(user);
 		servicePlanService.save(servicePlan);
@@ -115,5 +121,116 @@ public class VisitServiceTest extends EntityFactory {
 		visitService.deleteById(visit.getId());
 		Assert.assertNull(visitService.findById(visit.getId()));
 	}
+	
+	@Test
+	public void shouldCheckInAVisit() {
+		Visit visit = createNewVisit(user, agency);
+		visit.setId(12L); 
+		visit.setCheckInTime(new Timestamp(new Date(0).getTime()));  
+		visit.setStatus(VisitStatusEnum.BOOKED.name());
+		visit.setUserBarcodeId("12345678901234567890");
+		visit = visitService.save(visit);
+		
+		// Values before check in
+		Date oldCheckInTime = visit.getCheckInTime();
+		String oldStatus = visit.getStatus();
+		
+		// search by id
+		VisitRequest visitRequest = new VisitRequest();
+		visitRequest.setUserBarcodeId("12345678901234567890"); 
+		visitService.checkIn(visitRequest);
+		Visit visitCHeckIn = visitService.findById(visit.getId());
+		
+		Assert.assertNotEquals(visitCHeckIn.getCheckInTime(), oldCheckInTime);
+		Assert.assertNotEquals(visitCHeckIn.getStatus(), oldStatus);
+		Assert.assertEquals(visitCHeckIn.getStatus(), VisitStatusEnum.REGISTERED.name());
+		
+		// search by userBarecodeId
+		visit.setStatus(VisitStatusEnum.BOOKED.name());
+		visit = visitService.save(visit);
+		
+		visitRequest = new VisitRequest();
+		visitRequest.setUserBarcodeId("12345678901234567890"); 
+		visitService.checkIn(visitRequest);
+		visitCHeckIn = visitService.findById(visit.getId());
+		
+		Assert.assertNotEquals(visitCHeckIn.getCheckInTime(), oldCheckInTime);
+		Assert.assertNotEquals(visitCHeckIn.getStatus(), oldStatus);
+		Assert.assertEquals(visitCHeckIn.getStatus(), VisitStatusEnum.REGISTERED.name());
+	}
 
+	@Test(expected = ApplicationException.class)
+	public void shouldNotCheckInAVisit() {
+		// Nominal case
+		Visit visit = createNewVisit(user, agency);
+		visit.setCheckOutTime(new Timestamp(new Date(0).getTime()));  
+		visit.setStatus(VisitStatusEnum.REGISTERED.name()); 
+		visit = visitService.save(visit);
+
+		VisitRequest visitRequest = new VisitRequest();
+		visitRequest.setId(visit.getId());
+		visitService.checkIn(visitRequest);
+	}
+	
+	@Test(expected = ApplicationException.class)
+	public void shouldNotCheckInAVisit2() {
+		VisitRequest visitRequest = new VisitRequest();
+		visitService.checkIn(visitRequest);
+	}
+	
+	@Test
+	public void shouldCheckOutAVisit() {
+		Visit visit = createNewVisit(user, agency);
+		visit.setId(12L); 
+		visit.setCheckOutTime(new Timestamp(new Date(0).getTime()));  
+		visit.setStatus(VisitStatusEnum.REGISTERED.name());
+		visit.setUserBarcodeId("12345678901234567890");
+		visit = visitService.save(visit);
+		
+		// Values before check in
+		Date oldCheckOutTime = visit.getCheckOutTime();
+		String oldStatus = visit.getStatus();
+		
+		// search by id
+		VisitRequest visitRequest = new VisitRequest();
+		visitRequest.setUserBarcodeId("12345678901234567890"); 
+		visitService.checkOut(visitRequest);
+		Visit visitCHeckOut = visitService.findById(visit.getId());
+		
+		Assert.assertNotEquals(visitCHeckOut.getCheckOutTime(), oldCheckOutTime);
+		Assert.assertNotEquals(visitCHeckOut.getStatus(), oldStatus);
+		Assert.assertEquals(visitCHeckOut.getStatus(), VisitStatusEnum.FINISHED.name());
+		
+		// search by userBarecodeId
+		visit.setStatus(VisitStatusEnum.REGISTERED.name());
+		visit = visitService.save(visit);
+		
+		visitRequest = new VisitRequest();
+		visitRequest.setUserBarcodeId("12345678901234567890"); 
+		visitService.checkOut(visitRequest);
+		visitCHeckOut = visitService.findById(visit.getId());
+		
+		Assert.assertNotEquals(visitCHeckOut.getCheckOutTime(), oldCheckOutTime);
+		Assert.assertNotEquals(visitCHeckOut.getStatus(), oldStatus);
+		Assert.assertEquals(visitCHeckOut.getStatus(), VisitStatusEnum.FINISHED.name());
+	}
+	
+	@Test(expected = ApplicationException.class)
+	public void shouldNotCheckOutAVisit() {
+		// Nominal case
+		Visit visit = createNewVisit(user, agency);
+		visit.setCheckOutTime(new Timestamp(new Date(0).getTime()));  
+		visit.setStatus(VisitStatusEnum.BOOKED.name()); 
+		visitService.save(visit);
+		
+		VisitRequest visitRequest = new VisitRequest();
+		visitRequest.setId(visit.getId());
+		visitService.checkOut(visitRequest);
+	}
+	
+	@Test(expected = ApplicationException.class)
+	public void shouldNotCheckOutAVisit2() {
+		VisitRequest visitRequest = new VisitRequest();
+		visitService.checkOut(visitRequest);
+	}
 }

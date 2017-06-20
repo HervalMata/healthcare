@@ -1,19 +1,29 @@
 package com.healthcare.api;
 
-import com.healthcare.api.auth.AbstractBasedAPI;
-import com.healthcare.model.entity.Employee;
-import com.healthcare.service.EmployeeService;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
+import com.healthcare.api.auth.AbstractBasedAPI;
+import com.healthcare.model.entity.Employee;
+import com.healthcare.service.EmployeeService;
+
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 
 /**
  * Created by Jean Antunes on 11/05/17.
@@ -23,46 +33,46 @@ import java.util.List;
 @RequestMapping(value = "/api/employee")
 public class EmployeeController extends AbstractBasedAPI {
 
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    @Autowired
-    private EmployeeService employeeService;
+	@Autowired
+	private EmployeeService employeeService;
 
-    @ApiOperation(value = "save employee", notes = "save employee")
-    @ApiParam(name = "employee", value = "employee to save", required = true)
-    @PostMapping()
-    public ResponseEntity<Employee> create(@RequestBody Employee employee) {
-        employee = employeeService.save(employee);
-        return new ResponseEntity<Employee>(employee, HttpStatus.OK);
-    }
+	@ApiOperation(value = "save employee", notes = "save employee")
+	@ApiParam(name = "employee", value = "employee to save", required = true)
+	@PostMapping()
+	public ResponseEntity<Employee> create(@RequestBody Employee employee) {
+		employee = employeeService.save(employee);
+		return new ResponseEntity<Employee>(employee, HttpStatus.OK);
+	}
 
-    @ApiOperation(value = "get employee by id", notes = "get employee by id")
-    @ApiImplicitParam(name = "id", value = "employee id", required = true, dataType = "Long")
-    @GetMapping("/{employee}")
-    public Employee read(@PathVariable Long id) {
-        logger.info("id : " + id);
-        return employeeService.findById(id);
-    }
+	@ApiOperation(value = "get employee by id", notes = "get employee by id")
+	@ApiImplicitParam(name = "id", value = "employee id", required = true, dataType = "Long")
+	@GetMapping("/{employee}")
+	public Employee read(@PathVariable Long id) {
+		logger.info("id : " + id);
+		return employeeService.findById(id);
+	}
 
-    @ApiOperation(value = "get all employee", notes = "get all employee")
-    @GetMapping()
-    public List<Employee> readAll() {
-        return employeeService.findAll();
-    }
+	@ApiOperation(value = "get all employee", notes = "get all employee")
+	@GetMapping()
+	public List<Employee> readAll() {
+		return employeeService.findAll();
+	}
 
-    @ApiOperation(value = "update employee", notes = "update employee")
-    @ApiParam(name = "employee", value = "employee to update", required = true)
-    @PutMapping()
-    public ResponseEntity<Employee> update(@RequestBody Employee employee) {
-        employee = employeeService.save(employee);
-        return new ResponseEntity<Employee>(employee, HttpStatus.OK);
-    }
+	@ApiOperation(value = "update employee", notes = "update employee")
+	@ApiParam(name = "employee", value = "employee to update", required = true)
+	@PutMapping()
+	public ResponseEntity<Employee> update(@RequestBody Employee employee) {
+		employee = employeeService.save(employee);
+		return new ResponseEntity<Employee>(employee, HttpStatus.OK);
+	}
 
-    @ApiOperation(value = "delete employee", notes = "delete employee")
-    @ApiImplicitParam(name = "id", value = "employee id", required = true, dataType = "Long")
-    @DeleteMapping("/{id}")
-    public void delete(@PathVariable("id") Long id) {
-        logger.info("id : " + id);
-        employeeService.deleteById(id);
-    }
+	@ApiOperation(value = "delete employee", notes = "delete employee")
+	@ApiImplicitParam(name = "id", value = "employee id", required = true, dataType = "Long")
+	@DeleteMapping("/{id}")
+	public void delete(@PathVariable("id") Long id) {
+		logger.info("id : " + id);
+		employeeService.deleteById(id);
+	}
 }

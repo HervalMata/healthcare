@@ -103,5 +103,5 @@ public class VisitServiceRedisTest extends EntityFactory {
 		Mockito.doNothing().when(visitRepository).delete(10L);
 		Assert.assertNotNull(visitService.deleteById(visit.getId()));
 	}
-
+	
 }

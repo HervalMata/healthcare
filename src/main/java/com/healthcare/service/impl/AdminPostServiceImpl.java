@@ -19,7 +19,7 @@ import io.jsonwebtoken.lang.Collections;
 @Transactional
 public class AdminPostServiceImpl implements AdminPostService {
 	private static final String KEY = AdminPost.class.getSimpleName();
-	
+
 	@Autowired
 	AdminPostRepository adminPostRepository;
 

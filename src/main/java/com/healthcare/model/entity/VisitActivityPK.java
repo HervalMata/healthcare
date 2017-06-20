@@ -12,9 +12,7 @@ import lombok.Data;
  */
 //@Embeddable
 public @Data class VisitActivityPK implements Serializable {
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = -4912913092398276257L;
 	private Long visit;
 	private Long activity;
