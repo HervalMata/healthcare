@@ -18,9 +18,7 @@ import lombok.Data;
 @Table(name = "menu")
 public @Data class Menu implements Serializable {
 
-	/**
-	 * 
-	 */
+	
 	private static final long serialVersionUID = -3163487536542705169L;
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)

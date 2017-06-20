@@ -1,10 +1,7 @@
 package com.healthcare.api;
 
-import com.healthcare.model.entity.Meal;
-import com.healthcare.service.MealService;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +14,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletResponse;
+import com.healthcare.model.entity.Meal;
+import com.healthcare.service.MealService;
+
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 
 /**
  * Meal controller
@@ -26,56 +28,52 @@ import javax.servlet.http.HttpServletResponse;
 @RequestMapping("/api/meal")
 public class MealController extends BaseController {
 
-    private MealService mealService;
+	private MealService mealService;
 
-    @Autowired
-    public MealController(MealService mealService) {
-        this.mealService = mealService;
-    }
+	@Autowired
+	public MealController(MealService mealService) {
+		this.mealService = mealService;
+	}
 
-    @ApiOperation(value = "Create meal", notes = "Create meal")
-    @ApiParam(name = "meal", value = "meal to create", required = true)
-    @PostMapping()
-    public ResponseEntity create(@RequestBody Meal meal) {
+	@ApiOperation(value = "Create meal", notes = "Create meal")
+	@ApiParam(name = "meal", value = "meal to create", required = true)
+	@PostMapping()
+	public ResponseEntity create(@RequestBody Meal meal) {
 
-        return ResponseEntity.ok(
-                mealService.save(meal).getId()
-        );
-    }
+		return ResponseEntity.ok(mealService.save(meal).getId());
+	}
 
-    @ApiOperation(value = "Get meal by Id", notes = "Get meal info by mealId")
-    @ApiImplicitParam(name = "id", value = "meal Id", required = true, dataType = "Long")
-    @GetMapping("/{id}")
-    public ResponseEntity get(@PathVariable("id") String id) {
-        Long mealId = parseId(id);
+	@ApiOperation(value = "Get meal by Id", notes = "Get meal info by mealId")
+	@ApiImplicitParam(name = "id", value = "meal Id", required = true, dataType = "Long")
+	@GetMapping("/{id}")
+	public ResponseEntity get(@PathVariable("id") String id) {
+		Long mealId = parseId(id);
 
-        if (mealId == null) {
-            return ResponseEntity.badRequest().build();
-        }
+		if (mealId == null) {
+			return ResponseEntity.badRequest().build();
+		}
 
-        return ResponseEntity.ok(
-                mealService.findById(mealId)
-        );
-    }
+		return ResponseEntity.ok(mealService.findById(mealId));
+	}
 
-    @ApiOperation(value = "Update meal", notes = "Update meal")
-    @ApiParam(name = "meal", value = "meal to update", required = true)
-    @PutMapping
-    public void save(@RequestBody Meal meal) {
-        mealService.save(meal);
-    }
+	@ApiOperation(value = "Update meal", notes = "Update meal")
+	@ApiParam(name = "meal", value = "meal to update", required = true)
+	@PutMapping
+	public void save(@RequestBody Meal meal) {
+		mealService.save(meal);
+	}
 
-    @ApiOperation(value = "Delete meal", notes = "Delete meal")
-    @ApiImplicitParam(name = "id", value = "meal Id", required = true, dataType = "Long")
-    @DeleteMapping("/{id}")
-    public void delete(@PathVariable("id") String id, HttpServletResponse response) {
-        Long mealId = parseId(id);
+	@ApiOperation(value = "Delete meal", notes = "Delete meal")
+	@ApiImplicitParam(name = "id", value = "meal Id", required = true, dataType = "Long")
+	@DeleteMapping("/{id}")
+	public void delete(@PathVariable("id") String id, HttpServletResponse response) {
+		Long mealId = parseId(id);
 
-        if (mealId == null) {
-            response.setStatus(HttpStatus.BAD_REQUEST.value());
-            return;
-        }
+		if (mealId == null) {
+			response.setStatus(HttpStatus.BAD_REQUEST.value());
+			return;
+		}
 
-        mealService.deleteById(mealId);
-    }
+		mealService.deleteById(mealId);
+	}
 }
