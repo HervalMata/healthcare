@@ -18,9 +18,7 @@ import lombok.Data;
 @Table(name = "employee_has_activity", schema = "health_care_v1_dev", catalog = "")
 @IdClass(EmployeeActivityPK.class)
 public @Data class EmployeeActivity implements Serializable {
-	/**
-	 * 
-	 */
+	
 	private static final long serialVersionUID = 1976459796513221823L;
 	@Id
 	@ManyToOne
