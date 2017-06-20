@@ -52,7 +52,7 @@ public class DocumentControllerTest {
 	}
 
 	@Test
-	public void shouldAcceptSaveVisitRequest() throws Exception {
+	public void shouldAcceptSaveDocumentRequest() throws Exception {
 		Mockito.when(documentService.save(document)).thenReturn(document);
 		MockMultipartFile multipartFile = new MockMultipartFile("file", "test.txt", "text/plain",
 				"Spring Framework".getBytes());
@@ -64,13 +64,13 @@ public class DocumentControllerTest {
 	}
 
 	@Test
-	public void shouldAcceptGetVisitRequest() throws Exception {
+	public void shouldAcceptGetDocumentRequest() throws Exception {
 		Mockito.when(documentService.findById(1L)).thenReturn(document);
 		this.mockMvc.perform(get("/api/document/1")).andExpect(status().isOk());
 	}
 
 	 @Test
-	public void shouldAcceptUpdateVisitRequest() throws Exception {
+	public void shouldAcceptUpdateDocumentRequest() throws Exception {
 		Mockito.when(documentService.save(document)).thenReturn(document);
 		MockMultipartFile multipartFile = new MockMultipartFile("file", "test.txt", "text/plain",
 				"Spring Framework".getBytes());
@@ -81,7 +81,7 @@ public class DocumentControllerTest {
 	}
 
 	@Test
-	public void shouldAcceptDeleteVisitRequest() throws Exception {
+	public void shouldAcceptDeleteDocumentRequest() throws Exception {
 		Mockito.when(documentService.deleteById(1L)).thenReturn(1L);
 		this.mockMvc.perform(get("/api/document/1")).andExpect(status().isOk());
 	}
