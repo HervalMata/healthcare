@@ -61,6 +61,24 @@ public class DocumentControllerTest {
 				.contentType(MediaType.MULTIPART_FORM_DATA).param("entity", "User").param("entityId", "12345")
 				.param("fileClass", "Transportation")).andExpect(status().isOk());
 
+		mockMvc.perform(MockMvcRequestBuilders.fileUpload("/api/document").file(multipartFile)
+				.contentType(MediaType.MULTIPART_FORM_DATA).param("entity", "User").param("entityId", "12345"))
+				.andExpect(status().isBadRequest());
+
+		mockMvc.perform(MockMvcRequestBuilders.fileUpload("/api/document").file(multipartFile)
+				.contentType(MediaType.MULTIPART_FORM_DATA).param("entity", "User")
+				.param("fileClass", "Transportation")).andExpect(status().isBadRequest());
+
+		mockMvc.perform(MockMvcRequestBuilders.fileUpload("/api/document").file(multipartFile)
+				.contentType(MediaType.MULTIPART_FORM_DATA).param("entityId", "12345")
+				.param("fileClass", "Transportation")).andExpect(status().isBadRequest());
+		
+		multipartFile = new MockMultipartFile("file", "test.txt", "text/plain",
+				"".getBytes());
+		mockMvc.perform(MockMvcRequestBuilders.fileUpload("/api/document").file(multipartFile)
+				.contentType(MediaType.MULTIPART_FORM_DATA).param("entity", "User").param("entityId", "12345")
+				.param("fileClass", "Transportation")).andExpect(status().isBadRequest());
+
 	}
 
 	@Test
@@ -69,7 +87,7 @@ public class DocumentControllerTest {
 		this.mockMvc.perform(get("/api/document/1")).andExpect(status().isOk());
 	}
 
-	 @Test
+	@Test
 	public void shouldAcceptUpdateDocumentRequest() throws Exception {
 		Mockito.when(documentService.save(document)).thenReturn(document);
 		MockMultipartFile multipartFile = new MockMultipartFile("file", "test.txt", "text/plain",
