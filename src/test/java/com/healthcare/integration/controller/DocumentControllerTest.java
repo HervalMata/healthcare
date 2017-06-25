@@ -3,6 +3,8 @@ package com.healthcare.integration.controller;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.io.File;
+
 import javax.servlet.MultipartConfigElement;
 import javax.transaction.Transactional;
 
@@ -43,6 +45,7 @@ public class DocumentControllerTest {
 
 	@Before
 	public void setup() {
+		new File(multipartConfigElement.getLocation()).mkdirs();
 		this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
 		this.document = new Document();
 	}
@@ -68,9 +71,8 @@ public class DocumentControllerTest {
 		mockMvc.perform(MockMvcRequestBuilders.fileUpload("/api/document").file(multipartFile)
 				.contentType(MediaType.MULTIPART_FORM_DATA).param("entityId", "12345")
 				.param("fileClass", "Transportation")).andExpect(status().isBadRequest());
-		
-		multipartFile = new MockMultipartFile("file", "test.txt", "text/plain",
-				"".getBytes());
+
+		multipartFile = new MockMultipartFile("file", "test.txt", "text/plain", "".getBytes());
 		mockMvc.perform(MockMvcRequestBuilders.fileUpload("/api/document").file(multipartFile)
 				.contentType(MediaType.MULTIPART_FORM_DATA).param("entity", "User").param("entityId", "12345")
 				.param("fileClass", "Transportation")).andExpect(status().isBadRequest());
