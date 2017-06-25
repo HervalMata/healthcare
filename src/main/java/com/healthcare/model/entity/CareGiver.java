@@ -13,7 +13,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -38,7 +39,7 @@ public @Data class CareGiver extends Audit implements Serializable {/**
 	@Column(name="caregiver_type")
 	private Long careGiverType;
 	private String username;
-	@JsonIgnore
+	@JsonProperty(access = Access.WRITE_ONLY)
 	private String password;
 	@Column(name = "first_name")
 	private String firstName;
@@ -80,4 +81,5 @@ public @Data class CareGiver extends Audit implements Serializable {/**
 	private Timestamp vacationStart;
 	@Column(name = "vacation_end")
 	private Timestamp vacationEnd;
+	
 }
