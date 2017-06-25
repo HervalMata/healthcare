@@ -1,6 +1,7 @@
 package com.healthcare.integration.service;
 
 import static org.hamcrest.core.IsNull.notNullValue;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
@@ -47,7 +48,11 @@ public class HomeVisitServiceImplTest {
     @Autowired
     private EntityManager em;
 
- 
+    // Remove data added during test from redis once test case executed successfully
+    public void cleanup(Long id){
+  	  homeVisitService.deleteById(id);
+    }
+    
     @Test
 	public void testCreateHomeVisit() {
 		// given
@@ -62,6 +67,7 @@ public class HomeVisitServiceImplTest {
 		// then
 		assertThat(result, notNullValue());
 		assertThat(result.getId(), notNullValue());
+		cleanup(result.getId());
 	}
 
    @Test
@@ -70,20 +76,21 @@ public class HomeVisitServiceImplTest {
             assertionMode = DatabaseAssertionMode.NON_STRICT
     )
     public void testUpdateHomeVisit() {
-        // given
-		final Meal meal = getMeal();
-		final ServicePlan serviceplan = getServicePlan();
-		final User user = getUser();
-		final CareGiver careGiver = getCareGiver();
-		final HomeVisit homeVisit = getHomeVisit(meal, serviceplan, user, careGiver);
-		homeVisit.setId(100L);
-		homeVisit.setCheckOutTime(Timestamp.valueOf("2018-05-01 09:00:000"));
+       Timestamp dbCheckoutTime = Timestamp.valueOf("2017-05-01 21:00:000");
+       Timestamp updatedCheckoutTime = Timestamp.valueOf("2018-05-01 09:00:000");
+       
+	   // given
+		final HomeVisit homeVisit = homeVisitService.findById(100L);
+		assertEquals(dbCheckoutTime, homeVisit.getCheckOutTime());
+		
+		homeVisit.setCheckOutTime(updatedCheckoutTime);
 		
        // when
         HomeVisit result = homeVisitService.save(homeVisit);
         // then
         assertThat(result, notNullValue());
-
+        assertEquals(updatedCheckoutTime, result.getCheckOutTime());
+		
         em.flush();
     }
 
