@@ -33,7 +33,12 @@ public class CareGiverServiceRedisTest {
     @Before
     public void setup() {
     }
-
+    
+    // Remove data added during test from redis once test case executed successfully
+    public void cleanup(Long id){
+    	careGiverService.deleteById(id);
+    }
+    
     @Test
     public void saveACareGiverToRedisAndRetrievedItFromRedis() {
         CareGiver careGiver = getCareGiver();
@@ -42,6 +47,8 @@ public class CareGiverServiceRedisTest {
         careGiverService.save(careGiver);
         CareGiver careGiverSaved = careGiverService.findById(100L);
         Assert.assertNotNull(careGiverSaved);
+        
+        cleanup(careGiverSaved.getId());
     }
 
     @Test
@@ -64,6 +71,7 @@ public class CareGiverServiceRedisTest {
         CareGiver careGiverModified = careGiverService.findById(careGiver.getId());
         Assert.assertEquals(careGiverModified.getFirstName(), firstName);
         Assert.assertEquals(careGiverModified.getLastName(), lastName);
+        cleanup(careGiverModified.getId());
     }
 
     @Test

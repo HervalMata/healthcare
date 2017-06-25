@@ -44,7 +44,11 @@ public class CareGiverServiceImplTest {
     @Autowired
     private EntityManager em;
 
- 
+    // Remove data added during test from redis once test case executed successfully
+    public void cleanup(Long id){
+    	careGiverService.deleteById(id);
+    }
+    
     @Test
 	public void testCreateCareGiver() {
 		// given
@@ -57,6 +61,7 @@ public class CareGiverServiceImplTest {
 		// then
 		assertThat(result, notNullValue());
 		assertThat(result.getId(), notNullValue());
+		cleanup(result.getId());
 	}
 
    @Test
@@ -65,18 +70,18 @@ public class CareGiverServiceImplTest {
             assertionMode = DatabaseAssertionMode.NON_STRICT
     )
     public void testUpdateCareGiver() {
-        // given
-	   final Company company = getCompany();
-       final Agency agency = getAgency();
-       final CareGiver careGiver = getCareGiver(company, agency);
-       careGiver.setFirstName("first name updated");
-       careGiver.setId(100L);
+	   String beforeFirstName = "first name";
+	   String updatedFirstName = "first name updated";
+	   
+       CareGiver careGiver = careGiverService.findById(100L);
+	   assertEquals(beforeFirstName, careGiver.getFirstName());
        
-       // when
+	   careGiver.setFirstName(updatedFirstName);
+	   // when
         CareGiver result = careGiverService.save(careGiver);
         // then
         assertThat(result, notNullValue());
-
+        assertEquals(updatedFirstName, result.getFirstName());
         em.flush();
     }
 
