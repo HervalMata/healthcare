@@ -28,9 +28,6 @@ public @Data class HomeVisit extends Audit implements Serializable {/**
 	private Long id;
 	@Column(name="check_in_time")
 	private Timestamp checkInTime;
-	@ManyToOne
-	@JoinColumn(name = "meal_id")
-	private Meal meal;
 	@Column(name="carereceiver_signature")
 	private String careReceiverSignature;
 	@Column(name="check_out_time")
@@ -47,5 +44,5 @@ public @Data class HomeVisit extends Audit implements Serializable {/**
 	private User user;
 	@ManyToOne
 	@JoinColumn(name = "caregiver_id")
-	private CareGiver careGiver;
+	private Caregiver careGiver;
 }

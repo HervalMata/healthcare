@@ -22,7 +22,8 @@ import lombok.EqualsAndHashCode;
 @Entity
 @Table(name = "caregiver")
 @EqualsAndHashCode(callSuper = true)
-public @Data class CareGiver extends Audit implements Serializable {/**
+public @Data class Caregiver extends Audit implements Serializable {
+	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;

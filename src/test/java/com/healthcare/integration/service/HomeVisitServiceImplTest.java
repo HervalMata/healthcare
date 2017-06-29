@@ -24,7 +24,7 @@ import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.github.springtestdbunit.annotation.ExpectedDatabase;
 import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
 import com.healthcare.DbUnitIntegrationTestConfiguration;
-import com.healthcare.model.entity.CareGiver;
+import com.healthcare.model.entity.Caregiver;
 import com.healthcare.model.entity.HomeVisit;
 import com.healthcare.model.entity.Meal;
 import com.healthcare.model.entity.ServicePlan;
@@ -56,11 +56,10 @@ public class HomeVisitServiceImplTest {
     @Test
 	public void testCreateHomeVisit() {
 		// given
-		final Meal meal = getMeal();
 		final ServicePlan serviceplan = getServicePlan();
 		final User user = getUser();
-		final CareGiver careGiver = getCareGiver();
-		final HomeVisit homeVisit = getHomeVisit(meal, serviceplan, user, careGiver);
+		final Caregiver careGiver = getCareGiver();
+		final HomeVisit homeVisit = getHomeVisit(serviceplan, user, careGiver);
 		
 		// when
 		HomeVisit result = homeVisitService.save(homeVisit);
@@ -127,10 +126,9 @@ public class HomeVisitServiceImplTest {
     }
     
     
-    private HomeVisit getHomeVisit(final Meal meal,final ServicePlan serviceplan,final User user,final CareGiver careGiver) {
+    private HomeVisit getHomeVisit(final ServicePlan serviceplan,final User user,final Caregiver careGiver) {
 		final HomeVisit homeVisit = new HomeVisit();
         homeVisit.setCheckInTime(Timestamp.valueOf("2017-05-01 09:00:000"));
-        homeVisit.setMeal(meal);
         homeVisit.setCareReceiverSignature("sign");
         homeVisit.setCheckOutTime(Timestamp.valueOf("2017-05-01 21:00:000"));
         homeVisit.setCareReceiverComments("comments");
@@ -165,9 +163,9 @@ public class HomeVisitServiceImplTest {
 		return servicePlan;
 	}
 	
-	private CareGiver getCareGiver() {
+	private Caregiver getCareGiver() {
 		final Long careGiverId = 100L;
-        final CareGiver careGiver = new CareGiver();
+        final Caregiver careGiver = new Caregiver();
         careGiver.setId(careGiverId);
 		return careGiver;
 	}

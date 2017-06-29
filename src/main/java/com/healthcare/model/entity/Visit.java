@@ -29,7 +29,7 @@ public @Data class Visit implements Serializable {
 	private Timestamp checkInTime;
 	@ManyToOne
 	@JoinColumn(name = "serviceplan_id")
-	private ServicePlan servicePlan;;
+	private ServicePlan servicePlan;
 	@ManyToOne
 	@JoinColumn(name = "selected_meal_id")
 	private Meal selectedMeal;
