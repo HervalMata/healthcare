@@ -6,7 +6,7 @@
 	<groupId>com.healthcare</groupId>
 	<artifactId>healthcare</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>jar</packaging>
+	<packaging>war</packaging>
 
 	<name>healthcare</name>
 	<description>healthcare</description>
