@@ -14,7 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.healthcare.model.entity.CareGiver;
+import com.healthcare.model.entity.Caregiver;
 import com.healthcare.model.entity.HomeVisit;
 import com.healthcare.model.entity.Meal;
 import com.healthcare.model.entity.ServicePlan;
@@ -48,7 +48,7 @@ public class HomeVisitServiceRedisTest {
     	final Meal meal = getMeal();
 		final ServicePlan serviceplan = getServicePlan();
 		final User user = getUser();
-		final CareGiver careGiver = getCareGiver();
+		final Caregiver careGiver = getCareGiver();
 		final HomeVisit homeVisit = getHomeVisit(meal, serviceplan, user, careGiver);
 	    homeVisit.setId(100L);
 	    
@@ -72,7 +72,7 @@ public class HomeVisitServiceRedisTest {
     	final Meal meal = getMeal();
 		final ServicePlan serviceplan = getServicePlan();
 		final User user = getUser();
-		final CareGiver careGiver = getCareGiver();
+		final Caregiver careGiver = getCareGiver();
 		final HomeVisit homeVisit = getHomeVisit(meal, serviceplan, user, careGiver);
 	    homeVisit.setId(100L);
         
@@ -99,7 +99,7 @@ public class HomeVisitServiceRedisTest {
     	final Meal meal = getMeal();
 		final ServicePlan serviceplan = getServicePlan();
 		final User user = getUser();
-		final CareGiver careGiver = getCareGiver();
+		final Caregiver careGiver = getCareGiver();
 		final HomeVisit homeVisit = getHomeVisit(meal, serviceplan, user, careGiver);
 	    homeVisit.setId(100L);
         
@@ -108,10 +108,9 @@ public class HomeVisitServiceRedisTest {
     }
     
 
-    private HomeVisit getHomeVisit(final Meal meal,final ServicePlan serviceplan,final User user,final CareGiver careGiver) {
+    private HomeVisit getHomeVisit(final Meal meal,final ServicePlan serviceplan,final User user,final Caregiver careGiver) {
 		final HomeVisit homeVisit = new HomeVisit();
         homeVisit.setCheckInTime(Timestamp.valueOf("2017-05-01 09:00:000"));
-        homeVisit.setMeal(meal);
         homeVisit.setCareReceiverSignature("sign");
         homeVisit.setCheckOutTime(Timestamp.valueOf("2017-05-01 21:00:000"));
         homeVisit.setCareReceiverComments("comments");
@@ -146,9 +145,9 @@ public class HomeVisitServiceRedisTest {
 		return servicePlan;
 	}
 	
-	private CareGiver getCareGiver() {
+	private Caregiver getCareGiver() {
 		final Long careGiverId = 100L;
-        final CareGiver careGiver = new CareGiver();
+        final Caregiver careGiver = new Caregiver();
         careGiver.setId(careGiverId);
 		return careGiver;
 	}

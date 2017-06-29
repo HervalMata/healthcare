@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.healthcare.model.entity.CareGiver;
+import com.healthcare.model.entity.Caregiver;
 import com.healthcare.service.CareGiverService;
 
 import io.swagger.annotations.ApiImplicitParam;
@@ -40,31 +40,31 @@ public class CareGiverController extends BaseController {
 	@ApiOperation(value = "save care giver", notes = "save care giver")
 	@ApiParam(name = "caregiver", value = "care giver to save", required = true)
 	@PostMapping()
-	public ResponseEntity<CareGiver> create(@RequestBody CareGiver careGiver) {
+	public ResponseEntity<Caregiver> create(@RequestBody Caregiver careGiver) {
 		careGiver = careGiverService.save(careGiver);
-		return new ResponseEntity<CareGiver>(careGiver, HttpStatus.OK);
+		return new ResponseEntity<Caregiver>(careGiver, HttpStatus.OK);
 	}
 
 	@ApiOperation(value = "get care giver by id", notes = "get care giver by id")
 	@ApiImplicitParam(name = "id", value = "care giver id", required = true, dataType = "Long", paramType = "path")
 	@GetMapping("/{id}")
-	public CareGiver read(@PathVariable("id") Long id) {
+	public Caregiver read(@PathVariable("id") Long id) {
 		logger.info("id : " + id);
 		return careGiverService.findById(id);
 	}
 
 	@ApiOperation(value = "get all care giver", notes = "get all care giver")
 	@GetMapping()
-	public List<CareGiver> readAll() {
+	public List<Caregiver> readAll() {
 		return careGiverService.findAll();
 	}
 
 	@ApiOperation(value = "update care giver", notes = "update care giver")
 	@ApiParam(name = "caregiver", value = "care giver to update", required = true)
 	@PutMapping()
-	public ResponseEntity<CareGiver> update(@RequestBody CareGiver CareGiver) {
-		CareGiver = careGiverService.save(CareGiver);
-		return new ResponseEntity<CareGiver>(CareGiver, HttpStatus.OK);
+	public ResponseEntity<Caregiver> update(@RequestBody Caregiver Caregiver) {
+		Caregiver = careGiverService.save(Caregiver);
+		return new ResponseEntity<Caregiver>(Caregiver, HttpStatus.OK);
 	}
 
 	@ApiOperation(value = "delete care giver", notes = "delete care giver")
