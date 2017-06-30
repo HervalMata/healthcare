@@ -1,0 +1,77 @@
+package com.healthcare.api;
+
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.healthcare.model.entity.Caregiver;
+import com.healthcare.service.CareGiverService;
+
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+
+/**
+ * Created by Hitesh on 06/25/17.
+ */
+@CrossOrigin
+@RestController(value = "CareGiverRestAPI")
+@RequestMapping(value = "/api/caregiver")
+public class CareGiverController extends BaseController {
+
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+	@Autowired
+	private CareGiverService careGiverService;
+
+	@ApiOperation(value = "save care giver", notes = "save care giver")
+	@ApiParam(name = "caregiver", value = "care giver to save", required = true)
+	@PostMapping()
+	public ResponseEntity<Caregiver> create(@RequestBody Caregiver careGiver) {
+		careGiver = careGiverService.save(careGiver);
+		return new ResponseEntity<Caregiver>(careGiver, HttpStatus.OK);
+	}
+
+	@ApiOperation(value = "get care giver by id", notes = "get care giver by id")
+	@ApiImplicitParam(name = "id", value = "care giver id", required = true, dataType = "Long", paramType = "path")
+	@GetMapping("/{id}")
+	public Caregiver read(@PathVariable("id") Long id) {
+		logger.info("id : " + id);
+		return careGiverService.findById(id);
+	}
+
+	@ApiOperation(value = "get all care giver", notes = "get all care giver")
+	@GetMapping()
+	public List<Caregiver> readAll() {
+		return careGiverService.findAll();
+	}
+
+	@ApiOperation(value = "update care giver", notes = "update care giver")
+	@ApiParam(name = "caregiver", value = "care giver to update", required = true)
+	@PutMapping()
+	public ResponseEntity<Caregiver> update(@RequestBody Caregiver Caregiver) {
+		Caregiver = careGiverService.save(Caregiver);
+		return new ResponseEntity<Caregiver>(Caregiver, HttpStatus.OK);
+	}
+
+	@ApiOperation(value = "delete care giver", notes = "delete care giver")
+	@ApiImplicitParam(name = "id", value = "care giver id", required = true, dataType = "Long", paramType = "path")
+	@DeleteMapping("/{id}")
+	public void delete(@PathVariable("id") Long id) {
+		logger.info("id : " + id);
+		careGiverService.deleteById(id);
+	}
+}

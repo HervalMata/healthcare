@@ -57,7 +57,7 @@ public @Data class Review extends Audit implements Serializable {
     @Column(name = "pain_details")
     @Type(type = "com.healthcare.model.entity.usertype.review.PainDetailsUserType")
     private PainDetails painDetails;
-    @Column(name = "functional_status")
+    @Column(name = "fuctional_status_adls_iadls")
     @Type(type = "com.healthcare.model.entity.usertype.review.FunctionalStatusUserType")
     private FunctionalStatus functionalStatus;
     @Column(name = "nutrition_condition")
