@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.healthcare.api.auth.AbstractBasedAPI;
 import com.healthcare.api.auth.AuthTokenUtil;
 import com.healthcare.api.auth.AuthUserFactory;
+import com.healthcare.api.auth.UtilsResponse;
 import com.healthcare.api.auth.model.AuthRequest;
 import com.healthcare.api.auth.model.AuthResponse;
 import com.healthcare.model.entity.Admin;
@@ -26,12 +27,17 @@ import com.healthcare.model.response.Response;
 import com.healthcare.model.response.Response.ResultCode;
 import com.healthcare.service.AdminService;
 
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+
 /**
  * 
  * @author orange
  *
  */
-@RestController
+@RestController(value = "AdminLoginRestAPI")
+@RequestMapping(value = "/api/auth")
 public class AuthenticationAPI extends AbstractBasedAPI {
 
 	// Token key required in header for every request
@@ -45,6 +51,18 @@ public class AuthenticationAPI extends AbstractBasedAPI {
 
 	@Autowired
 	private AdminService adminService;
+	
+	@Autowired
+	public AuthenticationAPI(AuthenticationManager authenticationManager,
+			AuthTokenUtil tokenUtil,
+			AdminService adminService,
+			UtilsResponse responseBuilder) {
+		super(responseBuilder,adminService,tokenUtil);
+		this.authenticationManager = authenticationManager;
+		this.tokenUtil = tokenUtil;
+		this.adminService = adminService;
+	}
+
 
 	/**
 	 * 
@@ -52,7 +70,9 @@ public class AuthenticationAPI extends AbstractBasedAPI {
 	 * @return
 	 * @throws AuthenticationException
 	 */
-	@RequestMapping(value = "/api/auth/login", method = RequestMethod.POST, produces = { "application/json" })
+	@RequestMapping(value = "/login", method = RequestMethod.POST, produces = { "application/json" })
+	@ApiOperation(value = "login admin", notes = "login admin")
+	@ApiParam(name = "login", value = "login admin", required = true)
 	public Response login(@RequestBody AuthRequest authenticationRequest) throws AuthenticationException {
 
 		// Check user name & password
@@ -89,7 +109,9 @@ public class AuthenticationAPI extends AbstractBasedAPI {
 	 * @param request
 	 * @return
 	 */
-	@RequestMapping(value = "/api/auth/logout", method = RequestMethod.POST, produces = { "application/json" })
+	@RequestMapping(value = "/logout", method = RequestMethod.POST, produces = { "application/json" })
+	@ApiOperation(value = "logout admin", notes = "logout admin")
+	@ApiImplicitParam(name = "token", value = "token", required = true, dataType = "String", paramType= "header")
 	public Response logout(HttpServletRequest request) {
 		Response response = null;
 		String authToken = request.getHeader(this.tokenHeader);
@@ -105,8 +127,10 @@ public class AuthenticationAPI extends AbstractBasedAPI {
 	}
 
 	// API current user
-	@RequestMapping(value = "/api/auth/profile", method = RequestMethod.GET, produces = {
+	@RequestMapping(value = "/profile", method = RequestMethod.GET, produces = {
 			"application/json;charset=utf-8" })
+	@ApiOperation(value = "admin profile", notes = "admin profile")
+	@ApiImplicitParam(name = "token", value = "token", required = true, dataType = "String", paramType= "header")
 	@ResponseStatus(HttpStatus.OK)
 	public Response getUser(HttpServletRequest request) {
 		// This function will also auto hendle expire token & reponse error
@@ -119,7 +143,9 @@ public class AuthenticationAPI extends AbstractBasedAPI {
 	 * @param request
 	 * @return
 	 */
-	@RequestMapping(value = "/api/auth/token/refresh", method = RequestMethod.GET)
+	@RequestMapping(value = "/token/refresh", method = RequestMethod.GET)
+	@ApiOperation(value = "refresh token", notes = "refresh token")
+	@ApiImplicitParam(name = "token", value = "token", required = true, dataType = "String", paramType= "header")
 	public Response refreshAndGetAuthenticationToken(HttpServletRequest request) {
 		String token = request.getHeader(tokenHeader);
 		String username = tokenUtil.getUsernameFromToken(token);
@@ -130,6 +156,7 @@ public class AuthenticationAPI extends AbstractBasedAPI {
 				String refreshedToken = tokenUtil.refreshToken(token);
 				adminUser.setRememberToken(refreshedToken);
 				adminService.save(adminUser);
+				
 				// Return result
 				AuthResponse authResponse = new AuthResponse(refreshedToken, adminUser);
 				return responseBulder.buildResponse(Response.ResultCode.SUCCESS, authResponse, "OK");
