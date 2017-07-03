@@ -1,7 +1,7 @@
 -- -----------------------------------------------------
--- Table `health_care_v1_dev`.`company`
+-- Table ${db}.`company`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `health_care_v1_dev`.`company` (
+CREATE TABLE IF NOT EXISTS ${db}.`company` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `license_no` VARCHAR(255) NOT NULL,
   `federal_tax` VARCHAR(255) NOT NULL,
@@ -33,9 +33,9 @@ DEFAULT CHARACTER SET = utf8;
 
 
 -- -----------------------------------------------------
--- Table `health_care_v1_dev`.`agency_type`
+-- Table ${db}.`agency_type`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `health_care_v1_dev`.`agency_type` (
+CREATE TABLE IF NOT EXISTS ${db}.`agency_type` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(255) NOT NULL,
   `status` INT NOT NULL COMMENT 'type status',
@@ -45,9 +45,9 @@ DEFAULT CHARACTER SET = utf8;
 
 
 -- -----------------------------------------------------
--- Table `health_care_v1_dev`.`agency`
+-- Table ${db}.`agency`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `health_care_v1_dev`.`agency` (
+CREATE TABLE IF NOT EXISTS ${db}.`agency` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `license_no` VARCHAR(255) NOT NULL,
   `company_id` INT UNSIGNED NOT NULL,
@@ -73,12 +73,12 @@ CREATE TABLE IF NOT EXISTS `health_care_v1_dev`.`agency` (
   INDEX `fk_agency_agency_type1_idx` (`agency_type_id`),
   CONSTRAINT `fk_agency_company1`
     FOREIGN KEY (`company_id1`)
-    REFERENCES `health_care_v1_dev`.`company` (`id`)
+    REFERENCES ${db}.`company` (`id`)
     ON DELETE RESTRICT
     ON UPDATE RESTRICT,
   CONSTRAINT `fk_agency_agency_type1`
     FOREIGN KEY (`agency_type_id`)
-    REFERENCES `health_care_v1_dev`.`agency_type` (`id`)
+    REFERENCES ${db}.`agency_type` (`id`)
     ON DELETE RESTRICT
     ON UPDATE RESTRICT)
 ENGINE = InnoDB
@@ -86,9 +86,9 @@ DEFAULT CHARACTER SET = utf8;
 
 
 -- -----------------------------------------------------
--- Table `health_care_v1_dev`.`user`
+-- Table ${db}.`user`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `health_care_v1_dev`.`user` (
+CREATE TABLE IF NOT EXISTS ${db}.`user` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `company_id` INT UNSIGNED NULL DEFAULT NULL,
   `agency_id` INT UNSIGNED NULL DEFAULT NULL,
@@ -154,7 +154,7 @@ CREATE TABLE IF NOT EXISTS `health_care_v1_dev`.`user` (
   INDEX `fk_user_agency1_idx` (`agency_id`),
   CONSTRAINT `fk_user_agency1`
     FOREIGN KEY (`agency_id`)
-    REFERENCES `health_care_v1_dev`.`agency` (`id`)
+    REFERENCES ${db}.`agency` (`id`)
     ON DELETE RESTRICT
     ON UPDATE RESTRICT)
 ENGINE = InnoDB
@@ -163,9 +163,9 @@ COMMENT = 'Table storing all customers. Holds foreign keys to the address table 
 
 
 -- -----------------------------------------------------
--- Table `health_care_v1_dev`.`signature_type`
+-- Table ${db}.`signature_type`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `health_care_v1_dev`.`signature_type` (
+CREATE TABLE IF NOT EXISTS ${db}.`signature_type` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `type` VARCHAR(255) NOT NULL,
   `updated_at` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
@@ -175,9 +175,9 @@ DEFAULT CHARACTER SET = utf8;
 
 
 -- -----------------------------------------------------
--- Table `health_care_v1_dev`.`visit`
+-- Table ${db}.`visit`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `health_care_v1_dev`.`visit` (
+CREATE TABLE IF NOT EXISTS ${db}.`visit` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `meal_id` INT UNSIGNED NOT NULL,
   `agency_id` INT UNSIGNED NOT NULL,
@@ -200,12 +200,12 @@ CREATE TABLE IF NOT EXISTS `health_care_v1_dev`.`visit` (
   INDEX `fk_visit_signature_type1_idx` (`signature_type_id`),
   CONSTRAINT `fk_visit_user1`
     FOREIGN KEY (`user_id`)
-    REFERENCES `health_care_v1_dev`.`user` (`id`)
+    REFERENCES ${db}.`user` (`id`)
     ON DELETE RESTRICT
     ON UPDATE RESTRICT,
   CONSTRAINT `fk_visit_signature_type1`
     FOREIGN KEY (`signature_type_id`)
-    REFERENCES `health_care_v1_dev`.`signature_type` (`id`)
+    REFERENCES ${db}.`signature_type` (`id`)
     ON DELETE RESTRICT
     ON UPDATE RESTRICT)
 ENGINE = InnoDB
@@ -213,9 +213,9 @@ DEFAULT CHARACTER SET = utf8;
 
 
 -- -----------------------------------------------------
--- Table `health_care_v1_dev`.`role`
+-- Table ${db}.`role`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `health_care_v1_dev`.`role` (
+CREATE TABLE IF NOT EXISTS ${db}.`role` (
   `id` INT UNSIGNED NOT NULL,
   `level` INT NOT NULL,
   `level_name` VARCHAR(255) NOT NULL,
@@ -226,7 +226,7 @@ CREATE TABLE IF NOT EXISTS `health_care_v1_dev`.`role` (
   INDEX `fk_role_agency1_idx` (`agency_id`),
   CONSTRAINT `fk_role_agency1`
     FOREIGN KEY (`agency_id`)
-    REFERENCES `health_care_v1_dev`.`agency` (`id`)
+    REFERENCES ${db}.`agency` (`id`)
     ON DELETE RESTRICT
     ON UPDATE RESTRICT)
 ENGINE = InnoDB
@@ -234,9 +234,9 @@ DEFAULT CHARACTER SET = utf8;
 
 
 -- -----------------------------------------------------
--- Table `health_care_v1_dev`.`admin`
+-- Table ${db}.`admin`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `health_care_v1_dev`.`admin` (
+CREATE TABLE IF NOT EXISTS ${db}.`admin` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `username` VARCHAR(255) NOT NULL,
   `password` VARCHAR(255) NOT NULL,
@@ -259,7 +259,7 @@ CREATE TABLE IF NOT EXISTS `health_care_v1_dev`.`admin` (
   INDEX `fk_admin_role1_idx` (`role_id`),
   CONSTRAINT `fk_admin_role1`
     FOREIGN KEY (`role_id`)
-    REFERENCES `health_care_v1_dev`.`role` (`id`)
+    REFERENCES ${db}.`role` (`id`)
     ON DELETE RESTRICT
     ON UPDATE RESTRICT)
 ENGINE = InnoDB
@@ -267,9 +267,9 @@ DEFAULT CHARACTER SET = utf8;
 
 
 -- -----------------------------------------------------
--- Table `health_care_v1_dev`.`admin_post`
+-- Table ${db}.`admin_post`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `health_care_v1_dev`.`admin_post` (
+CREATE TABLE IF NOT EXISTS ${db}.`admin_post` (
   `id` INT UNSIGNED NOT NULL,
   `post_text` VARCHAR(1000) NOT NULL,
   `post_date` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
@@ -279,7 +279,7 @@ CREATE TABLE IF NOT EXISTS `health_care_v1_dev`.`admin_post` (
   INDEX `fk_admin_post_admin1_idx` (`admin_id`),
   CONSTRAINT `fk_admin_post_admin1`
     FOREIGN KEY (`admin_id`)
-    REFERENCES `health_care_v1_dev`.`admin` (`id`)
+    REFERENCES ${db}.`admin` (`id`)
     ON DELETE RESTRICT
     ON UPDATE RESTRICT)
 ENGINE = InnoDB
@@ -287,9 +287,9 @@ DEFAULT CHARACTER SET = utf8;
 
 
 -- -----------------------------------------------------
--- Table `health_care_v1_dev`.`menu`
+-- Table ${db}.`menu`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `health_care_v1_dev`.`menu` (
+CREATE TABLE IF NOT EXISTS ${db}.`menu` (
   `id` INT UNSIGNED NOT NULL,
   `name` VARCHAR(255) NOT NULL,
   `url` VARCHAR(255) NOT NULL,
@@ -305,7 +305,7 @@ CREATE TABLE IF NOT EXISTS `health_care_v1_dev`.`menu` (
   INDEX `fk_menu_role1_idx` (`role_id`),
   CONSTRAINT `fk_menu_role1`
     FOREIGN KEY (`role_id`)
-    REFERENCES `health_care_v1_dev`.`role` (`id`)
+    REFERENCES ${db}.`role` (`id`)
     ON DELETE RESTRICT
     ON UPDATE RESTRICT)
 ENGINE = InnoDB
@@ -313,9 +313,9 @@ DEFAULT CHARACTER SET = utf8;
 
 
 -- -----------------------------------------------------
--- Table `health_care_v1_dev`.`meal`
+-- Table ${db}.`meal`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `health_care_v1_dev`.`meal` (
+CREATE TABLE IF NOT EXISTS ${db}.`meal` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `meal_class` VARCHAR(255) NOT NULL,
   `name` VARCHAR(255) NOT NULL,
@@ -330,7 +330,7 @@ CREATE TABLE IF NOT EXISTS `health_care_v1_dev`.`meal` (
   INDEX `fk_meal_visit1_idx` (`visit_id`),
   CONSTRAINT `fk_meal_visit1`
     FOREIGN KEY (`visit_id`)
-    REFERENCES `health_care_v1_dev`.`visit` (`id`)
+    REFERENCES ${db}.`visit` (`id`)
     ON DELETE RESTRICT
     ON UPDATE RESTRICT)
 ENGINE = InnoDB
@@ -338,9 +338,9 @@ DEFAULT CHARACTER SET = utf8;
 
 
 -- -----------------------------------------------------
--- Table `health_care_v1_dev`.`activity`
+-- Table ${db}.`activity`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `health_care_v1_dev`.`activity` (
+CREATE TABLE IF NOT EXISTS ${db}.`activity` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(255) NOT NULL,
   `status` INT NULL DEFAULT '0',
@@ -358,9 +358,9 @@ DEFAULT CHARACTER SET = utf8;
 
 
 -- -----------------------------------------------------
--- Table `health_care_v1_dev`.`report`
+-- Table ${db}.`report`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `health_care_v1_dev`.`report` (
+CREATE TABLE IF NOT EXISTS ${db}.`report` (
   `id` INT UNSIGNED NOT NULL,
   `base_id` INT UNSIGNED NOT NULL,
   `company_id` INT UNSIGNED NOT NULL,
@@ -377,7 +377,7 @@ CREATE TABLE IF NOT EXISTS `health_care_v1_dev`.`report` (
   INDEX `fk_report_role1_idx` (`role_id`),
   CONSTRAINT `fk_report_role1`
     FOREIGN KEY (`role_id`)
-    REFERENCES `health_care_v1_dev`.`role` (`id`)
+    REFERENCES ${db}.`role` (`id`)
     ON DELETE RESTRICT
     ON UPDATE RESTRICT)
 ENGINE = InnoDB
@@ -385,9 +385,9 @@ DEFAULT CHARACTER SET = utf8;
 
 
 -- -----------------------------------------------------
--- Table `health_care_v1_dev`.`visit_has_activity`
+-- Table ${db}.`visit_has_activity`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `health_care_v1_dev`.`visit_has_activity` (
+CREATE TABLE IF NOT EXISTS ${db}.`visit_has_activity` (
   `visit_id` INT UNSIGNED NOT NULL,
   `activity_id` INT UNSIGNED NOT NULL,
   `table` VARCHAR(255) NULL,
@@ -398,12 +398,12 @@ CREATE TABLE IF NOT EXISTS `health_care_v1_dev`.`visit_has_activity` (
   INDEX `fk_visit_has_activity_visit1_idx` (`visit_id`),
   CONSTRAINT `fk_visit_has_activity_visit1`
     FOREIGN KEY (`visit_id`)
-    REFERENCES `health_care_v1_dev`.`visit` (`id`)
+    REFERENCES ${db}.`visit` (`id`)
     ON DELETE RESTRICT
     ON UPDATE RESTRICT,
   CONSTRAINT `fk_visit_has_activity_activity1`
     FOREIGN KEY (`activity_id`)
-    REFERENCES `health_care_v1_dev`.`activity` (`id`)
+    REFERENCES ${db}.`activity` (`id`)
     ON DELETE RESTRICT
     ON UPDATE RESTRICT)
 ENGINE = InnoDB
@@ -411,9 +411,9 @@ DEFAULT CHARACTER SET = utf8;
 
 
 -- -----------------------------------------------------
--- Table `health_care_v1_dev`.`review`
+-- Table ${db}.`review`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `health_care_v1_dev`.`review` (
+CREATE TABLE IF NOT EXISTS ${db}.`review` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `user_id` INT UNSIGNED NOT NULL,
   `employee_id` INT UNSIGNED NOT NULL,
@@ -427,7 +427,7 @@ CREATE TABLE IF NOT EXISTS `health_care_v1_dev`.`review` (
   INDEX `fk_review_user1_idx` (`user_id1`),
   CONSTRAINT `fk_review_user1`
     FOREIGN KEY (`user_id1`)
-    REFERENCES `health_care_v1_dev`.`user` (`id`)
+    REFERENCES ${db}.`user` (`id`)
     ON DELETE RESTRICT
     ON UPDATE RESTRICT)
 ENGINE = InnoDB
@@ -435,9 +435,9 @@ DEFAULT CHARACTER SET = utf8;
 
 
 -- -----------------------------------------------------
--- Table `health_care_v1_dev`.`employee`
+-- Table ${db}.`employee`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `health_care_v1_dev`.`employee` (
+CREATE TABLE IF NOT EXISTS ${db}.`employee` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `first_name` VARCHAR(255) NOT NULL,
   `last_name` VARCHAR(255) NOT NULL,
@@ -464,12 +464,12 @@ CREATE TABLE IF NOT EXISTS `health_care_v1_dev`.`employee` (
   INDEX `fk_employee_review1_idx` (`review_id`),
   CONSTRAINT `fk_employee_agency1`
     FOREIGN KEY (`agency_id`)
-    REFERENCES `health_care_v1_dev`.`agency` (`id`)
+    REFERENCES ${db}.`agency` (`id`)
     ON DELETE RESTRICT
     ON UPDATE RESTRICT,
   CONSTRAINT `fk_employee_review1`
     FOREIGN KEY (`review_id`)
-    REFERENCES `health_care_v1_dev`.`review` (`id`)
+    REFERENCES ${db}.`review` (`id`)
     ON DELETE RESTRICT
     ON UPDATE RESTRICT)
 ENGINE = InnoDB
@@ -477,9 +477,9 @@ DEFAULT CHARACTER SET = utf8;
 
 
 -- -----------------------------------------------------
--- Table `health_care_v1_dev`.`employee_has_activity`
+-- Table ${db}.`employee_has_activity`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `health_care_v1_dev`.`employee_has_activity` (
+CREATE TABLE IF NOT EXISTS ${db}.`employee_has_activity` (
   `employee_id` INT UNSIGNED NOT NULL,
   `activity_id` INT UNSIGNED NOT NULL,
   PRIMARY KEY (`employee_id`, `activity_id`),
@@ -487,12 +487,12 @@ CREATE TABLE IF NOT EXISTS `health_care_v1_dev`.`employee_has_activity` (
   INDEX `fk_employee_has_activity_employee1_idx` (`employee_id`),
   CONSTRAINT `fk_employee_has_activity_employee1`
     FOREIGN KEY (`employee_id`)
-    REFERENCES `health_care_v1_dev`.`employee` (`id`)
+    REFERENCES ${db}.`employee` (`id`)
     ON DELETE RESTRICT
     ON UPDATE RESTRICT,
   CONSTRAINT `fk_employee_has_activity_activity1`
     FOREIGN KEY (`activity_id`)
-    REFERENCES `health_care_v1_dev`.`activity` (`id`)
+    REFERENCES ${db}.`activity` (`id`)
     ON DELETE RESTRICT
     ON UPDATE RESTRICT)
 ENGINE = InnoDB
@@ -500,9 +500,9 @@ DEFAULT CHARACTER SET = utf8;
 
 
 -- -----------------------------------------------------
--- Table `health_care_v1_dev`.`training`
+-- Table ${db}.`training`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `health_care_v1_dev`.`training` (
+CREATE TABLE IF NOT EXISTS ${db}.`training` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `title` VARCHAR(255) NOT NULL,
   `start_time` DATETIME NOT NULL,
@@ -519,9 +519,9 @@ DEFAULT CHARACTER SET = utf8;
 
 
 -- -----------------------------------------------------
--- Table `health_care_v1_dev`.`training_has_employee`
+-- Table ${db}.`training_has_employee`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `health_care_v1_dev`.`training_has_employee` (
+CREATE TABLE IF NOT EXISTS ${db}.`training_has_employee` (
   `training_id` INT UNSIGNED NOT NULL,
   `employee_id` INT UNSIGNED NOT NULL,
   `notes` VARCHAR(1000) NULL DEFAULT NULL,
@@ -530,12 +530,12 @@ CREATE TABLE IF NOT EXISTS `health_care_v1_dev`.`training_has_employee` (
   INDEX `fk_training_has_employee_training1_idx` (`training_id`),
   CONSTRAINT `fk_training_has_employee_training1`
     FOREIGN KEY (`training_id`)
-    REFERENCES `health_care_v1_dev`.`training` (`id`)
+    REFERENCES ${db}.`training` (`id`)
     ON DELETE RESTRICT
     ON UPDATE RESTRICT,
   CONSTRAINT `fk_training_has_employee_employee1`
     FOREIGN KEY (`employee_id`)
-    REFERENCES `health_care_v1_dev`.`employee` (`id`)
+    REFERENCES ${db}.`employee` (`id`)
     ON DELETE RESTRICT
     ON UPDATE RESTRICT)
 ENGINE = InnoDB

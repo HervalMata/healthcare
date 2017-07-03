@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS `health_care_v1_dev`.`caregiver` (
+CREATE TABLE IF NOT EXISTS ${db}.`caregiver` (
   `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `company_id` INT(10) UNSIGNED NULL DEFAULT NULL,
   `agency_id` INT(10) UNSIGNED NULL DEFAULT NULL,
@@ -37,17 +37,17 @@ CREATE TABLE IF NOT EXISTS `health_care_v1_dev`.`caregiver` (
   INDEX `idx_caregiver_company` (`company_id`),
   CONSTRAINT `fk_caregiver_company`
     FOREIGN KEY (`company_id`)
-    REFERENCES `health_care_v1_dev`.`company` (`id`),
+    REFERENCES ${db}.`company` (`id`),
   CONSTRAINT `fk_caregiver_agency`
     FOREIGN KEY (`agency_id`)
-    REFERENCES `health_care_v1_dev`.`agency` (`id`))
+    REFERENCES ${db}.`agency` (`id`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8
 COMMENT = 'Table storing all customers. Holds foreign keys to the address table and the store table where this customer is registered.\n\nBasic information about the customer like first and last name are stored in the table itself. Same for the date the record was created and when the information was last updated.';
 
 
 
-CREATE TABLE IF NOT EXISTS `health_care_v1_dev`.`home_visit` (
+CREATE TABLE IF NOT EXISTS ${db}.`home_visit` (
   `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `check_in_time` DATETIME NULL DEFAULT CURRENT_TIMESTAMP,
   `meal_id` INT(10) UNSIGNED NULL,
@@ -68,18 +68,18 @@ CREATE TABLE IF NOT EXISTS `health_care_v1_dev`.`home_visit` (
   INDEX `idx_home_visit_caregiver` (`caregiver_id`),
   CONSTRAINT `fk_home_visit_serviceplan`
     FOREIGN KEY (`serviceplan_id`)
-    REFERENCES `health_care_v1_dev`.`serviceplan` (`id`),
+    REFERENCES ${db}.`serviceplan` (`id`),
   CONSTRAINT `fk_home_visit_meal`
     FOREIGN KEY (`meal_id`)
-    REFERENCES `health_care_v1_dev`.`meal` (`id`),
+    REFERENCES ${db}.`meal` (`id`),
   CONSTRAINT `fk_home_visit_user`
     FOREIGN KEY (`user_id`)
-    REFERENCES `health_care_v1_dev`.`user` (`id`)
+    REFERENCES ${db}.`user` (`id`)
     ON DELETE RESTRICT
     ON UPDATE RESTRICT,
   CONSTRAINT `fk_home_visit_caregiver`
     FOREIGN KEY (`caregiver_id`)
-    REFERENCES `health_care_v1_dev`.`caregiver` (`id`)
+    REFERENCES ${db}.`caregiver` (`id`)
     ON DELETE RESTRICT
     ON UPDATE RESTRICT)
 ENGINE = InnoDB

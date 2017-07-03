@@ -1,1 +1,1 @@
-ALTER TABLE `health_care_v1_dev`.`visit` ADD COLUMN `serviceplan_id` INT UNSIGNED NULL;
+ALTER TABLE ${db}.`visit` ADD COLUMN `serviceplan_id` INT UNSIGNED NULL;

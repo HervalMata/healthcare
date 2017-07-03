@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS `health_care_v1_dev`.`serviceplan` (
+CREATE TABLE IF NOT EXISTS ${db}.`serviceplan` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `approvedby` VARCHAR(255) NOT NULL COMMENT 'No matter this plan is proved by one employee or not, the name of the person should be recorded here. ',
   `employee_id` INT NULL DEFAULT NULL COMMENT 'If this plan is proved by one employee, then this employee’s ID will be recorded here.',
@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS `health_care_v1_dev`.`serviceplan` (
   INDEX `fk_serviceplan_user1_idx` (`user_id`),
   CONSTRAINT `fk_serviceplan_user1`
     FOREIGN KEY (`user_id`)
-    REFERENCES `health_care_v1_dev`.`user` (`id`)
+    REFERENCES ${db}.`user` (`id`)
     ON DELETE RESTRICT
     ON UPDATE RESTRICT)
 ENGINE = InnoDB

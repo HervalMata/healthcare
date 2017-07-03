@@ -1,1 +1,1 @@
-DROP TABLE `health_care_v1_dev`.`signature_type`;
+DROP TABLE ${db}.`signature_type`;
