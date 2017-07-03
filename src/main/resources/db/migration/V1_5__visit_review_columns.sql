@@ -1,3 +1,3 @@
-ALTER TABLE `health_care_v1_dev`.`visit` DROP FOREIGN KEY `fk_visit_signature_type1` ; 
-ALTER TABLE `health_care_v1_dev`.`visit` DROP INDEX `fk_visit_signature_type1_idx` ; 
-ALTER TABLE `health_care_v1_dev`.`visit` DROP COLUMN `signature_type_id`;
+ALTER TABLE ${db}.`visit` DROP FOREIGN KEY `fk_visit_signature_type1` ; 
+ALTER TABLE ${db}.`visit` DROP INDEX `fk_visit_signature_type1_idx` ; 
+ALTER TABLE ${db}.`visit` DROP COLUMN `signature_type_id`;
