@@ -143,6 +143,7 @@ public class AuthTokenUtil implements Serializable {
 			final Claims claims = getClaimsFromToken(token);
 			claims.put(CLAIM_KEY_CREATED, new Date());
 			refreshedToken = generateToken(claims);
+			KeyStoreManager.getInstance().save(refreshedToken, new Date().getTime());
 		} catch (Exception e) {
 			refreshedToken = null;
 		}
@@ -172,6 +173,7 @@ public class AuthTokenUtil implements Serializable {
 		KeyStoreManager.getInstance().save(token, new Date().getTime());
 		return token;
 	}
+	
 
 	public boolean removeToken(String token) {
 		Claims claims = getClaimsFromToken(token);

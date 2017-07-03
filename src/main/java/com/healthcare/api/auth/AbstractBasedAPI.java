@@ -29,6 +29,14 @@ public abstract class AbstractBasedAPI implements ApplicationEventPublisherAware
 
 	@Autowired
 	public UtilsResponse responseBulder;
+	
+	public AbstractBasedAPI(){}
+	
+	public AbstractBasedAPI(UtilsResponse responseBulder,AdminService adminService,AuthTokenUtil authTokenUtil){
+		this.responseBulder = responseBulder;
+		this.adminService = adminService;
+		this.authTokenUtil = authTokenUtil;
+	}
 
 	protected final Logger log = LoggerFactory.getLogger(this.getClass());
 	protected ApplicationEventPublisher eventPublisher;
