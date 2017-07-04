@@ -4,12 +4,12 @@ import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.Date;
-
 import com.healthcare.model.entity.Agency;
 import com.healthcare.model.entity.AgencyType;
 import com.healthcare.model.entity.Company;
 import com.healthcare.model.entity.User;
 import com.healthcare.model.entity.Visit;
+import com.healthcare.model.entity.WorkItem;
 import com.healthcare.model.enums.GenderEnum;
 import com.healthcare.model.enums.LanguageEnum;
 import com.healthcare.model.enums.StateEnum;
@@ -77,6 +77,10 @@ public class EntityFactory {
 	public String selectedSeat = "AB";
 	public String userSignature = "userSignature";
 
+	public String itemName = "help on shopping";
+	public String itemNote = "help on shopping note";
+	
+	
 	protected void init() {
 		eligiableStart.set(Calendar.YEAR, 2017);
 		eligiableStart.set(Calendar.MONTH, 1);
@@ -214,4 +218,12 @@ public class EntityFactory {
 		return visit;
 	}
 
+	
+	protected WorkItem createNewWorkItem(){
+		WorkItem workItem = new WorkItem();
+		workItem.setItemName(itemName);
+		workItem.setItemNote(itemNote);
+		return workItem;
+	}
+	
 }
