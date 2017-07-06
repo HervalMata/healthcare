@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
-import com.healthcare.model.entity.CareGiver;
+import com.healthcare.model.entity.Caregiver;
 import com.healthcare.repository.CareGiverRepository;
 import com.healthcare.service.CareGiverService;
 
@@ -18,24 +18,24 @@ import io.jsonwebtoken.lang.Collections;
 @Service
 @Transactional
 public class CareGiverServiceImpl implements CareGiverService {
-	private static final String KEY = CareGiver.class.getSimpleName();
+	private static final String KEY = Caregiver.class.getSimpleName();
 
 	@Autowired
 	CareGiverRepository careGiverRepository;
 
 	@Autowired
-	private RedisTemplate<String, CareGiver> careGiverRedisTemplate;
+	private RedisTemplate<String, Caregiver> careGiverRedisTemplate;
 
 	@Override
-	public CareGiver save(CareGiver careGiver) {
+	public Caregiver save(Caregiver careGiver) {
 		careGiver = careGiverRepository.save(careGiver);
 		careGiverRedisTemplate.opsForHash().put(KEY, careGiver.getId(), careGiver);
 		return careGiver;
 	}
 
 	@Override
-	public CareGiver findById(Long id) {
-		CareGiver careGiver = (CareGiver) careGiverRedisTemplate.opsForHash().get(KEY, id);
+	public Caregiver findById(Long id) {
+		Caregiver careGiver = (Caregiver) careGiverRedisTemplate.opsForHash().get(KEY, id);
 		if (careGiver == null)
 			careGiver = careGiverRepository.findOne(id);
 		return careGiver;
@@ -48,9 +48,9 @@ public class CareGiverServiceImpl implements CareGiverService {
 	}
 
 	@Override
-	public List<CareGiver> findAll() {
+	public List<Caregiver> findAll() {
 		Map<Object, Object> careGiverMap = careGiverRedisTemplate.opsForHash().entries(KEY);
-		List<CareGiver> careGiverList = Collections.arrayToList(careGiverMap.values().toArray());
+		List<Caregiver> careGiverList = Collections.arrayToList(careGiverMap.values().toArray());
 		if (careGiverMap.isEmpty())
 			careGiverList = careGiverRepository.findAll();
 		return careGiverList;

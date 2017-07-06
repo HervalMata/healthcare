@@ -23,7 +23,7 @@ import com.github.springtestdbunit.annotation.ExpectedDatabase;
 import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
 import com.healthcare.DbUnitIntegrationTestConfiguration;
 import com.healthcare.model.entity.Agency;
-import com.healthcare.model.entity.CareGiver;
+import com.healthcare.model.entity.Caregiver;
 import com.healthcare.model.entity.Company;
 import com.healthcare.service.CareGiverService;
 
@@ -54,10 +54,10 @@ public class CareGiverServiceImplTest {
 		// given
 		final Company company = getCompany();
 		final Agency agency = getAgency();
-		final CareGiver careGiver = getCareGiver(company,agency);
+		final Caregiver careGiver = getCareGiver(company,agency);
 
 		// when
-		CareGiver result = careGiverService.save(careGiver);
+		Caregiver result = careGiverService.save(careGiver);
 		// then
 		assertThat(result, notNullValue());
 		assertThat(result.getId(), notNullValue());
@@ -73,12 +73,12 @@ public class CareGiverServiceImplTest {
 	   String beforeFirstName = "first name";
 	   String updatedFirstName = "first name updated";
 	   
-       CareGiver careGiver = careGiverService.findById(100L);
+       Caregiver careGiver = careGiverService.findById(100L);
 	   assertEquals(beforeFirstName, careGiver.getFirstName());
        
 	   careGiver.setFirstName(updatedFirstName);
 	   // when
-        CareGiver result = careGiverService.save(careGiver);
+        Caregiver result = careGiverService.save(careGiver);
         // then
         assertThat(result, notNullValue());
         assertEquals(updatedFirstName, result.getFirstName());
@@ -90,7 +90,7 @@ public class CareGiverServiceImplTest {
         // given
         final Long careGiverId = 100L;
         // when
-        CareGiver result = careGiverService.findById(careGiverId);
+        Caregiver result = careGiverService.findById(careGiverId);
         // then
         assertThat(result, notNullValue());
     }
@@ -98,7 +98,7 @@ public class CareGiverServiceImplTest {
     @Test
     public void testFindAll() {
         // when
-        List<CareGiver> result = careGiverService.findAll();
+        List<Caregiver> result = careGiverService.findAll();
         // then
         assertTrue(result.size()>0);
     }
@@ -118,8 +118,8 @@ public class CareGiverServiceImplTest {
     }
     
     
-    private CareGiver getCareGiver(final Company company,final Agency agency) {
-		final CareGiver careGiver = new CareGiver();
+    private Caregiver getCareGiver(final Company company,final Agency agency) {
+		final Caregiver careGiver = new Caregiver();
         careGiver.setFirstName("First Name");
         careGiver.setLastName("Last Name");
         careGiver.setCareGiverType(1L);

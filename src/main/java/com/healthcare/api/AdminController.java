@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.healthcare.api.auth.AbstractBasedAPI;
 import com.healthcare.model.entity.Admin;
 import com.healthcare.service.AdminService;
+import com.healthcare.util.PasswordUtils;
 
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
@@ -38,6 +39,8 @@ public class AdminController extends AbstractBasedAPI {
 	@ApiParam(name = "admin", value = "admin to save", required = true)
 	@PostMapping()
 	public ResponseEntity<Admin> create(@RequestBody Admin admin) {
+		String hashPassword = PasswordUtils.hashPassword(admin.getPassword());
+		admin.setPassword(hashPassword);
 		admin = adminService.save(admin);
 		return new ResponseEntity<Admin>(admin, HttpStatus.OK);
 	}

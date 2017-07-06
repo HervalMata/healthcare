@@ -4,6 +4,10 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
+
 import java.io.Serializable;
 
 @Entity
@@ -16,6 +20,7 @@ public @Data class Admin extends Audit implements Serializable {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 	private String username;
+	@JsonProperty(access = Access.WRITE_ONLY)
 	private String password;
 	private String gender;
 	private String email;

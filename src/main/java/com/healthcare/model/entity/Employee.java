@@ -10,9 +10,7 @@ import java.sql.Timestamp;
 @Entity
 @Table(name = "employee")
 @EqualsAndHashCode(callSuper = true)
-public
-@Data
-class Employee extends Audit implements Serializable {
+public @Data class Employee extends Audit implements Serializable {
 
   
     private static final long serialVersionUID = 512962093355769597L;

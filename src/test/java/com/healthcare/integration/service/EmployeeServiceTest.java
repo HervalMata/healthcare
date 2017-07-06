@@ -137,9 +137,79 @@ public class EmployeeServiceTest {
         Assert.assertNull(employeeService.findById(employee.getId()));
     }
 
-
+    @Test
+    public void testFindByCompany()
+    {
+    	Company company1 = newCompany();
+    	company1 = companyService.save(company1);
+    	Company company2 = newCompany();
+    	company2 = companyService.save(company2);
+    	
+    	Agency agency1 = newAgency();
+    	agency1.setCompany(company1);
+    	agency1.setCompany1(company1);
+    	agency1 = agencyService.save(agency1);
+    	
+    	Agency agency2 = newAgency();
+    	agency2.setCompany(company1);
+    	agency2.setCompany1(company1);
+    	agency2 = agencyService.save(agency2);
+    	
+    	Agency agency3 = newAgency();
+    	agency3.setCompany(company2);
+    	agency3.setCompany1(company2);
+    	agency3 = agencyService.save(agency3);
+    	
+    	Employee e1 = newEmployee();
+    	e1.setAgency(agency1); 
+    	employeeService.save(e1);
+    	
+    	Employee e2 = newEmployee();
+    	e2.setAgency(agency1); 
+    	employeeService.save(e2);
+    	
+    	Employee e3 = newEmployee();
+    	e3.setAgency(agency1); 
+    	employeeService.save(e3);
+    	
+    	Employee e4 = newEmployee();
+    	e4.setAgency(agency2); 
+    	employeeService.save(e4);
+    	
+    	Employee e5 = newEmployee();
+    	e5.setAgency(agency3); 
+    	employeeService.save(e5);
+    	
+    	Employee e6 = newEmployee();
+    	e6.setAgency(agency3); 
+    	employeeService.save(e6);
+    	
+    	Assert.assertEquals(employeeService.findByCampanyIdAndAgencyId(company1.getId(), null).size(), 4);
+    	Assert.assertEquals(employeeService.findByCampanyIdAndAgencyId(company1.getId(), agency1.getId()).size(), 3);
+    	Assert.assertEquals(employeeService.findByCampanyIdAndAgencyId(company1.getId(), agency2.getId()).size(), 1);
+    	Assert.assertEquals(employeeService.findByCampanyIdAndAgencyId(company2.getId(), null).size(), 2);
+    	Assert.assertEquals(employeeService.findByCampanyIdAndAgencyId(company2.getId(), agency3.getId()).size(), 2);
+    }
     private Employee createNewEmployee() {
-        Employee employee = new Employee();
+        Employee employee = newEmployee();
+        employee.setAgency(createNewAgency());
+        return employeeService.save(employee);
+    }
+    
+    private Company createNewCompany() {
+    	Company company = newCompany();
+    	return companyService.save(company);
+    }
+    
+    private AgencyType createNewAgencyType() {
+    	AgencyType agencyType = new AgencyType();
+    	agencyType.setName("Agency Type Name");
+    	agencyType.setStatus(1);
+    	return agencyTypeService.save(agencyType);
+    }
+
+	private Employee newEmployee() {
+		Employee employee = new Employee();
         employee.setId(id);
         employee.setFirstName(firstName);
         employee.setLastName(lastName);
@@ -157,20 +227,24 @@ public class EmployeeServiceTest {
         employee.setType(type);
         employee.setStatus(status);
         employee.setBackgroundCheck(backgroundCheck);
-        employee.setAgency(createNewAgency());
-        return employeeService.save(employee);
-    }
+		return employee;
+	}
 
     private Agency createNewAgency() {
-        Agency agency = new Agency();
-        agency.setName(agencyName);
+        Agency agency = newAgency();
         Company company = createNewCompany();
+        agency.setCompany(company);
+        agency.setCompany1(company);
+        return agencyService.save(agency);
+    }
+
+	private Agency newAgency() {
+		Agency agency = new Agency();
+        agency.setName(agencyName);
         agency.setAddressOne(addressOne);
         agency.setAddressTwo(addressTwo);
         agency.setAgencyType(createNewAgencyType());
         agency.setCity(city);
-        agency.setCompany(company);
-        agency.setCompany1(company);
         agency.setContactPerson(contactPerson);
         agency.setEmail(email);
         agency.setFax(fax);
@@ -181,11 +255,11 @@ public class EmployeeServiceTest {
         agency.setTimezone(timezone);
         agency.setTrackingMode(trackingMode);
         agency.setZipcode(zipcode);
-        return agencyService.save(agency);
-    }
+		return agency;
+	}
 
-    private Company createNewCompany() {
-        Company company = new Company();
+	private Company newCompany() {
+		Company company = new Company();
         company.setAddressOne(addressOne);
         company.setAddressTwo(addressTwo);
         company.setCity(city);
@@ -207,13 +281,6 @@ public class EmployeeServiceTest {
         company.setWorktimeEnd(new Time(worktimeEnd.getTimeInMillis()));
         company.setWorktimeStart(new Time(worktimeStart.getTimeInMillis()));
         company.setZipcode(zipcode);
-        return companyService.save(company);
-    }
-
-    private AgencyType createNewAgencyType() {
-        AgencyType agencyType = new AgencyType();
-        agencyType.setName("Agency Type Name");
-        agencyType.setStatus(1);
-        return agencyTypeService.save(agencyType);
-    }
+		return company;
+	}
 }

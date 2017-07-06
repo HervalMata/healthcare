@@ -2,25 +2,23 @@ package com.healthcare.model.entity;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
-import java.util.HashSet;
-import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Entity
 @Table(name = "visit")
-public @Data class Visit implements Serializable {
+@EqualsAndHashCode(callSuper = true)
+public @Data class Visit extends Audit implements Serializable {
 
 	private static final long serialVersionUID = -5449963759010972006L;
 	@Id
@@ -33,7 +31,7 @@ public @Data class Visit implements Serializable {
 	private Timestamp checkInTime;
 	@ManyToOne
 	@JoinColumn(name = "serviceplan_id")
-	private ServicePlan servicePlan;;
+	private ServicePlan servicePlan;
 	@ManyToOne
 	@JoinColumn(name = "selected_meal_id")
 	private Meal selectedMeal;
@@ -54,6 +52,6 @@ public @Data class Visit implements Serializable {
 	@ManyToOne
 	@JoinColumn(name = "user_id")
 	private User user;
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "visit")
-	private Set<VisitActivity> visitActivities = new HashSet<VisitActivity>(0);
+	@Column(name = "signature")
+	private String signature;
 }

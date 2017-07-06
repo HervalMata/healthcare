@@ -1,7 +1,7 @@
 package com.healthcare.integration.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.healthcare.model.entity.CareGiver;
+import com.healthcare.model.entity.Caregiver;
 import com.healthcare.service.CareGiverService;
 import org.junit.Before;
 import org.junit.Test;
@@ -42,32 +42,32 @@ public class CareGiverControllerTest {
 
 	@Test
 	public void testSaveCareGiver() throws Exception {
-		CareGiver CareGiver = new CareGiver();
-		Mockito.when(careGiverService.save(CareGiver)).thenReturn(CareGiver);
+		Caregiver Caregiver = new Caregiver();
+		Mockito.when(careGiverService.save(Caregiver)).thenReturn(Caregiver);
 		ObjectMapper mapper = new ObjectMapper();
-		String jsonInString = mapper.writeValueAsString(CareGiver);
+		String jsonInString = mapper.writeValueAsString(Caregiver);
 		this.mockMvc.perform(post("/api/caregiver").contentType(MediaType.APPLICATION_JSON).content(jsonInString))
 				.andExpect(status().isOk());
 	}
 
 	@Test
 	public void testGetCareGiver() throws Exception {
-		Mockito.when(careGiverService.findById(1L)).thenReturn(new CareGiver());
+		Mockito.when(careGiverService.findById(1L)).thenReturn(new Caregiver());
 		this.mockMvc.perform(get("/api/caregiver/")).andExpect(status().isOk());
 	}
 
 	@Test
 	public void testFindAllCareGiver() throws Exception {
-		Mockito.when(careGiverService.findAll()).thenReturn(new ArrayList<CareGiver>());
+		Mockito.when(careGiverService.findAll()).thenReturn(new ArrayList<Caregiver>());
 		this.mockMvc.perform(get("/api/caregiver")).andExpect(status().isOk());
 	}
 
 	@Test
 	public void testUpdateCareGiver() throws Exception {
-		CareGiver CareGiver = new CareGiver();
-		Mockito.when(careGiverService.save(CareGiver)).thenReturn(CareGiver);
+		Caregiver Caregiver = new Caregiver();
+		Mockito.when(careGiverService.save(Caregiver)).thenReturn(Caregiver);
 		ObjectMapper mapper = new ObjectMapper();
-		String jsonInString = mapper.writeValueAsString(CareGiver);
+		String jsonInString = mapper.writeValueAsString(Caregiver);
 		this.mockMvc.perform(put("/api/caregiver").contentType(MediaType.APPLICATION_JSON).content(jsonInString))
 				.andExpect(status().isOk());
 	}

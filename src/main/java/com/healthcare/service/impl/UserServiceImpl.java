@@ -40,4 +40,9 @@ public class UserServiceImpl implements UserService {
 		userRepository.delete(id);
 		return redisTemplate.opsForHash().delete(KEY, id);
 	}
+
+	@Override
+	public User getUser(String username) {
+		return userRepository.findByUsername(username);
+	}
 }

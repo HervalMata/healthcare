@@ -14,7 +14,7 @@ import com.healthcare.model.entity.ServicePlan;
 import com.healthcare.model.entity.User;
 import com.healthcare.model.entity.Visit;
 import com.healthcare.model.entity.VisitActivity;
-import com.healthcare.model.entity.VisitActivityPK;
+import com.healthcare.model.entity.WorkItem;
 import com.healthcare.model.enums.DayEnum;
 import com.healthcare.model.enums.GenderEnum;
 import com.healthcare.model.enums.LanguageEnum;
@@ -104,6 +104,9 @@ public class EntityFactory {
 	public String backgroundCheck = "backgroundCheck";
 
 	public String seat = "10A";
+
+	public String itemName = "help on shopping";
+	public String itemNote = "help on shopping note";
 
 	protected void init() {
 		eligiableStart.set(Calendar.YEAR, 2017);
@@ -290,10 +293,20 @@ public class EntityFactory {
 
 	protected VisitActivity createNewVisitActivity(Visit visit, Activity activity) {
 		VisitActivity visitActivity = new VisitActivity();
-//		visitActivity.setId(new VisitActivityPK(visit.getId(), activity.getId()));
-		visitActivity.setActivity(activity);
+		// visitActivity.setId(new VisitActivityPK(visit.getId(),
+		// activity.getId()));
+//		visitActivity.setActivity(activity);
+		visitActivity.setActivityId(activity.getId());
 		visitActivity.setSeat(seat);
-		visitActivity.setVisit(visit);
+//		visitActivity.setVisit(visit);
+		visitActivity.setVisitId(visit.getId());
 		return visitActivity;
+	}
+
+	protected WorkItem createNewWorkItem() {
+		WorkItem workItem = new WorkItem();
+		workItem.setItemName(itemName);
+		workItem.setItemNote(itemNote);
+		return workItem;
 	}
 }
