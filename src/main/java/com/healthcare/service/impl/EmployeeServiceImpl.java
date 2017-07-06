@@ -1,5 +1,6 @@
 package com.healthcare.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -53,6 +54,24 @@ public class EmployeeServiceImpl implements EmployeeService {
 		List<Employee> employeeList = Collections.arrayToList(employeeMap.values().toArray());
 		if (employeeMap.isEmpty())
 			employeeList = employeeRepository.findAll();
+		return employeeList;
+	}
+
+	@Override
+	public List<Employee> findByCampanyIdAndAgencyId(Long companyId, Long agencyId) {
+		Map<Object, Object> employeeMap = employeeRedisTemplate.opsForHash().entries(KEY);
+		List<Employee> allEmployees = Collections.arrayToList(employeeMap.values().toArray());
+		List<Employee> employeeList = new ArrayList<>();
+		for (Employee employee : allEmployees) {
+			if (employee.getAgency() != null
+					&& (agencyId == null || agencyId.equals(employee.getAgency().getId()))
+					&& employee.getAgency().getCompany() != null
+					&& companyId.equals(employee.getAgency().getCompany().getId())) {
+				employeeList.add(employee);
+			}
+		}
+		if (employeeMap.isEmpty())
+			employeeList = employeeRepository.findByCompany(companyId, agencyId);
 		return employeeList;
 	}
 }

@@ -134,5 +134,7 @@ public @Data class User extends Audit implements Serializable {
 	@ManyToOne
 	@JoinColumn(name = "agency_id")
 	private Agency agency;
+	@Column(name = "status_second")
+	private Integer statusSecond;
 
 }

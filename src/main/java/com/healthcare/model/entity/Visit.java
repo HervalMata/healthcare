@@ -13,10 +13,12 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Entity
 @Table(name = "visit")
-public @Data class Visit implements Serializable {
+@EqualsAndHashCode(callSuper = true)
+public @Data class Visit extends Audit implements Serializable {
 
 	private static final long serialVersionUID = -5449963759010972006L;
 	@Id
@@ -50,5 +52,7 @@ public @Data class Visit implements Serializable {
 	@ManyToOne
 	@JoinColumn(name = "user_id")
 	private User user;
+	@Column(name = "signature")
+	private String signature;
 
 }

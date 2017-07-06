@@ -12,4 +12,6 @@ public interface EmployeeService extends IService<Employee> {
 	Employee save(Employee employee);
 
 	List<Employee> findAll();
+	
+	List<Employee> findByCampanyIdAndAgencyId(Long companyId, Long agencyId);
 }
