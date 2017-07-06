@@ -14,12 +14,16 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.healthcare.model.entity.Company;
+import com.healthcare.model.entity.Employee;
 import com.healthcare.service.CompanyService;
+import com.healthcare.service.EmployeeService;
 
 import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 
@@ -30,6 +34,8 @@ public class CompanyController {
 
 	@Autowired
 	private CompanyService companyService;
+	@Autowired
+	private EmployeeService employeeService;
 
 	@ApiOperation(value = "save company", notes = "save company")
 	@ApiParam(name = "company", value = "company to save", required = true)
@@ -60,12 +66,20 @@ public class CompanyController {
 		company = companyService.save(company);
 		return new ResponseEntity<Company>(company, HttpStatus.OK);
 	}
-
+	
 	@ApiOperation(value = "delete company", notes = "delete company")
 	@ApiImplicitParam(name = "id", value = "company id", required = true, dataType = "Long")
 	@DeleteMapping("/{id}")
 	public void delete(@PathVariable("id") Long id) {
 		logger.info("id : " + id);
 		companyService.deleteById(id);
+	}
+	
+	@ApiOperation(value = "get employees by company id", notes = "get employees by company id")
+	@ApiImplicitParam(name = "companyId", value = "company id", required = true, dataType = "Long")
+	@ApiParam(name = "agencyId", value = "agency id")
+	@GetMapping("/{companyId}/employees")
+	public List<Employee> getEmployeesByCompagny(@PathVariable("companyId") Long companyId, @RequestParam("agencyId") Long agencyId){
+		return employeeService.findByCampanyIdAndAgencyId(companyId, agencyId);
 	}
 }
