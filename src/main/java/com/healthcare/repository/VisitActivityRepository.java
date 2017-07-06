@@ -10,7 +10,7 @@ import com.healthcare.model.entity.VisitActivity;
 import com.healthcare.model.entity.VisitActivityPK;
 
 public interface VisitActivityRepository extends JpaRepository<VisitActivity, VisitActivityPK> {
-	List<VisitActivity> findByVisit(Visit visit);
+//	List<VisitActivity> findByVisit(Visit visit);
 
-	List<VisitActivity> findByActivity(Activity activity);
+//	List<VisitActivity> findByActivity(Activity activity);
 }

@@ -98,7 +98,7 @@ public class VisitActivityServiceTest extends EntityFactory {
 		Assert.assertNotNull(visitActivityService.findById(new VisitActivityPK(visit.getId(), activity.getId())));
 	}
 
-//	@Test
+	@Test
 	public void testUpdateVisitActivity() {
 		String newSeat = "10B";
 		VisitActivity visitActivity = createNewVisitActivity(visit, activity);
@@ -116,6 +116,7 @@ public class VisitActivityServiceTest extends EntityFactory {
 		VisitActivity visitActivity = createNewVisitActivity(visit, activity);
 		visitActivityService.save(visitActivity);
 		Assert.assertNotNull(visitActivityService.findById(new VisitActivityPK(visit.getId(), activity.getId())));
+		VisitActivity savedVisitActivity = visitActivityService.findById(new VisitActivityPK(visit.getId(), activity.getId()));
 		visitActivityService.deleteById(new VisitActivityPK(visit.getId(), activity.getId()));
 		Assert.assertNull(visitActivityService.findById(new VisitActivityPK(visit.getId(), activity.getId())));
 	}

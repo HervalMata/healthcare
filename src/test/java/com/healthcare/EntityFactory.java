@@ -14,6 +14,7 @@ import com.healthcare.model.entity.ServicePlan;
 import com.healthcare.model.entity.User;
 import com.healthcare.model.entity.Visit;
 import com.healthcare.model.entity.VisitActivity;
+import com.healthcare.model.entity.VisitActivityPK;
 import com.healthcare.model.enums.DayEnum;
 import com.healthcare.model.enums.GenderEnum;
 import com.healthcare.model.enums.LanguageEnum;
@@ -289,6 +290,7 @@ public class EntityFactory {
 
 	protected VisitActivity createNewVisitActivity(Visit visit, Activity activity) {
 		VisitActivity visitActivity = new VisitActivity();
+//		visitActivity.setId(new VisitActivityPK(visit.getId(), activity.getId()));
 		visitActivity.setActivity(activity);
 		visitActivity.setSeat(seat);
 		visitActivity.setVisit(visit);
