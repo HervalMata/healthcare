@@ -2,6 +2,9 @@ package com.healthcare.service.impl;
 
 import static org.springframework.util.Assert.notNull;
 
+import java.util.List;
+import java.util.Map;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.transaction.Transactional;
@@ -13,6 +16,8 @@ import org.springframework.stereotype.Service;
 import com.healthcare.model.entity.Activity;
 import com.healthcare.repository.ActivityRepository;
 import com.healthcare.service.ActivityService;
+
+import io.jsonwebtoken.lang.Collections;
 
 /**
  * Activity service
@@ -62,5 +67,14 @@ public class ActivityServiceImpl implements ActivityService {
 
 		activityRepository.delete(id);
 		return redisTemplate.opsForHash().delete(REDIS_KEY, id);
+	}
+
+	@Override
+	public List<Activity> findAll() {
+		Map<Object, Object> activityMap = redisTemplate.opsForHash().entries(REDIS_KEY);
+		List<Activity> activityList = Collections.arrayToList(activityMap.values().toArray());
+		if (activityMap.isEmpty())
+			activityList = activityRepository.findAll();
+		return activityList;
 	}
 }

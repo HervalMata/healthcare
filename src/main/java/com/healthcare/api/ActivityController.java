@@ -1,5 +1,7 @@
 package com.healthcare.api;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,6 +56,12 @@ public class ActivityController extends BaseController {
 		}
 
 		return ResponseEntity.ok(activityService.findById(activityId));
+	}
+	
+	@ApiOperation(value = "Get all activities", notes = "Get all activities")
+	@GetMapping()
+	public ResponseEntity<List<Activity>> getAll() {
+		return ResponseEntity.ok(activityService.findAll());
 	}
 
 	@ApiOperation(value = "Update activity", notes = "Update an activity")

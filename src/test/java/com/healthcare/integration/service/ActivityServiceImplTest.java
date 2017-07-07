@@ -21,6 +21,9 @@ import javax.persistence.EntityManager;
 
 import static org.hamcrest.core.IsNull.notNullValue;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+
+import java.util.List;
 
 @RunWith(SpringRunner.class)
 @TestExecutionListeners(
@@ -88,6 +91,14 @@ public class ActivityServiceImplTest {
         Activity result = sut.findById(activityId);
         // then
         assertThat(result, notNullValue());
+    }
+    
+    @Test
+    public void testFindAll() {
+        // when
+        List<Activity> result = sut.findAll();
+        // then
+        assertTrue(result.size() > 0);
     }
 
     @Test
