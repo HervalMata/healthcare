@@ -23,18 +23,18 @@ public @Data class VisitActivity implements Serializable {
 
 	private static final long serialVersionUID = -4384670103126314525L;
 	@Id
-	@Column(name = "visit_id")
-	private Long visitId;
-	@ManyToOne()
-	@JoinColumn(name = "visit_id", referencedColumnName = "id", insertable = false, updatable = false)
-	private Visit visit;
+    @Column(name = "visit_id")
+    protected Long visitId;
 	@Id
-	@Column(name = "activity_id")
-	private Long activityId;
-	@ManyToOne()
-	@JoinColumn(name = "activity_id", referencedColumnName = "id", insertable = false, updatable = false)
+    @Column(name = "activity_id")
+    protected Long activityId;	
+	@ManyToOne
+	@JoinColumn(name = "visit_id" , insertable = false, updatable = false)
+	private Visit visit;
+	@ManyToOne
+	@JoinColumn(name = "activity_id" ,insertable = false, updatable = false)
 	private Activity activity;
-	private String table;
+	private String tableName;
 	private String seat;
 	@Column(name = "start_time")
 	private Timestamp startTime;

@@ -17,12 +17,10 @@ public @Data class VisitActivityPK implements Serializable {
 	private Long activityId;
 
 	public VisitActivityPK() {
-		super();
 	}
 
-	public VisitActivityPK(Long visit, Long activity) {
-		super();
-		this.visitId = visit;
-		this.activityId = activity;
+	public VisitActivityPK(Long visitId, Long activityId) {
+		this.visitId = visitId;
+		this.activityId = activityId;
 	}
 }

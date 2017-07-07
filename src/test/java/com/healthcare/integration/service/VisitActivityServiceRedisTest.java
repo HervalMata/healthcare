@@ -1,5 +1,10 @@
 package com.healthcare.integration.service;
 
+import static org.junit.Assert.assertEquals;
+
+import java.util.Collections;
+import java.util.List;
+
 import javax.transaction.Transactional;
 
 import org.junit.Assert;
@@ -12,113 +17,185 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.healthcare.EntityFactory;
 import com.healthcare.model.entity.Activity;
-import com.healthcare.model.entity.Agency;
-import com.healthcare.model.entity.AgencyType;
-import com.healthcare.model.entity.Company;
-import com.healthcare.model.entity.Employee;
-import com.healthcare.model.entity.User;
 import com.healthcare.model.entity.Visit;
 import com.healthcare.model.entity.VisitActivity;
 import com.healthcare.model.entity.VisitActivityPK;
 import com.healthcare.repository.VisitActivityRepository;
-import com.healthcare.service.ActivityService;
-import com.healthcare.service.AgencyService;
-import com.healthcare.service.AgencyTypeService;
-import com.healthcare.service.CompanyService;
-import com.healthcare.service.EmployeeService;
-import com.healthcare.service.UserService;
 import com.healthcare.service.VisitActivityService;
-import com.healthcare.service.VisitService;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @Transactional
-public class VisitActivityServiceRedisTest extends EntityFactory {
+public class VisitActivityServiceRedisTest {
 	@MockBean
 	private VisitActivityRepository visitActivityRepository;
 
 	@Autowired
 	private VisitActivityService visitActivityService;
-	
-	@Autowired
-	private UserService userService;
-
-	@Autowired
-	private AgencyService agencyService;
-
-	@Autowired
-	private CompanyService companyService;
-
-	@Autowired
-	private AgencyTypeService agencyTypeService;
-
-	@Autowired
-	private VisitService visitService;
-
-	@Autowired
-	private ActivityService activityService;
-
-	@Autowired
-	private EmployeeService employeeService;
-
-	User user;
-	Employee employee;
-	Company company;
-	AgencyType agencyType;
-	Agency agency;
-	Visit visit;
-	Activity activity;
 
 	@Before
 	public void setup() {
-		init();
-		company = createNewCompany();
-		companyService.save(company);
-		agencyType = createNewAgencyType();
-		agencyTypeService.save(agencyType);
-		agency = createNewAgency(agencyType, company);
-		agencyService.save(agency);
-		employee = createNewEmployee(agency);
-		employeeService.save(employee);
-		user = createNewUser();
-		userService.save(user);
-		visit = createNewVisit(user, agency);
-		visitService.save(visit);
-		activity = createNewActivity(employee);
-		activityService.save(activity);
+	}
+
+	// Remove data added during test from redis once test case executed
+	// successfully
+	public void cleanup(Long visitId, Long activityId) {
+		visitActivityService.deleteById(new VisitActivityPK(visitId, activityId));
+	}
+
+	private VisitActivityPK getPk(Long visitId, Long activityId) {
+		return new VisitActivityPK(visitId, activityId);
 	}
 
 	@Test
-	public void testSaveVisitActivity() {
-		VisitActivity visitActivity = createNewVisitActivity(visit, activity);
+	public void testSaveVisitActivityToRedisAndRetrievedItFromRedis() {
+		// given
+		final VisitActivity visitActivity = getVisitActivity();
+		visitActivity.setVisitId(100L);
+		visitActivity.setActivityId(100L);
+
+		// Mock
 		Mockito.when(visitActivityRepository.save(visitActivity)).thenReturn(visitActivity);
 		visitActivityService.save(visitActivity);
-		Assert.assertNotNull(visitActivityService.findById(new VisitActivityPK(visit.getId(), activity.getId())));
+
+		// Execute
+		VisitActivity visitActivitySaved = visitActivityService.findById(getPk(100L, 100L));
+
+		// Assert
+		Assert.assertNotNull(visitActivitySaved);
+		cleanup(100L, 100L);
 	}
 
 	@Test
-	public void testUpdateVisitActivity() {
-		String newSeat = "10B";
-		VisitActivity visitActivity = createNewVisitActivity(visit, activity);
+	public void testUpdateVisitActivityToRedis() {
+		String tableName = "table name updated in redis";
+
+		// given
+		final VisitActivity visitActivity = getVisitActivity();
+		visitActivity.setActivityId(100L);
+		visitActivity.setVisitId(100L);
+
+		// Mock
 		Mockito.when(visitActivityRepository.save(visitActivity)).thenReturn(visitActivity);
 		visitActivityService.save(visitActivity);
-		VisitActivity savedvisitActivity = visitActivityService.findById(new VisitActivityPK(visit.getId(), activity.getId()));
-		savedvisitActivity.setSeat(newSeat);
-		Mockito.when(visitActivityRepository.save(savedvisitActivity)).thenReturn(savedvisitActivity);
-		visitActivityService.save(savedvisitActivity);
-		VisitActivity modifiedVisitActivity = visitActivityService.findById(new VisitActivityPK(visit.getId(), activity.getId()));
-		Assert.assertEquals(modifiedVisitActivity.getSeat(), newSeat);
+
+		VisitActivityPK pk = new VisitActivityPK(100L, 100L);
+		VisitActivity savedVisitActivityInRedis = visitActivityService.findById(pk);
+		savedVisitActivityInRedis.setTableName(tableName);
+
+		Mockito.when(visitActivityRepository.save(savedVisitActivityInRedis)).thenReturn(savedVisitActivityInRedis);
+		visitActivityService.save(savedVisitActivityInRedis);
+
+		VisitActivity modifiedVisitActivityFromRedis = visitActivityService.findById(pk);
+
+		// Assert
+		Assert.assertEquals(modifiedVisitActivityFromRedis.getTableName(), tableName);
+		cleanup(100L, 100L);
 	}
 
 	@Test
-	public void testDeleteVisitActivity() {
-		VisitActivity visitActivity = createNewVisitActivity(visit, activity);
+	public void testDeleteVisitActivityFromRedis() {
+		// given and save the data
+		final VisitActivity visitActivity = getVisitActivity();
 		Mockito.when(visitActivityRepository.save(visitActivity)).thenReturn(visitActivity);
 		visitActivityService.save(visitActivity);
-		Mockito.doNothing().when(visitActivityRepository).delete(new VisitActivityPK(visit.getId(), activity.getId()));
-		visitActivityService.deleteById(new VisitActivityPK(visit.getId(), activity.getId()));
-		Assert.assertNotNull(visitActivityService.deleteById(new VisitActivityPK(visit.getId(), activity.getId())));
+
+		// mock for delete
+		VisitActivityPK pk = new VisitActivityPK(1L, 1L);
+		Mockito.doNothing().when(visitActivityRepository).delete(pk);
+
+		// Assert delete
+		Assert.assertNotNull(visitActivityService.deleteById(pk));
+	}
+
+	// If activity or visit is not null then fetch from redis
+	@Test
+	public void testFindVisitActivityByActivityId_ActivityAndVisitAreNoteNull() {
+		final VisitActivity visitActivity = getVisitActivity();
+		Mockito.when(visitActivityRepository.save(visitActivity)).thenReturn(visitActivity);
+		visitActivityService.save(visitActivity);
+
+		List<VisitActivity> visitActivityList = visitActivityService.findVisitActivityByActivityId(1L);
+		assertEquals(1, visitActivityList.size());
+
+	}
+
+	// If activity or visit is null in object then fetch from database and store
+	// in redis
+	@Test
+	public void testFindVisitActivityByActivityId_ActivityOrVisitIsNull() {
+		final Long visitId = 1L;
+		final VisitActivity visitActivity = getVisitActivity();
+		visitActivity.setActivity(null);
+		Mockito.when(visitActivityRepository.save(visitActivity)).thenReturn(visitActivity);
+		visitActivityService.save(visitActivity);
+
+		// Return list
+		VisitActivity visitActivityNotNullVisitAndActivity = getVisitActivity();
+		Mockito.when(visitActivityRepository.findVisitActivityByActivityId(visitId))
+				.thenReturn(Collections.singletonList(visitActivityNotNullVisitAndActivity));
+
+		List<VisitActivity> visitActivityList = visitActivityService.findVisitActivityByActivityId(visitId);
+		assertEquals(1, visitActivityList.size());
+	}
+
+	// If activity or visit is not null then fetch from redis
+	@Test
+	public void testFindVisitActivityByVisitId_ActivityAndVisitAreNoteNull() {
+		final VisitActivity visitActivity = getVisitActivity();
+		Mockito.when(visitActivityRepository.save(visitActivity)).thenReturn(visitActivity);
+		visitActivityService.save(visitActivity);
+
+		List<VisitActivity> visitActivityList = visitActivityService.findVisitActivityByVisitId(1L);
+		assertEquals(1, visitActivityList.size());
+
+	}
+
+	// If activity or visit is null in object then fetch from database and store
+	// in redis
+	@Test
+	public void testFindVisitActivityByVisitId_ActivityOrVisitIsNull() {
+		final Long visitId = 1L;
+		final VisitActivity visitActivity = getVisitActivity();
+		visitActivity.setVisit(null);
+		Mockito.when(visitActivityRepository.save(visitActivity)).thenReturn(visitActivity);
+		visitActivityService.save(visitActivity);
+
+		// Return list
+		VisitActivity visitActivityNotNullVisitAndActivity = getVisitActivity();
+		Mockito.when(visitActivityRepository.findVisitActivityByVisitId(visitId))
+				.thenReturn(Collections.singletonList(visitActivityNotNullVisitAndActivity));
+
+		List<VisitActivity> visitActivityList = visitActivityService.findVisitActivityByVisitId(visitId);
+		assertEquals(1, visitActivityList.size());
+	}
+
+	public Activity getActivity() {
+		Activity activity = new Activity();
+		activity.setId(1L);
+		activity.setStatus(1);
+		activity.setName("activity name");
+
+		return activity;
+	}
+
+	public Visit getVisit() {
+		Visit visit = new Visit();
+		visit.setId(1L);
+		visit.setStatus("1");
+		visit.setNotes("visit notes");
+
+		return visit;
+	}
+
+	private VisitActivity getVisitActivity() {
+		VisitActivity visitActivity = new VisitActivity();
+		visitActivity.setActivityId(1L);
+		visitActivity.setVisitId(1L);
+		visitActivity.setTableName("table name");
+		visitActivity.setVisit(getVisit());
+		visitActivity.setActivity(getActivity());
+		return visitActivity;
 	}
 }

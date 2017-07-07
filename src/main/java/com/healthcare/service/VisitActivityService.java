@@ -2,21 +2,17 @@ package com.healthcare.service;
 
 import java.util.List;
 
-import com.healthcare.model.entity.Activity;
-import com.healthcare.model.entity.Visit;
 import com.healthcare.model.entity.VisitActivity;
 import com.healthcare.model.entity.VisitActivityPK;
 
-public interface VisitActivityService{
-	VisitActivity save(VisitActivity visitActivity);
-	
-	VisitActivity findById(VisitActivityPK id);
-	
-	List<VisitActivity> findByVisit(Visit visit);
+public interface VisitActivityService extends IService<VisitActivity> {
 
-	List<VisitActivity> findByActivity(Activity activity);
+	VisitActivity findById(VisitActivityPK pk);
 
-	List<VisitActivity> findAll();
-	
-	Long deleteById(VisitActivityPK id);
+	Long deleteById(VisitActivityPK pk);
+
+	List<VisitActivity> findVisitActivityByActivityId(Long id);
+
+	List<VisitActivity> findVisitActivityByVisitId(Long id);
+
 }
