@@ -3,6 +3,7 @@ package com.healthcare.service.impl;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import javax.transaction.Transactional;
 
@@ -18,6 +19,8 @@ import com.healthcare.model.enums.VisitStatusEnum;
 import com.healthcare.model.response.Response;
 import com.healthcare.repository.VisitRepository;
 import com.healthcare.service.VisitService;
+
+import io.jsonwebtoken.lang.Collections;
 
 @Service
 @Transactional
@@ -103,5 +106,14 @@ public class VisitServiceImpl implements VisitService {
 	@Override
 	public List<Visit> findAllByServicePlanId(Long servicePlanId) {
 		return visitRepository.findAllByServicePlanId(servicePlanId);
+	}
+	
+	@Override
+	public List<Visit> findAll() {
+		Map<Object, Object> visitMap = redisTemplate.opsForHash().entries(KEY);
+		List<Visit> visitList = Collections.arrayToList(visitMap.values().toArray());
+		if (visitMap.isEmpty())
+			visitList = visitRepository.findAll();
+		return visitList;
 	}
 }

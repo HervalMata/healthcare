@@ -127,4 +127,10 @@ public class VisitControllerTest {
 		this.mockMvc.perform(put("/api/visit/checkout").contentType(MediaType.APPLICATION_JSON).content(jsonInString))
 		.andExpect(status().isBadRequest());
 	}
+	
+	@Test
+	public void testFindAllVisit() throws Exception {
+		Mockito.when(visitService.findAll()).thenReturn(new ArrayList<Visit>());
+		this.mockMvc.perform(get("/api/visit")).andExpect(status().isOk());
+	}
 }

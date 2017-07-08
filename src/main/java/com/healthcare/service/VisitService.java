@@ -11,4 +11,6 @@ public interface VisitService extends IService<Visit> {
 	Visit checkIn(VisitRequest visit);
 
 	Visit checkOut(VisitRequest visit);
+
+	List<Visit> findAll();
 }

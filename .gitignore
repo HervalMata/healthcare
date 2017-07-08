@@ -5,3 +5,4 @@ logs/
 healthcare.iml
 upload/
 .project
+src/main/resources/db/migration/V1_17__*.sql

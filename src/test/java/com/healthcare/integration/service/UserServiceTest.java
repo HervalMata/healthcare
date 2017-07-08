@@ -66,4 +66,19 @@ public class UserServiceTest extends EntityFactory {
 		userService.deleteById(user.getId());
 		Assert.assertNull(userService.findById(user.getId()));
 	}
+	
+	@Test
+	public void souldFindAll() {
+		User user = createNewUser();
+		userService.save(user);
+
+		User user1= createNewUser();
+		userService.save(user1);
+
+		User user2= createNewUser();
+		userService.save(user2);
+		
+		Assert.assertNotNull(userService.findAll());
+		Assert.assertTrue(userService.findAll().size()>=3);
+	}
 }

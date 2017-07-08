@@ -15,7 +15,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.healthcare.model.entity.Agency;
-import com.healthcare.model.entity.Caregiver;
+import com.healthcare.model.entity.CareGiver;
 import com.healthcare.model.entity.Company;
 import com.healthcare.repository.CareGiverRepository;
 import com.healthcare.service.CareGiverService;
@@ -41,11 +41,11 @@ public class CareGiverServiceRedisTest {
     
     @Test
     public void saveACareGiverToRedisAndRetrievedItFromRedis() {
-        Caregiver careGiver = getCareGiver();
+        CareGiver careGiver = getCareGiver();
         careGiver.setId(100L);
         Mockito.when(careGiverRepository.save(careGiver)).thenReturn(careGiver);
         careGiverService.save(careGiver);
-        Caregiver careGiverSaved = careGiverService.findById(100L);
+        CareGiver careGiverSaved = careGiverService.findById(100L);
         Assert.assertNotNull(careGiverSaved);
         
         cleanup(careGiverSaved.getId());
@@ -56,19 +56,19 @@ public class CareGiverServiceRedisTest {
     	String firstName = "first name updated";
     	String lastName = "last name updated";
     	
-        Caregiver careGiver = getCareGiver();
+        CareGiver careGiver = getCareGiver();
         careGiver.setId(100L);
         Mockito.when(careGiverRepository.save(careGiver)).thenReturn(careGiver);
         careGiverService.save(careGiver);
         
-        Caregiver careGiverSaved = careGiverService.findById(careGiver.getId());
+        CareGiver careGiverSaved = careGiverService.findById(careGiver.getId());
         careGiverSaved.setFirstName(firstName);
         careGiverSaved.setLastName(lastName);
         
         Mockito.when(careGiverRepository.save(careGiverSaved)).thenReturn(careGiverSaved);
         careGiverService.save(careGiverSaved);
 
-        Caregiver careGiverModified = careGiverService.findById(careGiver.getId());
+        CareGiver careGiverModified = careGiverService.findById(careGiver.getId());
         Assert.assertEquals(careGiverModified.getFirstName(), firstName);
         Assert.assertEquals(careGiverModified.getLastName(), lastName);
         cleanup(careGiverModified.getId());
@@ -76,7 +76,7 @@ public class CareGiverServiceRedisTest {
 
     @Test
     public void deleteACareGiverFromRedis() {
-        Caregiver careGiver = getCareGiver();
+        CareGiver careGiver = getCareGiver();
         careGiver.setId(100L);
         Mockito.when(careGiverRepository.save(careGiver)).thenReturn(careGiver);
         careGiverService.save(careGiver);
@@ -84,8 +84,8 @@ public class CareGiverServiceRedisTest {
         Assert.assertNotNull(careGiverService.deleteById(careGiver.getId()));
     }
 
-    private Caregiver getCareGiver() {
-		final Caregiver careGiver = new Caregiver();
+    private CareGiver getCareGiver() {
+		final CareGiver careGiver = new CareGiver();
         careGiver.setFirstName("First Name");
         careGiver.setLastName("Last Name");
         careGiver.setCareGiverType(1L);
