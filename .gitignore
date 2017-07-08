@@ -5,3 +5,4 @@ logs/
 healthcare.iml
 upload/
 .project
+src/main/resources/db/migration/V1_17__add_id_column_and_alter_employee_has_activity.sql
