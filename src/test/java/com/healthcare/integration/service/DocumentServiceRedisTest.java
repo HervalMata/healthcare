@@ -45,7 +45,8 @@ public class DocumentServiceRedisTest {
 		Document document = createNewDocument();
 		document.setId(7L);
 		Mockito.when(documentRepository.save(document)).thenReturn(document);
-		Assert.assertNotNull(documentService.findById(document.getId()));
+		documentService.save(document);
+		Assert.assertNotNull(documentService.findById(7L));
 	}
 
 	@Test
@@ -53,11 +54,12 @@ public class DocumentServiceRedisTest {
 		Document document = createNewDocument();
 		document.setId(7L);
 		Mockito.when(documentRepository.save(document)).thenReturn(document);
+		documentService.save(document);
 
 		String oldEntityValue = document.getEntity();
 		Long oldEntityIdValue = document.getEntityId();
 		String oldFileClassValue = document.getFileClass();
-		Document savedDocument = documentService.findById(document.getId());
+		Document savedDocument = documentService.findById(7L);
 		Assert.assertNotNull(savedDocument);
 		Assert.assertNotNull(savedDocument.getId());
 

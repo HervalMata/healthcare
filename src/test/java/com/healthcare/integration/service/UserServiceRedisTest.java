@@ -124,6 +124,28 @@ public class UserServiceRedisTest {
 		Mockito.doNothing().when(userRepository).delete(10L);
 		Assert.assertNotNull(userService.deleteById(user.getId()));
 	}
+	
+	
+	@Test
+	public void souldFindAll() {
+		User user = createNewUser();
+		user.setId(111L);
+		Mockito.when(userRepository.save(user)).thenReturn(user);
+		userService.save(user);
+
+		User user1= createNewUser();
+		user1.setId(112L);
+		Mockito.when(userRepository.save(user1)).thenReturn(user1);
+		userService.save(user1);
+
+		User user2= createNewUser();
+		user2.setId(113L);
+		Mockito.when(userRepository.save(user2)).thenReturn(user2);
+		userService.save(user2);
+		
+		Assert.assertNotNull(userService.findAll());
+		Assert.assertTrue(userService.findAll().size()>=3);
+	}
 
 	private User createNewUser() {
 		User user = new User();

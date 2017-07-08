@@ -12,7 +12,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import com.healthcare.model.entity.Document;
 import com.healthcare.model.enums.DocumentStatusEnum;
-import com.healthcare.repository.DocumentRepository;
 import com.healthcare.service.DocumentService;
 
 @RunWith(SpringRunner.class)
