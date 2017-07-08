@@ -9,6 +9,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import com.healthcare.api.auth.model.AuthUser;
 import com.healthcare.model.entity.Admin;
 import com.healthcare.model.entity.Role;
+import com.healthcare.model.entity.User;
 
 /**
  * 
@@ -20,6 +21,11 @@ public final class AuthUserFactory {
 	}
 
 	public static AuthUser create(Admin user) {
+		return new AuthUser(user.getId(), user.getUsername(), user.getFirstName(), user.getLastName(),
+				user.getEmail(), user.getPassword(), mapToGrantedAuthorities(user.getRole()), (user.getStatus() == 1));
+	}
+	
+	public static AuthUser create(User user) {
 		return new AuthUser(user.getId(), user.getUsername(), user.getFirstName(), user.getLastName(),
 				user.getEmail(), user.getPassword(), mapToGrantedAuthorities(user.getRole()), (user.getStatus() == 1));
 	}

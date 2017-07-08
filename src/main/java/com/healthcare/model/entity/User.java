@@ -137,5 +137,9 @@ public @Data class User extends Audit implements Serializable {
 	private Agency agency;
 	@Column(name = "status_second")
 	private Integer statusSecond;
-
+	@Column(name = "remember_token")
+	private String rememberToken;
+	@ManyToOne
+	@JoinColumn(name = "role_id")
+	private Role role;
 }
