@@ -134,7 +134,7 @@ public class HomeVisitServiceImplTest {
     	// given
     	final ServicePlan serviceplan = getServicePlan1000();
     	final User user = getUser();
-    	final Caregiver careGiver = getCareGiver();
+    	final CareGiver careGiver = getCareGiver();
     	final HomeVisit homeVisit1 = getHomeVisit(serviceplan, user, careGiver);
     	final HomeVisit homeVisit2 = getHomeVisit(serviceplan, user, careGiver);
     	
