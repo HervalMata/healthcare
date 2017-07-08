@@ -2,6 +2,7 @@ package com.healthcare.service;
 
 import java.util.List;
 
+import com.healthcare.dto.HomeVisitDto;
 import com.healthcare.model.entity.HomeVisit;
 
 /**
@@ -12,4 +13,6 @@ public interface HomeVisitService extends IService<HomeVisit> {
 	HomeVisit save(HomeVisit homeVisit);
 
 	List<HomeVisit> findAll();
+	
+	List<HomeVisitDto> serviceCalendarGeneration(Long serviceplanId);
 }

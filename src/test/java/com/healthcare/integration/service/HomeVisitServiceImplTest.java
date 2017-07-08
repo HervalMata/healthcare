@@ -1,5 +1,7 @@
 package com.healthcare.integration.service;
 
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.core.IsNot.not;
 import static org.hamcrest.core.IsNull.notNullValue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
@@ -10,6 +12,7 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 
+import org.hamcrest.collection.IsEmptyCollection;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +27,7 @@ import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.github.springtestdbunit.annotation.ExpectedDatabase;
 import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
 import com.healthcare.DbUnitIntegrationTestConfiguration;
+import com.healthcare.dto.HomeVisitDto;
 import com.healthcare.model.entity.Caregiver;
 import com.healthcare.model.entity.HomeVisit;
 import com.healthcare.model.entity.Meal;
@@ -125,6 +129,32 @@ public class HomeVisitServiceImplTest {
         em.flush();
     }
     
+    @Test
+    public void testserviceCalendarGeneration(){
+    	// given
+    	final ServicePlan serviceplan = getServicePlan1000();
+    	final User user = getUser();
+    	final Caregiver careGiver = getCareGiver();
+    	final HomeVisit homeVisit1 = getHomeVisit(serviceplan, user, careGiver);
+    	final HomeVisit homeVisit2 = getHomeVisit(serviceplan, user, careGiver);
+    	
+    	//when
+    	HomeVisit homeVisitTemp1 = homeVisitService.save(homeVisit1);
+    	HomeVisit homeVisittemp2 = homeVisitService.save(homeVisit2);
+    	List<HomeVisitDto> result = homeVisitService.serviceCalendarGeneration(serviceplan.getId());
+    	
+    	//then
+    	assertTrue(!result.isEmpty());
+    	assertThat(result, notNullValue());
+        assertThat(result, not(IsEmptyCollection.empty()));
+        assertThat(result, hasSize(2));
+        
+        //post test
+        cleanup(homeVisitTemp1.getId());
+        cleanup(homeVisittemp2.getId());
+    	
+    }
+    
     
     private HomeVisit getHomeVisit(final ServicePlan serviceplan,final User user,final Caregiver careGiver) {
 		final HomeVisit homeVisit = new HomeVisit();
@@ -160,6 +190,12 @@ public class HomeVisitServiceImplTest {
 		final Long servicePlanId = 100L;
         final ServicePlan servicePlan = new ServicePlan();
         servicePlan.setId(servicePlanId);
+		return servicePlan;
+	}
+	
+	private ServicePlan getServicePlan1000() {
+        final ServicePlan servicePlan = new ServicePlan();
+        servicePlan.setId(1000L);
 		return servicePlan;
 	}
 	

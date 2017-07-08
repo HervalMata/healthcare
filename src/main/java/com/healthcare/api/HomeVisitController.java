@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.healthcare.dto.HomeVisitDto;
 import com.healthcare.model.entity.HomeVisit;
 import com.healthcare.service.HomeVisitService;
 
@@ -73,5 +74,11 @@ public class HomeVisitController extends BaseController {
 	public void delete(@PathVariable("id") Long id) {
 		logger.info("id : " + id);
 		homeVisitService.deleteById(id);
+	}
+	@ApiOperation(value = "service calendar generation", notes = "generate service calendar")
+	@ApiImplicitParam(name = "id", value = "service plan id", required = true, dataType = "Long", paramType = "path")
+	@GetMapping("/servicePlan/{id}")
+	public List<HomeVisitDto> serviceCalendarGeneration(@PathVariable("id") Long servicePlanId){
+		return homeVisitService.serviceCalendarGeneration(servicePlanId);
 	}
 }

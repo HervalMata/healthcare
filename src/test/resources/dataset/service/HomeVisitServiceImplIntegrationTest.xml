@@ -91,7 +91,18 @@
 		    	docurl = "/test/restdoc"
 		    	created_at = "2017-06-01"
 		    	updated_at = "2017-06-01"
-		    	user_id= "100"/>     
+		    	user_id= "100"/>
+		    	
+	<serviceplan id="1000"
+		    	approvedby = "approverr"
+		    	employee_id = "100"
+		    	plan_start = "2017-06-01"
+		    	plan_end = "2017-08-01"
+		    	days = "Tuesday"
+		    	docurl = "/test/restdoc"
+		    	created_at = "2017-06-01"
+		    	updated_at = "2017-06-01"
+		    	user_id= "100"/>       
     
 	<visit id="100" 
 			agency_id="100" 
