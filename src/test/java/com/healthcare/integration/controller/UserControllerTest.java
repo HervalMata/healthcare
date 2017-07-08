@@ -5,6 +5,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.util.ArrayList;
+
 import javax.transaction.Transactional;
 
 import org.junit.Before;
@@ -76,5 +78,11 @@ public class UserControllerTest {
 	public void shouldAcceptDeleteUserRequest() throws Exception {
 		Mockito.when(userService.deleteById(1L)).thenReturn(1L);
 		this.mockMvc.perform(get("/api/user/1")).andExpect(status().isOk());
+	}
+	
+	@Test
+	public void testFindAllUser() throws Exception {
+		Mockito.when(userService.findAll()).thenReturn(new ArrayList<User>());
+		this.mockMvc.perform(get("/api/user")).andExpect(status().isOk());
 	}
 }

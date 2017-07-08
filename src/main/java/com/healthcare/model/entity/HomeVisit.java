@@ -44,5 +44,5 @@ public @Data class HomeVisit extends Audit implements Serializable {/**
 	private User user;
 	@ManyToOne
 	@JoinColumn(name = "caregiver_id")
-	private Caregiver careGiver;
+	private CareGiver careGiver;
 }

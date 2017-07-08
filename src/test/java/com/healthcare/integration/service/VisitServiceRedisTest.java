@@ -104,4 +104,25 @@ public class VisitServiceRedisTest extends EntityFactory {
 		Assert.assertNotNull(visitService.deleteById(visit.getId()));
 	}
 	
+	@Test
+	public void souldFindAll() {
+		Visit visit = createNewVisit(user, agency);
+		visit.setId(55L);
+		Mockito.when(visitRepository.save(visit)).thenReturn(visit);
+		visitService.save(visit);
+		
+		Visit visit2 = createNewVisit(user, agency);
+		visit2.setId(56L);
+		Mockito.when(visitRepository.save(visit2)).thenReturn(visit2);
+		visitService.save(visit2);
+		
+		Visit visit3 = createNewVisit(user, agency);
+		visit3.setId(57L);
+		Mockito.when(visitRepository.save(visit3)).thenReturn(visit3);
+		visitService.save(visit3);
+		
+		Assert.assertNotNull(visitService.findAll());
+		Assert.assertTrue(visitService.findAll().size()>=3);
+	}
+	
 }

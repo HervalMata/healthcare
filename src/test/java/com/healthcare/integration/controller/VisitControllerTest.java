@@ -5,6 +5,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.util.ArrayList;
+
 import javax.transaction.Transactional;
 
 import org.junit.Before;
@@ -118,5 +120,11 @@ public class VisitControllerTest {
 		
 		this.mockMvc.perform(put("/api/visit/checkout").contentType(MediaType.APPLICATION_JSON).content(jsonInString))
 		.andExpect(status().isBadRequest());
+	}
+	
+	@Test
+	public void testFindAllVisit() throws Exception {
+		Mockito.when(visitService.findAll()).thenReturn(new ArrayList<Visit>());
+		this.mockMvc.perform(get("/api/visit")).andExpect(status().isOk());
 	}
 }
