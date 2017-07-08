@@ -219,4 +219,16 @@ public class VisitServiceTest extends EntityFactory {
 		visitService.checkOut(visitRequest);
 	}
 
+	
+	@Test
+	public void souldFindAll() {
+		Visit visit = createNewVisit(user, agency);
+		visitService.save(visit);
+		Visit visit2 = createNewVisit(user, agency);
+		visitService.save(visit2);
+		Visit visit3 = createNewVisit(user, agency);
+		visitService.save(visit3);
+		Assert.assertNotNull(visitService.findAll());
+		Assert.assertTrue(visitService.findAll().size()>=3);
+	}
 }

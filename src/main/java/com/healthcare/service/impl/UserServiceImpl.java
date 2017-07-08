@@ -1,5 +1,8 @@
 package com.healthcare.service.impl;
 
+import java.util.List;
+import java.util.Map;
+
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +12,8 @@ import org.springframework.stereotype.Service;
 import com.healthcare.model.entity.User;
 import com.healthcare.repository.UserRepository;
 import com.healthcare.service.UserService;
+
+import io.jsonwebtoken.lang.Collections;
 
 @Service
 @Transactional
@@ -39,5 +44,14 @@ public class UserServiceImpl implements UserService {
 	public Long deleteById(Long id) {
 		userRepository.delete(id);
 		return redisTemplate.opsForHash().delete(KEY, id);
+	}
+	
+	@Override
+	public List<User> findAll() {
+		Map<Object, Object> userMap = redisTemplate.opsForHash().entries(KEY);
+		List<User> userList = Collections.arrayToList(userMap.values().toArray());
+		if (userMap.isEmpty())
+			userList = userRepository.findAll();
+		return userList;
 	}
 }

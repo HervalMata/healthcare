@@ -28,7 +28,7 @@ import com.github.springtestdbunit.annotation.ExpectedDatabase;
 import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
 import com.healthcare.DbUnitIntegrationTestConfiguration;
 import com.healthcare.dto.HomeVisitDto;
-import com.healthcare.model.entity.Caregiver;
+import com.healthcare.model.entity.CareGiver;
 import com.healthcare.model.entity.HomeVisit;
 import com.healthcare.model.entity.Meal;
 import com.healthcare.model.entity.ServicePlan;
@@ -62,7 +62,7 @@ public class HomeVisitServiceImplTest {
 		// given
 		final ServicePlan serviceplan = getServicePlan();
 		final User user = getUser();
-		final Caregiver careGiver = getCareGiver();
+		final CareGiver careGiver = getCareGiver();
 		final HomeVisit homeVisit = getHomeVisit(serviceplan, user, careGiver);
 		
 		// when
@@ -155,8 +155,7 @@ public class HomeVisitServiceImplTest {
     	
     }
     
-    
-    private HomeVisit getHomeVisit(final ServicePlan serviceplan,final User user,final Caregiver careGiver) {
+    private HomeVisit getHomeVisit(final ServicePlan serviceplan,final User user,final CareGiver careGiver) {
 		final HomeVisit homeVisit = new HomeVisit();
         homeVisit.setCheckInTime(Timestamp.valueOf("2017-05-01 09:00:000"));
         homeVisit.setCareReceiverSignature("sign");
@@ -199,9 +198,9 @@ public class HomeVisitServiceImplTest {
 		return servicePlan;
 	}
 	
-	private Caregiver getCareGiver() {
+	private CareGiver getCareGiver() {
 		final Long careGiverId = 100L;
-        final Caregiver careGiver = new Caregiver();
+        final CareGiver careGiver = new CareGiver();
         careGiver.setId(careGiverId);
 		return careGiver;
 	}
