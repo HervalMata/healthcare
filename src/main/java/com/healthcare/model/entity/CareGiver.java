@@ -22,7 +22,7 @@ import lombok.EqualsAndHashCode;
 @Entity
 @Table(name = "caregiver")
 @EqualsAndHashCode(callSuper = true)
-public @Data class Caregiver extends Audit implements Serializable {
+public @Data class CareGiver extends Audit implements Serializable {
 	/**
 	 * 
 	 */
