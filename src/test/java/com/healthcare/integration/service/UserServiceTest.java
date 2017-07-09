@@ -8,6 +8,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.healthcare.EntityFactory;
@@ -20,6 +21,9 @@ import com.healthcare.service.UserService;
 public class UserServiceTest extends EntityFactory {
 	@Autowired
 	private UserService userService;
+	
+	@Autowired
+	private RedisTemplate<String, User> redisTemplate;
 
 	@Before
 	public void setup() {
@@ -78,6 +82,7 @@ public class UserServiceTest extends EntityFactory {
 		User user2= createNewUser();
 		userService.save(user2);
 		
+		redisTemplate.delete(User.class.getSimpleName());
 		Assert.assertNotNull(userService.findAll());
 		Assert.assertTrue(userService.findAll().size()>=3);
 	}
