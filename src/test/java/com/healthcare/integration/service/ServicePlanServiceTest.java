@@ -1,11 +1,24 @@
 package com.healthcare.integration.service;
 
+import static org.hamcrest.CoreMatchers.hasItems;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.core.IsNot.not;
+import static org.hamcrest.core.IsNull.notNullValue;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+
 import java.sql.Time;
 import java.sql.Timestamp;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.List;
 
 import javax.transaction.Transactional;
 
+import org.hamcrest.collection.IsEmptyCollection;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -56,9 +69,9 @@ public class ServicePlanServiceTest {
 	Employee employee;
 
 	String approvedBy = "Manager";
-	Calendar planStart = Calendar.getInstance();
-	Calendar planEnd = Calendar.getInstance();
-	String days = "Monday";
+	Calendar planStart = new GregorianCalendar(2017, Calendar.JUNE, 1);
+	Calendar planEnd = new GregorianCalendar(2017, Calendar.AUGUST, 1);
+	String days = "Tuesday";
 	String docUrl = "/doc/a";
 	String username = "username";
 	String password = "password";
@@ -179,6 +192,34 @@ public class ServicePlanServiceTest {
 		servicePlanService.deleteById(servicePlan.getId());
 		Assert.assertNull(servicePlanService.findById(servicePlan.getId()));
 	}
+	
+    @Test
+    public void testserviceCalendarGeneration(){
+    	// given
+    	List<Date> expectedList = Arrays.asList(
+    			new GregorianCalendar(2017, Calendar.JUNE, 06).getTime(), new GregorianCalendar(2017, Calendar.JUNE, 13).getTime(),
+    			new GregorianCalendar(2017, Calendar.JUNE, 20).getTime(), new GregorianCalendar(2017, Calendar.JUNE, 27).getTime(),
+    			new GregorianCalendar(2017, Calendar.JULY, 04).getTime(), new GregorianCalendar(2017, Calendar.JULY, 11).getTime(),
+    			new GregorianCalendar(2017, Calendar.JULY, 18).getTime(), new GregorianCalendar(2017, Calendar.JULY, 25).getTime());
+    	//when
+    	ServicePlan serviceplan = servicePlanService.save(createNewServicePlan());
+    	List<Date> result = servicePlanService.serviceCalendarGeneration(serviceplan.getId());
+    	
+    	//then
+    	//assert not null
+    	assertThat(result, notNullValue());
+    	//assert is expected
+    	assertThat(result, is(expectedList));
+        //assert has item
+        assertThat(result, hasItems(new GregorianCalendar(2017, Calendar.JUNE, 06).getTime()));
+        //assert size
+        assertThat(result, hasSize(8));	
+        //check empty list
+        assertThat(result, not(IsEmptyCollection.empty()));	
+        //assert random list item betwen start and end plan date
+        assertTrue(result.get(0).before(serviceplan.getPlanEnd()));
+        assertTrue(result.get(1).after(serviceplan.getPlanStart()));
+    }
 
 	private ServicePlan createNewServicePlan() {
 		ServicePlan servicePlan = new ServicePlan();

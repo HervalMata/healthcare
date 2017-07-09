@@ -15,6 +15,11 @@ import java.util.Locale;
  *
  */
 public final class DateUtils {
+	
+	public static final  String DAY_FORMAT = "EEEE";
+	
+	public static final String US_LOCAL = "US";
+	
 	/**
 	 * date format yyyy-MM-dd
 	 */
@@ -55,16 +60,10 @@ public final class DateUtils {
 	    while (calendar.getTime().before(enddate))
 	    {
 	        Date result = calendar.getTime();
-	        if(scheduledTableDates.contains(new SimpleDateFormat("EEEE", new Locale("US")).format(result)))
+	        if(scheduledTableDates.contains(new SimpleDateFormat(DAY_FORMAT, new Locale(US_LOCAL)).format(result)))
 	        dates.add(result);
 	        calendar.add(Calendar.DATE, 1);
 	    }
 	    return dates;
 	}
-	
-//	
-//	  public static void main(String[] args) {
-//		    Date date1 = (new GregorianCalendar(2009, Calendar.OCTOBER, 18)).getTime();
-//		    System.out.println(new SimpleDateFormat("EEEE", new Locale("US")).format(date1));
-//		  }
 }
