@@ -18,6 +18,7 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.healthcare.model.entity.User;
@@ -33,9 +34,12 @@ import com.healthcare.service.UserService;
 public class UserServiceRedisTest {
 	@MockBean
 	private UserRepository userRepository;
-	
+
 	@Autowired
 	private UserService userService;
+
+	@Autowired
+	private RedisTemplate<String, User> redisTemplate;
 
 	Calendar eligiableStart = Calendar.getInstance();
 	Calendar eligiableEnd = Calendar.getInstance();
@@ -89,6 +93,7 @@ public class UserServiceRedisTest {
 		dob.set(Calendar.YEAR, 1950);
 		dob.set(Calendar.MONTH, 1);
 		dob.set(Calendar.DAY_OF_MONTH, 1);
+		redisTemplate.delete(User.class.getSimpleName());
 	}
 
 
@@ -137,8 +142,8 @@ public class UserServiceRedisTest {
 		Mockito.doNothing().when(userRepository).delete(id);
 		Assert.assertNotNull(userService.deleteById(user.getId()));
 	}
-	
-	
+
+
 	@Test
 	public void souldFindAll() {
 		User user = createNewUser();
@@ -155,11 +160,11 @@ public class UserServiceRedisTest {
 		user2.setId(113L);
 		Mockito.when(userRepository.save(user2)).thenReturn(user2);
 		user2 = userService.save(user2);
-		
+
 		List<User> list= userService.findAll();
 		assertNotNull(list);
 		assertEquals(3, list.size());
-		
+
 		id=user.getId();
 		rollback();
 		id=user1.getId();
