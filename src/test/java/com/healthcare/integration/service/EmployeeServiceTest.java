@@ -3,6 +3,7 @@ package com.healthcare.integration.service;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Calendar;
+import java.util.List;
 
 import javax.transaction.Transactional;
 
@@ -121,6 +122,48 @@ public class EmployeeServiceTest {
         employee = employeeService.save(employee);
         Assert.assertNotNull(employee.getId());
     }
+    
+    @Test
+    public void testFindByCampanyIdAndAgencyId(){
+    	List<Employee> employeeList = null;
+    	employee = employeeService.save(TestEntityFactory.createNewEmployee(agency));
+    	employeeList = employeeService.findByCampanyIdAndAgencyId(company.getId(), agency.getId());
+    
+    	Assert.assertNotNull(employeeList);
+    	Assert.assertTrue(employeeList.size()==1);
+    	Assert.assertEquals(employee.getId(),employeeList.get(0).getId());
+    	
+    	
+    	// Create 2nd employee with new agency and new company
+    	employeeList = null;
+    	Company companyNew = companyService.save(TestEntityFactory.createNewCompany());
+    	Agency agencyNew = agencyService.save(TestEntityFactory.createNewAgency(companyNew, agencyType));
+        Employee employee2 = employeeService.save(TestEntityFactory.createNewEmployee(agencyNew));
+    	
+        employeeList = employeeService.findByCampanyIdAndAgencyId(companyNew.getId(), agencyNew.getId());
+        	
+        Assert.assertNotNull(employeeList);
+    	Assert.assertTrue(employeeList.size()==1);
+    	Assert.assertEquals(employee2.getId(),employeeList.get(0).getId());
+    	
+    	
+    	// Create employee 3 to 2nd company and agency
+    	employeeList = null;
+    	Employee employee3 =employeeService.save(TestEntityFactory.createNewEmployee(agencyNew));
+    	employeeList = employeeService.findByCampanyIdAndAgencyId(companyNew.getId(), agencyNew.getId());
+    	Assert.assertNotNull(employeeList);
+    	Assert.assertTrue(employeeList.size()==2);
+    	
+    	//CleanUp
+		cleanup(companyNew, agencyNew, employee2, employee3);
+    }
+
+	private void cleanup(Company companyNew, Agency agencyNew, Employee employee2, Employee employee3) {
+		employeeService.deleteById(employee3.getId());
+		employeeService.deleteById(employee2.getId());
+        agencyService.deleteById(agencyNew.getId());
+        companyService.deleteById(companyNew.getId());
+	}
 
     @Test
     public void testGetEmployee() {

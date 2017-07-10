@@ -296,6 +296,10 @@ public class TestEntityFactory {
 	}
 
 	public static Employee createNewEmployee(Agency agency) {
+		return createNewEmployee(agency,id);
+	}
+	
+	public static Employee createNewEmployee(Agency agency,Long id) {
 		Employee employee = new Employee();
 		employee.setId(id);
 		employee.setFirstName(eFirstName);
