@@ -1,5 +1,25 @@
 package com.healthcare.integration.service;
 
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.hamcrest.core.IsNull.notNullValue;
+import static org.junit.Assert.assertThat;
+
+import java.sql.Timestamp;
+import java.util.Date;
+
+import javax.persistence.EntityManager;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.github.springtestdbunit.annotation.ExpectedDatabase;
@@ -20,22 +40,6 @@ import com.healthcare.model.entity.review.NutritionCondition;
 import com.healthcare.model.entity.review.PainDetails;
 import com.healthcare.model.entity.review.PsychologicalSocialCondition;
 import com.healthcare.service.ReviewService;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.TestExecutionListeners;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.transaction.annotation.Transactional;
-
-import javax.persistence.EntityManager;
-import java.sql.Timestamp;
-import java.util.Date;
-
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.hamcrest.core.IsNull.notNullValue;
-import static org.junit.Assert.assertThat;
 
 @RunWith(SpringRunner.class)
 @TestExecutionListeners(
@@ -53,6 +57,19 @@ public class ReviewServiceImplTest {
 
     @Autowired
     private EntityManager em;
+    
+	Review result;
+	@Before
+	public void setup(){
+		result = null;
+	}
+	
+	@After
+	public void rollback() {
+		if(result!=null)
+			sut.deleteById(result.getId());
+	}
+
 
     @Test
     public void testCreate() {
@@ -73,7 +90,7 @@ public class ReviewServiceImplTest {
         user.setId(userId);
         review.setUser(user);
         // when
-        Review result = sut.save(review);
+        result = sut.save(review);
         // then
         assertThat(result, notNullValue());
         assertThat(result.getId(), notNullValue());
@@ -105,7 +122,7 @@ public class ReviewServiceImplTest {
         user.setId(userId);
         review.setUser(user);
         // when
-        Review result = sut.save(review);
+        result = sut.save(review);
         // then
         assertThat(result, notNullValue());
 
@@ -114,11 +131,47 @@ public class ReviewServiceImplTest {
 
     @Test
     public void testGet() {
-        // given
-        final Long reviewId = 100L;
-        final ActivityDetails activityDetails = new ActivityDetails();
+    	HealthCondition healthCondition = getHealthCondition();
+    	final ActivityDetails activityDetails = new ActivityDetails();
         activityDetails.setAmbulation("Ambulation");
-        final HealthCondition healthCondition = new HealthCondition();
+        
+    	result = createReview(activityDetails,healthCondition);
+        
+        // given
+        final Long reviewId = result.getId();
+        // when
+        Review result = sut.findById(reviewId);
+        // then
+        assertThat(result, notNullValue());
+        assertThat(result.getId(), equalTo(reviewId));
+        assertThat(result.getHealthCondition(), equalTo(healthCondition));
+        assertThat(result.getActivityDetails(), equalTo(activityDetails));
+    }
+
+	private Review createReview(ActivityDetails activityDetails,HealthCondition healthCondition) {
+    	final Long employeeId = 100L;
+        final Long userId = 100L;
+        final Review review = new Review();
+        review.setAssessmentReason("Assessment Reason");
+        review.setAssessmentSourceInformation("Assessment Source Information");
+        review.setAssessmentDate(new Timestamp(new Date().getTime()));
+        review.setState("State");
+        review.setHealthCondition(healthCondition);
+        review.setActivityDetails(activityDetails);
+        
+        final Employee employee = new Employee();
+        employee.setId(employeeId);
+        review.setEmployee(employee);
+
+        final User user = new User();
+        user.setId(userId);
+        review.setUser(user);
+        Review result = sut.save(review);
+		return result;
+	}
+
+	private HealthCondition getHealthCondition() {
+		final HealthCondition healthCondition = new HealthCondition();
         healthCondition.setSmoker(true);
         final HealthConditionIndicators healthConditionIndicators = new HealthConditionIndicators();
         healthConditionIndicators.setAlzheimer(true);
@@ -129,14 +182,8 @@ public class ReviewServiceImplTest {
         final HealthProblems healthProblems = new HealthProblems();
         healthProblems.setAsthma(true);
         healthCondition.setHealthProblems(healthProblems);
-        // when
-        Review result = sut.findById(reviewId);
-        // then
-        assertThat(result, notNullValue());
-        assertThat(result.getId(), equalTo(reviewId));
-        assertThat(result.getHealthCondition(), equalTo(healthCondition));
-        assertThat(result.getActivityDetails(), equalTo(activityDetails));
-    }
+		return healthCondition;
+	}
 
     @Test
     @ExpectedDatabase(

@@ -9,6 +9,8 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,22 +45,27 @@ public class ContentServiceImplTest {
     @Autowired
     private EntityManager em;
 
-    // Remove data added during test from redis once test case executed successfully
-    public void cleanup(Long id){
-  	  contentService.deleteById(id);
+    private Content content;
+    @Before
+    public void setup() {
+    	content = null;
+    }
+    @After
+    public void rollback(){
+    	if(content!=null)
+    		contentService.deleteById(content.getId());
     }
     
     @Test
 	public void testCreateContent() {
 		// given
-		final Content content = getContent();
+		final Content contentInput = getContent();
 		
 		// when
-		Content result = contentService.save(content);
+		content = contentService.save(contentInput);
 		// then
-		assertThat(result, notNullValue());
-		assertThat(result.getId(), notNullValue());
-		cleanup(result.getId());
+		assertThat(content, notNullValue());
+		assertThat(content.getId(), notNullValue());
 	}
 
    @Test
@@ -74,7 +81,7 @@ public class ContentServiceImplTest {
        String updatePageTitle = "login user updated";
        
 	   // given
-		final Content content = contentService.findById(100L);
+		content = contentService.findById(100L);
 		assertEquals(dbTiltle, content.getTitle());
 		assertEquals(dbPageTitle, content.getPageTitle());
 		
@@ -90,8 +97,6 @@ public class ContentServiceImplTest {
         
 		assertThat(result.getId() , is(100L));
 	    em.flush();
-	    
-	    cleanup(100L);
     }
 
     @Test

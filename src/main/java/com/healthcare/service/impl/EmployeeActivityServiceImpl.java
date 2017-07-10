@@ -28,7 +28,7 @@ public class EmployeeActivityServiceImpl implements EmployeeActivityService {
     @Override
     public EmployeeActivity save(EmployeeActivity employeeActivity) {
         employeeActivity = employeeActivityRepository.save(employeeActivity);
-        employeeActivityRedisTemplate.opsForHash().put(KEY, employeeActivity, employeeActivity);
+        employeeActivityRedisTemplate.opsForHash().put(KEY, employeeActivity.getId(), employeeActivity);
         return employeeActivity;
     }
 
@@ -49,7 +49,7 @@ public class EmployeeActivityServiceImpl implements EmployeeActivityService {
     @Override
     public Long deleteByEmployeeActivity(EmployeeActivity employeeActivity) {
         employeeActivityRepository.delete(employeeActivity);
-        return employeeActivityRedisTemplate.opsForHash().delete(KEY, employeeActivity);
+        return employeeActivityRedisTemplate.opsForHash().delete(KEY, employeeActivity.getId());
     }
 
     @Override

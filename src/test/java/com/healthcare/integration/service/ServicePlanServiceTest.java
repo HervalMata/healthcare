@@ -6,6 +6,7 @@ import java.util.Calendar;
 
 import javax.transaction.Transactional;
 
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -138,22 +139,44 @@ public class ServicePlanServiceTest {
 	String comment = "No comments";
 	String vacationNote = ".";
 
+	
+	private Agency agency;
+	private Company company;
+	private AgencyType agencyType;
+	private ServicePlan servicePlan;
+	
 	@Before
 	public void setup() {
+		company = createNewCompany();
+    	agencyType = createNewAgencyType();
+    	agency = createNewAgency(company,agencyType);
 		user = createNewUser();
-		employee = createNewEmployee();
+		employee = createNewEmployee(agency);
+		servicePlan=null;
 	}
 
+	@After
+	public void rollback() {
+		if(servicePlan!=null)
+			servicePlanService.deleteById(servicePlan.getId());
+		employeeService.deleteById(employee.getId());
+		userService.deleteById(user.getId());
+        agencyService.deleteById(agency.getId());
+        agencyTypeService.deleteById(agencyType.getId());
+        companyService.deleteById(company.getId());
+	}
+
+	
 	@Test
 	public void testSaveServicePlan() {
-		ServicePlan servicePlan = createNewServicePlan();
+		servicePlan = createNewServicePlan();
 		servicePlanService.save(servicePlan);
 		Assert.assertNotNull(servicePlan.getId());
 	}
 
 	@Test
 	public void testGetServicePlan() {
-		ServicePlan servicePlan = createNewServicePlan();
+		servicePlan = createNewServicePlan();
 		servicePlanService.save(servicePlan);
 		Assert.assertNotNull(servicePlanService.findById(servicePlan.getId()));
 	}
@@ -169,6 +192,7 @@ public class ServicePlanServiceTest {
 		servicePlanService.save(savedServicePlan);
 		ServicePlan modifiedServicePlan = servicePlanService.findById(servicePlan.getId());
 		Assert.assertEquals(modifiedServicePlan.getDocUrl(), newDocUrl);
+		this.servicePlan = modifiedServicePlan;
 	}
 
 	@Test
@@ -254,9 +278,9 @@ public class ServicePlanServiceTest {
 		return userService.save(user);
 	}
 
-	private Employee createNewEmployee() {
+	private Employee createNewEmployee(Agency agency) {
 		Employee employee = new Employee();
-		employee.setAgency(createNewAgency());
+		employee.setAgency(agency);
 		employee.setFirstName(firstName);
 		employee.setLastName(lastName);
 		employee.setGender(gender);
@@ -276,12 +300,10 @@ public class ServicePlanServiceTest {
 		return employeeService.save(employee);
 	}
 
-	private Agency createNewAgency() {
+	private Agency createNewAgency(Company company,AgencyType agencyType) {
 		Agency agency = new Agency();
-		Company company = createNewCompany();
 		agency.setAddressOne(addressOne);
 		agency.setAddressTwo(addressTwo);
-		AgencyType agencyType = createNewAgencyType();
 		agency.setAgencyType(agencyType);
 		agency.setCity(city);
 		agency.setCompany(company);
