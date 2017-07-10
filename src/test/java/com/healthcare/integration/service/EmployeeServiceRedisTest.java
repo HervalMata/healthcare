@@ -1,10 +1,11 @@
 package com.healthcare.integration.service;
 
-import com.healthcare.model.entity.Agency;
-import com.healthcare.model.entity.Company;
-import com.healthcare.model.entity.Employee;
-import com.healthcare.repository.EmployeeRepository;
-import com.healthcare.service.EmployeeService;
+import java.sql.Timestamp;
+import java.util.Calendar;
+
+import javax.transaction.Transactional;
+
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -15,9 +16,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import javax.transaction.Transactional;
-import java.sql.Timestamp;
-import java.util.Calendar;
+import com.healthcare.model.entity.Agency;
+import com.healthcare.model.entity.Company;
+import com.healthcare.model.entity.Employee;
+import com.healthcare.repository.EmployeeRepository;
+import com.healthcare.service.EmployeeService;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -33,13 +36,21 @@ public class EmployeeServiceRedisTest {
     public void setup() {
     }
 
+
+	private Long id = 1L;
+
+	@After
+	public void rollback() {
+		employeeService.deleteById(id);
+	}
+
     @Test
     public void shouldSaveAEmployeeToRedisAndRetrievedItFromRedis() {
         Employee employee = createNewEmployee();
-        employee.setId(1L);
+        employee.setId(id);
         Mockito.when(employeeRepository.save(employee)).thenReturn(employee);
         employeeService.save(employee);
-        Employee employeeSaved = employeeService.findById(1L);
+        Employee employeeSaved = employeeService.findById(id);
         Assert.assertNotNull(employeeSaved);
     }
 
@@ -49,7 +60,7 @@ public class EmployeeServiceRedisTest {
         String newPosition = "position2";
 
         Employee employee = createNewEmployee();
-        employee.setId(1L);
+        employee.setId(id);
         Mockito.when(employeeRepository.save(employee)).thenReturn(employee);
         employeeService.save(employee);
         Employee employeeSaved = employeeService.findById(employee.getId());
@@ -66,10 +77,10 @@ public class EmployeeServiceRedisTest {
     @Test
     public void shouldDeleteAEmployee() {
         Employee employee = createNewEmployee();
-        employee.setId(1L);
+        employee.setId(id);
         Mockito.when(employeeRepository.save(employee)).thenReturn(employee);
         employeeService.save(employee);
-        Mockito.doNothing().when(employeeRepository).delete(1L);
+        Mockito.doNothing().when(employeeRepository).delete(id);
         Assert.assertNotNull(employeeService.deleteById(employee.getId()));
     }
 
@@ -95,29 +106,32 @@ public class EmployeeServiceRedisTest {
     	e1.setId(77L);
     	e1.setAgency(agency1);
     	Mockito.when(employeeRepository.save(e1)).thenReturn(e1);
-    	employeeService.save(e1);
+    	e1 = employeeService.save(e1);
     	
     	Employee e2 = createNewEmployee();
     	e2.setId(88L);
     	e2.setAgency(agency2);
     	Mockito.when(employeeRepository.save(e2)).thenReturn(e2);
-    	employeeService.save(e2);
+    	e2 = employeeService.save(e2);
     	
     	Employee e3 = createNewEmployee();
     	e3.setId(99L);
     	e3.setAgency(agency3);
     	Mockito.when(employeeRepository.save(e3)).thenReturn(e3);
-    	employeeService.save(e3);
+    	e3 = employeeService.save(e3);
     	
     	Assert.assertEquals(employeeService.findByCampanyIdAndAgencyId(company1.getId(), agency1.getId()).size(), 1);
     	Assert.assertEquals(employeeService.findByCampanyIdAndAgencyId(company1.getId(), null).size(), 2);
     	Assert.assertEquals(employeeService.findByCampanyIdAndAgencyId(company2.getId(), agency3.getId()).size(), 1);
     	Assert.assertEquals(employeeService.findByCampanyIdAndAgencyId(company2.getId(), null).size(), 1);
+    
+    	employeeService.deleteById(e1.getId());
+    	employeeService.deleteById(e2.getId());
+    	employeeService.deleteById(e3.getId());
     }
     
     private Employee createNewEmployee() {
         Employee employee = new Employee();
-        Long id = 1L;
         employee.setId(id);
         String firstName = "firstName";
         employee.setFirstName(firstName);

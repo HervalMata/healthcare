@@ -1,7 +1,13 @@
 package com.healthcare.integration.service;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
+import java.util.List;
+
 import javax.transaction.Transactional;
 
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -24,13 +30,23 @@ public class UserServiceTest extends EntityFactory {
 	@Before
 	public void setup() {
 		init();
+		id=0L;
 	}
 
+	private Long id = 0L;
+
+	@After
+	public void rollback() {
+		if(id!=0L) 
+			userService.deleteById(id);
+	}
+	
 	@Test
 	public void shouldSaveAUser() {
 		User user = createNewUser();
 		userService.save(user);
 		Assert.assertNotNull(user.getId());
+		id = user.getId();
 	}
 
 	@Test
@@ -38,6 +54,8 @@ public class UserServiceTest extends EntityFactory {
 		User user = createNewUser();
 		userService.save(user);
 		Assert.assertNotNull(userService.findById(user.getId()));
+		id = user.getId();
+
 	}
 
 	@Test
@@ -56,6 +74,8 @@ public class UserServiceTest extends EntityFactory {
 		User userMofified = userService.findById(user.getId());
 		Assert.assertEquals(userMofified.getPhone(), newPhone);
 		Assert.assertEquals(userMofified.getAddressOne(), newAddress);
+		id = userMofified.getId();
+
 	}
 
 	@Test
@@ -70,15 +90,23 @@ public class UserServiceTest extends EntityFactory {
 	@Test
 	public void souldFindAll() {
 		User user = createNewUser();
-		userService.save(user);
+		user = userService.save(user);
 
 		User user1= createNewUser();
-		userService.save(user1);
+		user1 = userService.save(user1);
 
 		User user2= createNewUser();
-		userService.save(user2);
+		user2 = userService.save(user2);
 		
-		Assert.assertNotNull(userService.findAll());
-		Assert.assertTrue(userService.findAll().size()>=3);
+		List<User> list= userService.findAll();
+		assertNotNull(list);
+		assertEquals(3, list.size());
+	
+	
+		id=user.getId();
+		rollback();
+		id=user1.getId();
+		rollback();
+		id=user2.getId();
 	}
 }

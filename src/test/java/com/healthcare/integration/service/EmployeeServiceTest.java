@@ -1,13 +1,12 @@
 package com.healthcare.integration.service;
 
-import com.healthcare.model.entity.Agency;
-import com.healthcare.model.entity.AgencyType;
-import com.healthcare.model.entity.Company;
-import com.healthcare.model.entity.Employee;
-import com.healthcare.service.AgencyService;
-import com.healthcare.service.AgencyTypeService;
-import com.healthcare.service.CompanyService;
-import com.healthcare.service.EmployeeService;
+import java.sql.Time;
+import java.sql.Timestamp;
+import java.util.Calendar;
+
+import javax.transaction.Transactional;
+
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -16,10 +15,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import javax.transaction.Transactional;
-import java.sql.Time;
-import java.sql.Timestamp;
-import java.util.Calendar;
+import com.healthcare.model.entity.Agency;
+import com.healthcare.model.entity.AgencyType;
+import com.healthcare.model.entity.Company;
+import com.healthcare.model.entity.Employee;
+import com.healthcare.service.AgencyService;
+import com.healthcare.service.AgencyTypeService;
+import com.healthcare.service.CompanyService;
+import com.healthcare.service.EmployeeService;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -89,21 +92,40 @@ public class EmployeeServiceTest {
     Calendar worktimeStart = Calendar.getInstance();
 
 
+    private Employee employee;
+    private Agency agency;
+    private Company company;
+    private AgencyType agencyType;
+
     @Before
     public void setup() {
+    	company = companyService.save(TestEntityFactory.createNewCompany());
+    	agencyType = agencyTypeService.save(TestEntityFactory.createNewAgencyType());
+    	agency = agencyService.save(TestEntityFactory.createNewAgency(company, agencyType));
+        employee = null;
     }
+    
+	@After
+	public void rollback() {
+		if(employee!=null){
+			employeeService.deleteById(employee.getId());
+		}
+        agencyService.deleteById(agency.getId());
+        agencyTypeService.deleteById(agencyType.getId());
+        companyService.deleteById(company.getId());
+	}
 
     @Test
     public void testSaveEmployee() {
-        Employee employee = createNewEmployee();
-        employeeService.save(employee);
+        employee = createNewEmployee();
+        employee = employeeService.save(employee);
         Assert.assertNotNull(employee.getId());
     }
 
     @Test
     public void testGetEmployee() {
-        Employee employee = createNewEmployee();
-        employeeService.save(employee);
+        employee = createNewEmployee();
+        employee = employeeService.save(employee);
         Assert.assertNotNull(employeeService.findById(employee.getId()));
     }
 
@@ -115,8 +137,8 @@ public class EmployeeServiceTest {
         String manager = "manager";
         String position = "position";
 
-        Employee employee = createNewEmployee();
-        employeeService.save(employee);
+        employee = createNewEmployee();
+        employee = employeeService.save(employee);
         Assert.assertEquals(employee.getManager(), manager);
         Assert.assertEquals(employee.getPosition(), position);
         Employee employeeSaved = employeeService.findById(employee.getId());
@@ -131,7 +153,7 @@ public class EmployeeServiceTest {
     @Test
     public void testDeleteEmployee() {
         Employee employee = createNewEmployee();
-        employeeService.save(employee);
+        employee = employeeService.save(employee);
         Assert.assertNotNull(employee.getId());
         employeeService.deleteById(employee.getId());
         Assert.assertNull(employeeService.findById(employee.getId()));
@@ -145,61 +167,75 @@ public class EmployeeServiceTest {
     	Company company2 = newCompany();
     	company2 = companyService.save(company2);
     	
-    	Agency agency1 = newAgency();
+    	AgencyType agencyType = createNewAgencyType();
+    	
+    	Agency agency1 = newAgency(agencyType);
     	agency1.setCompany(company1);
     	agency1.setCompany1(company1);
     	agency1 = agencyService.save(agency1);
     	
-    	Agency agency2 = newAgency();
+    	Agency agency2 = newAgency(agencyType);
     	agency2.setCompany(company1);
     	agency2.setCompany1(company1);
     	agency2 = agencyService.save(agency2);
     	
-    	Agency agency3 = newAgency();
+    	Agency agency3 = newAgency(agencyType);
     	agency3.setCompany(company2);
     	agency3.setCompany1(company2);
     	agency3 = agencyService.save(agency3);
     	
     	Employee e1 = newEmployee();
     	e1.setAgency(agency1); 
-    	employeeService.save(e1);
+    	e1 = employeeService.save(e1);
     	
     	Employee e2 = newEmployee();
     	e2.setAgency(agency1); 
-    	employeeService.save(e2);
+    	e2 = employeeService.save(e2);
     	
     	Employee e3 = newEmployee();
     	e3.setAgency(agency1); 
-    	employeeService.save(e3);
+    	e3 = employeeService.save(e3);
     	
     	Employee e4 = newEmployee();
     	e4.setAgency(agency2); 
-    	employeeService.save(e4);
+    	e4 = employeeService.save(e4);
     	
     	Employee e5 = newEmployee();
     	e5.setAgency(agency3); 
-    	employeeService.save(e5);
+    	e5 = employeeService.save(e5);
     	
     	Employee e6 = newEmployee();
     	e6.setAgency(agency3); 
-    	employeeService.save(e6);
+    	e6 = employeeService.save(e6);
     	
     	Assert.assertEquals(employeeService.findByCampanyIdAndAgencyId(company1.getId(), null).size(), 4);
     	Assert.assertEquals(employeeService.findByCampanyIdAndAgencyId(company1.getId(), agency1.getId()).size(), 3);
     	Assert.assertEquals(employeeService.findByCampanyIdAndAgencyId(company1.getId(), agency2.getId()).size(), 1);
     	Assert.assertEquals(employeeService.findByCampanyIdAndAgencyId(company2.getId(), null).size(), 2);
     	Assert.assertEquals(employeeService.findByCampanyIdAndAgencyId(company2.getId(), agency3.getId()).size(), 2);
+    
+    	
+    	//Cleanup
+    	agencyTypeService.deleteById(agencyType.getId());
+    	companyService.deleteById(company1.getId());
+    	companyService.deleteById(company2.getId());
+    	agencyService.deleteById(agency1.getId());
+    	agencyService.deleteById(agency2.getId());
+    	agencyService.deleteById(agency3.getId());
+    	employeeService.deleteById(e1.getId());
+    	employeeService.deleteById(e2.getId());
+    	employeeService.deleteById(e3.getId());
+    	employeeService.deleteById(e4.getId());
+    	employeeService.deleteById(e5.getId());
+    	employeeService.deleteById(e6.getId());
+    	
     }
     private Employee createNewEmployee() {
         Employee employee = newEmployee();
-        employee.setAgency(createNewAgency());
-        return employeeService.save(employee);
+        employee.setAgency(agency);
+        return employee;
     }
     
-    private Company createNewCompany() {
-    	Company company = newCompany();
-    	return companyService.save(company);
-    }
     
     private AgencyType createNewAgencyType() {
     	AgencyType agencyType = new AgencyType();
@@ -230,20 +266,13 @@ public class EmployeeServiceTest {
 		return employee;
 	}
 
-    private Agency createNewAgency() {
-        Agency agency = newAgency();
-        Company company = createNewCompany();
-        agency.setCompany(company);
-        agency.setCompany1(company);
-        return agencyService.save(agency);
-    }
-
-	private Agency newAgency() {
+   
+	private Agency newAgency(AgencyType agencyType) {
 		Agency agency = new Agency();
         agency.setName(agencyName);
         agency.setAddressOne(addressOne);
         agency.setAddressTwo(addressTwo);
-        agency.setAgencyType(createNewAgencyType());
+        agency.setAgencyType(agencyType);
         agency.setCity(city);
         agency.setContactPerson(contactPerson);
         agency.setEmail(email);

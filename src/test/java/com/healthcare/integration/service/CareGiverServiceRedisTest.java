@@ -4,6 +4,7 @@ import java.sql.Timestamp;
 
 import javax.transaction.Transactional;
 
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,34 +31,39 @@ public class CareGiverServiceRedisTest {
     @Autowired
     private CareGiverService careGiverService;
 
+    
+    
+    
+    private Long id = 100L;
+    private CareGiver careGiver;
     @Before
     public void setup() {
+    	careGiver=null;
     }
     
-    // Remove data added during test from redis once test case executed successfully
-    public void cleanup(Long id){
-    	careGiverService.deleteById(id);
+    @After
+    public void rollback(){
+  		if(careGiver!=null)
+  			careGiverService.deleteById(careGiver.getId());
     }
     
     @Test
     public void saveACareGiverToRedisAndRetrievedItFromRedis() {
-        CareGiver careGiver = getCareGiver();
-        careGiver.setId(100L);
+    	careGiver = getCareGiver();
+        careGiver.setId(id);
         Mockito.when(careGiverRepository.save(careGiver)).thenReturn(careGiver);
         careGiverService.save(careGiver);
-        CareGiver careGiverSaved = careGiverService.findById(100L);
+        CareGiver careGiverSaved = careGiverService.findById(id);
         Assert.assertNotNull(careGiverSaved);
-        
-        cleanup(careGiverSaved.getId());
     }
 
-    @Test
+   @Test
     public void updateACareGiverToRedis() {
-    	String firstName = "first name updated";
+	   	String firstName = "first name updated";
     	String lastName = "last name updated";
     	
-        CareGiver careGiver = getCareGiver();
-        careGiver.setId(100L);
+        careGiver = getCareGiver();
+        careGiver.setId(id);
         Mockito.when(careGiverRepository.save(careGiver)).thenReturn(careGiver);
         careGiverService.save(careGiver);
         
@@ -71,16 +77,15 @@ public class CareGiverServiceRedisTest {
         CareGiver careGiverModified = careGiverService.findById(careGiver.getId());
         Assert.assertEquals(careGiverModified.getFirstName(), firstName);
         Assert.assertEquals(careGiverModified.getLastName(), lastName);
-        cleanup(careGiverModified.getId());
     }
 
     @Test
     public void deleteACareGiverFromRedis() {
         CareGiver careGiver = getCareGiver();
-        careGiver.setId(100L);
+        careGiver.setId(id);
         Mockito.when(careGiverRepository.save(careGiver)).thenReturn(careGiver);
         careGiverService.save(careGiver);
-        Mockito.doNothing().when(careGiverRepository).delete(1L);
+        Mockito.doNothing().when(careGiverRepository).delete(id);
         Assert.assertNotNull(careGiverService.deleteById(careGiver.getId()));
     }
 

@@ -6,6 +6,7 @@ import java.util.Calendar;
 
 import javax.transaction.Transactional;
 
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -69,10 +70,18 @@ public class CompanyServiceRedisTest {
 	public void setup() {
 	}
 
+
+	private Long id = 7L;
+
+	@After
+	public void rollback() {
+		companyService.deleteById(id);
+	}
+
 	@Test
 	public void testSaveCompany() {
 		Company company = createNewCompany();
-		company.setId(7L);
+		company.setId(id);
 		Mockito.when(companyRepository.save(company)).thenReturn(company);
 		companyService.save(company);
 		Company savedCompany = companyService.findById(company.getId());
@@ -84,7 +93,7 @@ public class CompanyServiceRedisTest {
 		String newAddressOne = "25, Green St";
 
 		Company menu = createNewCompany();
-		menu.setId(7L);
+		menu.setId(id);
 		Mockito.when(companyRepository.save(menu)).thenReturn(menu);
 		companyService.save(menu);
 		Company savedCompany = companyService.findById(menu.getId());
@@ -98,7 +107,7 @@ public class CompanyServiceRedisTest {
 	@Test
 	public void testDeleteCompany() {
 		Company company = createNewCompany();
-		company.setId(7L);
+		company.setId(id);
 		Mockito.when(companyRepository.save(company)).thenReturn(company);
 		companyService.save(company);
 		Mockito.doNothing().when(companyRepository).delete(company.getId());

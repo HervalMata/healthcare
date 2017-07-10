@@ -1,10 +1,15 @@
 package com.healthcare.integration.service;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 import java.sql.Timestamp;
 import java.util.Calendar;
+import java.util.List;
 
 import javax.transaction.Transactional;
 
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -86,13 +91,21 @@ public class UserServiceRedisTest {
 		dob.set(Calendar.DAY_OF_MONTH, 1);
 	}
 
+
+	private Long id = 10L;
+
+	@After
+	public void rollback() {
+		userService.deleteById(id);
+	}
+
 	@Test
 	public void shouldSaveAUserToRedisAndRetrievedItFromRedis() {
 		User user = createNewUser();
-		user.setId(10L);
+		user.setId(id);
 		Mockito.when(userRepository.save(user)).thenReturn(user);
 		userService.save(user);
-		User userSaved = userService.findById(10L);
+		User userSaved = userService.findById(id);
 		Assert.assertNotNull(userSaved);
 	}
 
@@ -102,7 +115,7 @@ public class UserServiceRedisTest {
 		String newAddress = "Av. 57 y 23 St.";
 
 		User user = createNewUser();
-		user.setId(10L);
+		user.setId(id);
 		Mockito.when(userRepository.save(user)).thenReturn(user);
 		userService.save(user);
 		User userSaved = userService.findById(user.getId());
@@ -118,10 +131,10 @@ public class UserServiceRedisTest {
 	@Test
 	public void shouldDeleteAUser() {
 		User user = createNewUser();
-		user.setId(10L);
+		user.setId(id);
 		Mockito.when(userRepository.save(user)).thenReturn(user);
 		userService.save(user);
-		Mockito.doNothing().when(userRepository).delete(10L);
+		Mockito.doNothing().when(userRepository).delete(id);
 		Assert.assertNotNull(userService.deleteById(user.getId()));
 	}
 	
@@ -131,20 +144,27 @@ public class UserServiceRedisTest {
 		User user = createNewUser();
 		user.setId(111L);
 		Mockito.when(userRepository.save(user)).thenReturn(user);
-		userService.save(user);
+		user = userService.save(user);
 
 		User user1= createNewUser();
 		user1.setId(112L);
 		Mockito.when(userRepository.save(user1)).thenReturn(user1);
-		userService.save(user1);
+		user1 = userService.save(user1);
 
 		User user2= createNewUser();
 		user2.setId(113L);
 		Mockito.when(userRepository.save(user2)).thenReturn(user2);
-		userService.save(user2);
+		user2 = userService.save(user2);
 		
-		Assert.assertNotNull(userService.findAll());
-		Assert.assertTrue(userService.findAll().size()>=3);
+		List<User> list= userService.findAll();
+		assertNotNull(list);
+		assertEquals(3, list.size());
+		
+		id=user.getId();
+		rollback();
+		id=user1.getId();
+		rollback();
+		id=user2.getId();
 	}
 
 	private User createNewUser() {

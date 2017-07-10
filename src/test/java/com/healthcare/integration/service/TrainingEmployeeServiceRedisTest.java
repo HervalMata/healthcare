@@ -1,8 +1,12 @@
 package com.healthcare.integration.service;
 
-import com.healthcare.model.entity.*;
-import com.healthcare.repository.TrainingEmployeeRepository;
-import com.healthcare.service.*;
+import java.sql.Time;
+import java.sql.Timestamp;
+import java.util.Calendar;
+
+import javax.transaction.Transactional;
+
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -13,10 +17,19 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import javax.transaction.Transactional;
-import java.sql.Time;
-import java.sql.Timestamp;
-import java.util.Calendar;
+import com.healthcare.model.entity.Agency;
+import com.healthcare.model.entity.AgencyType;
+import com.healthcare.model.entity.Company;
+import com.healthcare.model.entity.Employee;
+import com.healthcare.model.entity.Training;
+import com.healthcare.model.entity.TrainingEmployee;
+import com.healthcare.repository.TrainingEmployeeRepository;
+import com.healthcare.service.AgencyService;
+import com.healthcare.service.AgencyTypeService;
+import com.healthcare.service.CompanyService;
+import com.healthcare.service.EmployeeService;
+import com.healthcare.service.TrainingEmployeeService;
+import com.healthcare.service.TrainingService;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -50,18 +63,26 @@ public class TrainingEmployeeServiceRedisTest {
     private AgencyType agencyType;
 
     @Before
-    public void setup() {
-        employee = createNewEmployee();
-        employeeService.save(employee);
-        training = createNewTraining();
-        trainingService.save(training);
-        agency = createNewAgency();
-        agencyService.save(agency);
-        company = createNewCompany();
-        companyService.save(company);
-        agencyType = createNewAgencyType();
-        agencyTypeService.save(agencyType);
-    }
+	public void setup() {
+		company = createNewCompany();
+		agencyType = createNewAgencyType();
+		agency = createNewAgency(company, agencyType);
+		employee = createNewEmployee(agency);
+		training = createNewTraining();
+	}
+
+    TrainingEmployee trainingEmployee;
+    @After
+	public void rollback() {
+    	if(trainingEmployee!=null)
+    		trainingEmployeeService.deleteById(id);
+		
+    	employeeService.deleteById(employee.getId());
+		trainingService.deleteById(training.getId());
+        agencyService.deleteById(agency.getId());
+        agencyTypeService.deleteById(agencyType.getId());
+        companyService.deleteById(company.getId());
+	}
 
     /**
      * Training
@@ -79,7 +100,7 @@ public class TrainingEmployeeServiceRedisTest {
     /**
      * Employee
      */
-    Long id = 1L;
+    private Long id = 1L;
     String firstName = "firstName";
     String lastName = "lastName";
     String gender = "gender";
@@ -128,38 +149,40 @@ public class TrainingEmployeeServiceRedisTest {
     Calendar worktimeStart = Calendar.getInstance();
     String daysWork = "5";
 
-
+    
     @Test
     public void shouldSaveATrainingEmployeeToRedisAndRetrievedItFromRedis() {
-        TrainingEmployee trainingEmployee = createNewTrainingEmployee(employee, training);
+        trainingEmployee = createNewTrainingEmployee(employee, training);
         Mockito.when(trainingEmployeeRepository.save(trainingEmployee)).thenReturn(trainingEmployee);
         trainingEmployeeService.save(trainingEmployee);
-        trainingEmployeeService.findById(1L);
+        trainingEmployeeService.findById(id);
         Assert.assertNotNull(trainingEmployee);
+        this.trainingEmployee = trainingEmployee;
     }
 
     @Test
     public void shouldUpdateATrainingEmployeeToRedis() {
-        Employee employee = createNewEmployee();
-        Training training = createNewTraining();
 
-        Employee newEmployee = createNewEmployee();
+    	Employee newEmployee = createNewEmployee(agency);
         Training newTraining = createNewTraining();
 
-        TrainingEmployee trainingEmployee = createNewTrainingEmployee(employee, training);
+        trainingEmployee = createNewTrainingEmployee(employee, training);
         Mockito.when(trainingEmployeeRepository.save(trainingEmployee)).thenReturn(trainingEmployee);
-        trainingEmployeeService.save(trainingEmployee);
 
         TrainingEmployee trainingEmployeeSaved = trainingEmployeeService.save(trainingEmployee);
         trainingEmployeeSaved.setEmployee(newEmployee);
         trainingEmployeeSaved.setTraining(newTraining);
 
         Mockito.when(trainingEmployeeRepository.save(trainingEmployeeSaved)).thenReturn(trainingEmployeeSaved);
-        trainingEmployeeService.save(trainingEmployeeSaved);
 
         TrainingEmployee trainingEmployeeMofified = trainingEmployeeService.save(trainingEmployeeSaved);
         Assert.assertEquals(trainingEmployeeMofified.getEmployee(), newEmployee);
         Assert.assertEquals(trainingEmployeeMofified.getTraining(), newTraining);
+        
+        //Cleanup
+        this.trainingEmployee = trainingEmployeeMofified;
+        trainingService.deleteById(newTraining.getId());
+        employeeService.deleteById(newEmployee.getId());
     }
 
     @Test
@@ -167,11 +190,12 @@ public class TrainingEmployeeServiceRedisTest {
         TrainingEmployee trainingEmployee = createNewTrainingEmployee(employee, training);
         Mockito.when(trainingEmployeeRepository.save(trainingEmployee)).thenReturn(trainingEmployee);
         trainingEmployeeService.save(trainingEmployee);
-        Mockito.doNothing().when(trainingEmployeeRepository).delete(1L);
+        Mockito.doNothing().when(trainingEmployeeRepository).delete(id);
         Assert.assertNotNull(trainingEmployeeService.deleteById(trainingEmployee.getId()));
+        this.trainingEmployee = trainingEmployee;
     }
 
-    private Employee createNewEmployee() {
+    private Employee createNewEmployee(Agency agency) {
         Employee employee = new Employee();
         employee.setId(id);
         employee.setFirstName(firstName);
@@ -190,17 +214,16 @@ public class TrainingEmployeeServiceRedisTest {
         employee.setType(type);
         employee.setStatus(statusEmp);
         employee.setBackgroundCheck(backgroundCheck);
-        employee.setAgency(createNewAgency());
+        employee.setAgency(agency);
         return employeeService.save(employee);
     }
 
-    private Agency createNewAgency() {
+    private Agency createNewAgency(Company company,AgencyType agencyType) {
         Agency agency = new Agency();
         agency.setName(agencyName);
-        Company company = createNewCompany();
         agency.setAddressOne(addressOne);
         agency.setAddressTwo(addressTwo);
-        agency.setAgencyType(createNewAgencyType());
+        agency.setAgencyType(agencyType);
         agency.setCity(city);
         agency.setCompany(company);
         agency.setCompany1(company);

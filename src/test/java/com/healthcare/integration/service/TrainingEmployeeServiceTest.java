@@ -1,8 +1,11 @@
 package com.healthcare.integration.service;
 
-import com.healthcare.EntityFactory;
-import com.healthcare.model.entity.*;
-import com.healthcare.service.*;
+import java.sql.Timestamp;
+import java.util.Calendar;
+
+import javax.transaction.Transactional;
+
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -11,10 +14,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import javax.transaction.Transactional;
-import java.sql.Time;
-import java.sql.Timestamp;
-import java.util.Calendar;
+import com.healthcare.model.entity.Agency;
+import com.healthcare.model.entity.AgencyType;
+import com.healthcare.model.entity.Company;
+import com.healthcare.model.entity.Employee;
+import com.healthcare.model.entity.Training;
+import com.healthcare.model.entity.TrainingEmployee;
+import com.healthcare.service.AgencyService;
+import com.healthcare.service.AgencyTypeService;
+import com.healthcare.service.CompanyService;
+import com.healthcare.service.EmployeeService;
+import com.healthcare.service.TrainingEmployeeService;
+import com.healthcare.service.TrainingService;
 
 /**
  * Created by jean on 03/07/17.
@@ -22,7 +33,7 @@ import java.util.Calendar;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @Transactional
-public class TrainingEmployeeServiceTest extends EntityFactory {
+public class TrainingEmployeeServiceTest{
 
     @Autowired
     private TrainingEmployeeService trainingEmployeeService;
@@ -46,20 +57,30 @@ public class TrainingEmployeeServiceTest extends EntityFactory {
     private Agency agency;
     private Company company;
     private AgencyType agencyType;
+    private TrainingEmployee trainingEmployee ;
+    
+	@Before
+	public void setup() {
+		company = companyService.save(TestEntityFactory.createNewCompany());
+		agencyType = agencyTypeService.save(TestEntityFactory.createNewAgencyType());
+		agency = agencyService.save(TestEntityFactory.createNewAgency(company, agencyType));
+		employee = employeeService.save(TestEntityFactory.createNewEmployee(agency));
+	    training = createNewTraining();
+	    trainingService.save(training);
+	    trainingEmployee = null;
+	}
 
-    @Before
-    public void setup() {
-        employee = createNewEmployee();
-        employeeService.save(employee);
-        training = createNewTraining();
-        trainingService.save(training);
-        agency = createNewAgency();
-        agencyService.save(agency);
-        company = createNewCompany();
-        companyService.save(company);
-        agencyType = createNewAgencyType();
-        agencyTypeService.save(agencyType);
-    }
+	@After
+	public void rollback() {
+		if(trainingEmployee!=null)
+			trainingEmployeeService.deleteById(trainingEmployee.getId());
+		
+		trainingService.deleteById(training.getId());
+        employeeService.deleteById(employee.getId());
+		agencyService.deleteById(agency.getId());
+        agencyTypeService.deleteById(agencyType.getId());
+        companyService.deleteById(company.getId());
+	}
 
     /**
      * Training
@@ -128,32 +149,33 @@ public class TrainingEmployeeServiceTest extends EntityFactory {
 
     @Test
     public void shouldSaveATrainingEmployee() {
-        TrainingEmployee employeeActivity = createNewTrainingEmployee(employee, training);
-        Assert.assertNotNull(employeeActivity);
+    	trainingEmployee = createNewTrainingEmployee(employee, training);
+    	trainingEmployee = trainingEmployeeService.save(trainingEmployee);
+        Assert.assertNotNull(trainingEmployee);
     }
 
     @Test
     public void shouldGetATrainingEmployee() {
-        TrainingEmployee trainingEmployee = createNewTrainingEmployee(employee, training);
+        trainingEmployee = createNewTrainingEmployee(employee, training);
+        trainingEmployee = trainingEmployeeService.save(trainingEmployee);
         Assert.assertNotNull(trainingEmployeeService.findByTrainingEmployee(trainingEmployee));
     }
 
-    @Test
+   @Test
     public void shouldUpdateATrainingEmployee() {
         Employee newEmployee = createNewEmployee();
         Training newTraining = createNewTraining();
 
-        TrainingEmployee trainingEmployee = createNewTrainingEmployee(employee, training);
-        trainingEmployeeService.save(trainingEmployee);
+        trainingEmployee = createNewTrainingEmployee(employee, training);
+        trainingEmployee = trainingEmployeeService.save(trainingEmployee);
         Assert.assertEquals(trainingEmployee.getEmployee(), employee);
         Assert.assertEquals(trainingEmployee.getTraining(), training);
 
-        TrainingEmployee trainingEmployeeSaved = trainingEmployeeService.save(trainingEmployee);
-        trainingEmployeeSaved.setEmployee(newEmployee);
-        trainingEmployeeSaved.setTraining(newTraining);
-        trainingEmployeeService.save(trainingEmployeeSaved);
+        trainingEmployee.setEmployee(newEmployee);
+        trainingEmployee.setTraining(newTraining);
+        trainingEmployee = trainingEmployeeService.save(trainingEmployee);
 
-        TrainingEmployee trainingEmployeeMofified = trainingEmployeeService.findById(trainingEmployeeSaved.getId());
+        TrainingEmployee trainingEmployeeMofified = trainingEmployeeService.findById(trainingEmployee.getId());
         Assert.assertEquals(trainingEmployeeMofified.getEmployee(), newEmployee);
         Assert.assertEquals(trainingEmployeeMofified.getTraining(), newTraining);
     }
@@ -166,7 +188,29 @@ public class TrainingEmployeeServiceTest extends EntityFactory {
         Assert.assertNull(trainingEmployeeService.findById(trainingEmployee.getId()));
     }
 
-    private Employee createNewEmployee() {
+
+    protected Training createNewTraining() {
+        Training training = new Training();
+        training.setTitle(titile);
+        training.setStartTime(new Timestamp(createdAt.getTimeInMillis()));
+        training.setEndTime(new Timestamp(createdAt.getTimeInMillis()));
+        training.setType(typeTraining);
+        training.setTrainer(trainer);
+        training.setLocation(location);
+        training.setNote(note);
+
+        return training;
+    }
+
+    protected TrainingEmployee createNewTrainingEmployee(Employee employee, Training training) {
+        TrainingEmployee trainingEmployee = new TrainingEmployee();
+        trainingEmployee.setId(id);
+        trainingEmployee.setEmployee(employee);
+        trainingEmployee.setTraining(training);
+        return trainingEmployee;
+    }
+	
+	  private Employee createNewEmployee() {
         Employee employee = new Employee();
         employee.setId(id);
         employee.setFirstName(firstName);
@@ -185,86 +229,9 @@ public class TrainingEmployeeServiceTest extends EntityFactory {
         employee.setType(type);
         employee.setStatus(statusEmp);
         employee.setBackgroundCheck(backgroundCheck);
-        employee.setAgency(createNewAgency());
-        return employeeService.save(employee);
+        employee.setAgency(agency);
+        return employee;
     }
-
-    private Agency createNewAgency() {
-        Agency agency = new Agency();
-        agency.setName(agencyName);
-        Company company = createNewCompany();
-        agency.setAddressOne(addressOne);
-        agency.setAddressTwo(addressTwo);
-        agency.setAgencyType(createNewAgencyType());
-        agency.setCity(city);
-        agency.setCompany(company);
-        agency.setCompany1(company);
-        agency.setContactPerson(contactPerson);
-        agency.setEmail(email);
-        agency.setFax(fax);
-        agency.setHoliday(holiday);
-        agency.setLicenseNo(licenseNo);
-        agency.setPhone(phone);
-        agency.setState(state);
-        agency.setTimezone(timezone);
-        agency.setTrackingMode(trackingMode);
-        agency.setZipcode(zipcode);
-        return agencyService.save(agency);
-    }
-
-    protected Company createNewCompany() {
-        Company company = new Company();
-        company.setAddressOne(addressOne);
-        company.setAddressTwo(addressTwo);
-        company.setCity(city);
-        company.setEmail(email);
-        company.setFax(fax);
-        company.setFederalTax(federalTax);
-        company.setFederalTaxExpire(new Timestamp(federalTaxExpire.getTimeInMillis()));
-        company.setFederalTaxStart(new Timestamp(federalTaxStart.getTimeInMillis()));
-        company.setFederalTaxStatus(1);
-        company.setLicenseNo(licenseNo);
-        company.setName("Company Name");
-        company.setPhone(phone);
-        company.setState(state);
-        company.setStateTax(stateTax);
-        company.setStateTaxExpire(new Timestamp(stateTaxExpire.getTimeInMillis()));
-        company.setStateTaxStart(new Timestamp(stateTaxStart.getTimeInMillis()));
-        company.setStateTaxStatus(1);
-        company.setStatus(1);
-        company.setWorktimeEnd(new Time(worktimeEnd.getTimeInMillis()));
-        company.setWorktimeStart(new Time(worktimeStart.getTimeInMillis()));
-        company.setZipcode(zipcode);
-        company.setDaysWork(daysWork);
-        return companyService.save(company);
-    }
-
-    protected AgencyType createNewAgencyType() {
-        AgencyType agencyType = new AgencyType();
-        agencyType.setName("Agency Type Name");
-        agencyType.setStatus(1);
-        return agencyTypeService.save(agencyType);
-    }
-
-    protected Training createNewTraining() {
-        Training training = new Training();
-        training.setTitle(titile);
-        training.setStartTime(new Timestamp(createdAt.getTimeInMillis()));
-        training.setEndTime(new Timestamp(createdAt.getTimeInMillis()));
-        training.setType(typeTraining);
-        training.setTrainer(trainer);
-        training.setLocation(location);
-        training.setNote(note);
-
-        return trainingService.save(training);
-    }
-
-    protected TrainingEmployee createNewTrainingEmployee(Employee employee, Training training) {
-        TrainingEmployee trainingEmployee = new TrainingEmployee();
-        trainingEmployee.setId(id);
-        trainingEmployee.setEmployee(employee);
-        trainingEmployee.setTraining(training);
-        return trainingEmployee;
-    }
+   
 }
 

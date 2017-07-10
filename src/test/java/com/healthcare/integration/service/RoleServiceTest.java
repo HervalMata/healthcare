@@ -6,6 +6,7 @@ import java.util.Calendar;
 
 import javax.transaction.Transactional;
 
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -79,21 +80,36 @@ public class RoleServiceTest {
 
 	Agency agency;
 
+	private Company company;
+	private AgencyType agencyType;
+	private Role role;
+	
 	@Before
 	public void setup() {
-		agency = createNewAgency();
+		company = createNewCompany();
+    	agencyType = createNewAgencyType();
+    	agency = createNewAgency(company,agencyType);
+    	role=null;
 	}
 
+	@After
+	public void rollback() {
+		if(role!=null)
+			roleService.deleteById(role.getId());
+        agencyService.deleteById(agency.getId());
+        agencyTypeService.deleteById(agencyType.getId());
+        companyService.deleteById(company.getId());
+	}
 	@Test
 	public void testSaveRole() {
-		Role role = createNewRole(level);
+		role = createNewRole(level);
 		role = roleService.save(role);
 		Assert.assertNotNull(role.getId());
 	}
 
 	@Test
 	public void testGetRole() {
-		Role role = createNewRole(level);
+		role = createNewRole(level);
 		role = roleService.save(role);
 		Assert.assertNotNull(roleService.findById(role.getId()));
 	}
@@ -109,6 +125,7 @@ public class RoleServiceTest {
 		roleService.save(roleSaved);
 		Role roleMofified = roleService.findById(role.getId());
 		Assert.assertEquals(roleMofified.getLevelName(), newLevelName);
+		this.role = role;
 	}
 
 	@Test
@@ -129,12 +146,10 @@ public class RoleServiceTest {
 		return role;
 	}
 
-	private Agency createNewAgency() {
+	private Agency createNewAgency(Company company,AgencyType agencyType) {
 		Agency agency = new Agency();
-		Company company = createNewCompany();
 		agency.setAddressOne(addressOne);
 		agency.setAddressTwo(addressTwo);
-		AgencyType agencyType = createNewAgencyType();
 		agency.setAgencyType(agencyType);
 		agency.setCity(city);
 		agency.setCompany(company);

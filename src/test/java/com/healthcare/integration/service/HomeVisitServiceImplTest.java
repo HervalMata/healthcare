@@ -10,6 +10,7 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 
+import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +27,6 @@ import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
 import com.healthcare.DbUnitIntegrationTestConfiguration;
 import com.healthcare.model.entity.CareGiver;
 import com.healthcare.model.entity.HomeVisit;
-import com.healthcare.model.entity.Meal;
 import com.healthcare.model.entity.ServicePlan;
 import com.healthcare.model.entity.User;
 import com.healthcare.service.HomeVisitService;
@@ -48,9 +48,11 @@ public class HomeVisitServiceImplTest {
     @Autowired
     private EntityManager em;
 
-    // Remove data added during test from redis once test case executed successfully
-    public void cleanup(Long id){
-  	  homeVisitService.deleteById(id);
+    Long id = 100L;
+    @After
+    public void cleanup(){
+  	  if(id!=0)
+  		  homeVisitService.deleteById(id);
     }
     
     @Test
@@ -66,8 +68,8 @@ public class HomeVisitServiceImplTest {
 		// then
 		assertThat(result, notNullValue());
 		assertThat(result.getId(), notNullValue());
-		cleanup(result.getId());
-	}
+		id=result.getId();
+    }
 
    @Test
     @ExpectedDatabase(
@@ -91,6 +93,7 @@ public class HomeVisitServiceImplTest {
         assertEquals(updatedCheckoutTime, result.getCheckOutTime());
 		
         em.flush();
+		id=result.getId();
     }
 
     @Test
@@ -123,6 +126,7 @@ public class HomeVisitServiceImplTest {
         homeVisitService.deleteById(careGiverId);
         // then
         em.flush();
+        id=0L;
     }
     
     
@@ -142,12 +146,6 @@ public class HomeVisitServiceImplTest {
         return homeVisit;
 	}
 
-	private Meal getMeal() {
-		final Long mealId = 100L;
-        final Meal meal = new Meal();
-        meal.setId(mealId);
-		return meal;
-	}
 	
 	private User getUser() {
 		final Long userId = 100L;

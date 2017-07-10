@@ -1,7 +1,13 @@
 package com.healthcare.integration.service;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
+import java.util.List;
+
 import javax.transaction.Transactional;
 
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -64,14 +70,27 @@ public class VisitServiceRedisTest extends EntityFactory {
 		user = createNewUser();
 		userService.save(user);
 	}
+	
+
+	private Long id = 10L;
+
+	@After
+	public void rollback() {
+		visitService.deleteById(id);
+		userService.deleteById(user.getId());
+		agencyService.deleteById(agency.getId());
+		agencyTypeService.deleteById(agencyType.getId());
+		companyService.deleteById(company.getId());
+	}
+
 
 	@Test
 	public void shouldSaveAVisitToRedisAndRetrievedItFromRedis() {
 		Visit visit = createNewVisit(user, agency);
-		visit.setId(10L);
+		visit.setId(id);
 		Mockito.when(visitRepository.save(visit)).thenReturn(visit);
 		visitService.save(visit);
-		Visit visitSaved = visitService.findById(10L);
+		Visit visitSaved = visitService.findById(id);
 		Assert.assertNotNull(visitSaved);
 	}
 
@@ -81,7 +100,7 @@ public class VisitServiceRedisTest extends EntityFactory {
 		String newNotes = "seems so quiet";
 
 		Visit visit = createNewVisit(user, agency);
-		visit.setId(10L);
+		visit.setId(id);
 		Mockito.when(visitRepository.save(visit)).thenReturn(visit);
 		visitService.save(visit);
 		Visit visitSaved = visitService.findById(visit.getId());
@@ -97,10 +116,10 @@ public class VisitServiceRedisTest extends EntityFactory {
 	@Test
 	public void shouldDeleteAVisit() {
 		Visit visit = createNewVisit(user, agency);
-		visit.setId(10L);
+		visit.setId(id);
 		Mockito.when(visitRepository.save(visit)).thenReturn(visit);
 		visitService.save(visit);
-		Mockito.doNothing().when(visitRepository).delete(10L);
+		Mockito.doNothing().when(visitRepository).delete(id);
 		Assert.assertNotNull(visitService.deleteById(visit.getId()));
 	}
 	
@@ -109,20 +128,26 @@ public class VisitServiceRedisTest extends EntityFactory {
 		Visit visit = createNewVisit(user, agency);
 		visit.setId(55L);
 		Mockito.when(visitRepository.save(visit)).thenReturn(visit);
-		visitService.save(visit);
+		visit = visitService.save(visit);
 		
 		Visit visit2 = createNewVisit(user, agency);
 		visit2.setId(56L);
 		Mockito.when(visitRepository.save(visit2)).thenReturn(visit2);
-		visitService.save(visit2);
+		visit2 = visitService.save(visit2);
 		
 		Visit visit3 = createNewVisit(user, agency);
 		visit3.setId(57L);
 		Mockito.when(visitRepository.save(visit3)).thenReturn(visit3);
-		visitService.save(visit3);
+		visit3 =visitService.save(visit3);
 		
-		Assert.assertNotNull(visitService.findAll());
-		Assert.assertTrue(visitService.findAll().size()>=3);
+		List<Visit> list= visitService.findAll();
+		assertNotNull(list);
+		assertEquals(3, list.size());
+		
+		//Clean Up redis
+		visitService.deleteById(55L);
+		visitService.deleteById(56L);
+		visitService.deleteById(57L);
 	}
 	
 }

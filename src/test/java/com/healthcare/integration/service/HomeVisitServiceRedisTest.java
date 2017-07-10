@@ -4,6 +4,7 @@ import java.sql.Timestamp;
 
 import javax.transaction.Transactional;
 
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -36,9 +37,10 @@ public class HomeVisitServiceRedisTest {
     public void setup() {
     }
     
-    // Remove data added during test from redis once test case executed successfully
-    public void cleanup(Long id){
-    	  homeVisitService.deleteById(id);
+    private Long id = 100L;
+    @After
+    public void rollback(){
+    	homeVisitService.deleteById(id);
     }
     
 
@@ -50,18 +52,17 @@ public class HomeVisitServiceRedisTest {
 		final User user = getUser();
 		final CareGiver careGiver = getCareGiver();
 		final HomeVisit homeVisit = getHomeVisit(meal, serviceplan, user, careGiver);
-	    homeVisit.setId(100L);
+	    homeVisit.setId(id);
 	    
 	    //Mock
         Mockito.when(homeVisitRepository.save(homeVisit)).thenReturn(homeVisit);
         homeVisitService.save(homeVisit);
         
         //Execute
-        HomeVisit homeVisitSaved = homeVisitService.findById(100L);
+        HomeVisit homeVisitSaved = homeVisitService.findById(id);
         
         //Assert
         Assert.assertNotNull(homeVisitSaved);
-        cleanup(100L);
     }
 
     @Test
@@ -74,7 +75,7 @@ public class HomeVisitServiceRedisTest {
 		final User user = getUser();
 		final CareGiver careGiver = getCareGiver();
 		final HomeVisit homeVisit = getHomeVisit(meal, serviceplan, user, careGiver);
-	    homeVisit.setId(100L);
+	    homeVisit.setId(id);
         
 	    //Mock
 	    Mockito.when(homeVisitRepository.save(homeVisit)).thenReturn(homeVisit);
@@ -90,7 +91,6 @@ public class HomeVisitServiceRedisTest {
         
         //Assert
         Assert.assertEquals(modifiedHomeVisitFromRedis.getNotes(), notes);
-        cleanup(100L);
     }
 
     @Test
@@ -101,9 +101,9 @@ public class HomeVisitServiceRedisTest {
 		final User user = getUser();
 		final CareGiver careGiver = getCareGiver();
 		final HomeVisit homeVisit = getHomeVisit(meal, serviceplan, user, careGiver);
-	    homeVisit.setId(100L);
+	    homeVisit.setId(id);
         
-        Mockito.doNothing().when(homeVisitRepository).delete(100L);
+        Mockito.doNothing().when(homeVisitRepository).delete(id);
         Assert.assertNotNull(homeVisitService.deleteById(homeVisit.getId()));
     }
     

@@ -1,11 +1,11 @@
 package com.healthcare.integration.service;
 
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Calendar;
 
 import javax.transaction.Transactional;
 
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -22,8 +22,6 @@ import com.healthcare.model.entity.Agency;
 import com.healthcare.model.entity.AgencyType;
 import com.healthcare.model.entity.Company;
 import com.healthcare.model.entity.Role;
-import com.healthcare.model.enums.GenderEnum;
-import com.healthcare.model.enums.StateEnum;
 import com.healthcare.repository.AdminPostRepository;
 import com.healthcare.service.AdminPostService;
 import com.healthcare.service.AdminService;
@@ -55,57 +53,47 @@ public class AdminPostServiceRedisTest {
 	private AgencyService agencyService;
 
 	@Autowired
-	private AgencyTypeService agencyTpeService;
+	private AgencyTypeService agencyTypeService;
 
-	String username = "username";
-	String password = "password";
-	String firstName = "John";
-	String middleName = "B";
-	String lastName = "Watson";
-	String phone = "1234560000";
-	String email = "firstname@yahoo.com";
-	String ip = "127.0.0.1";
-	String secondaryPhone = "1234560001";
-	String profilePhoto = "XXXXXXXXXX";
-	String deviceAddress = "City ABC";
-	String rememberToken = "00000";
-	long status = 1;
-
-	String licenseNo = "12D31";
-	int trackingMode = 1;
-	String contactPerson = "Joe";
-	String addressOne = "20, Green St";
-	String addressTwo = "A st";
-	String city = "Orlando";
-	String state = StateEnum.FLORIDA.name();
-	String zipcode = "2122";
-	String timezone = "UTC";
-	String holiday = "12";
-	String fax = "12212444";
-
-	String federalTax = "federalTax";
-	Calendar federalTaxStart = Calendar.getInstance();
-	Calendar federalTaxExpire = Calendar.getInstance();
-	String stateTax = "stateTax";
-	Calendar stateTaxStart = Calendar.getInstance();
-	Calendar stateTaxExpire = Calendar.getInstance();
-	Calendar worktimeStart = Calendar.getInstance();
-	Calendar worktimeEnd = Calendar.getInstance();
-
+	
 	Calendar postDate = Calendar.getInstance();
 	String postText = "This is post text";
 
-	Admin admin;
-
+	private Admin admin;
+	private Role role;
+	private Company company;
+	private Agency agency;
+	private AgencyType agencyType;
+	private AdminPost adminPost =null;
+	private Long id = 7L;
+	
 	@Before
 	public void setup() {
-		admin = createNewAdmin();
+		company = companyService.save(TestEntityFactory.createNewCompany());
+    	agencyType = agencyTypeService.save(TestEntityFactory.createNewAgencyType());
+    	agency = agencyService.save(TestEntityFactory.createNewAgency(company,agencyType));
+    	role = roleService.save(TestEntityFactory.createNewRole(agency));
+    	admin = adminService.save(TestEntityFactory.createNewAdmin(role));
+    	adminPost = null;
+	}
+	
+	@After
+	public void rollback() {
+		if(adminPost!=null){
+			adminPostService.deleteById(adminPost.getId());
+		}
+		adminService.deleteById(admin.getId());
+		roleService.deleteById(role.getId());
+        agencyService.deleteById(agency.getId());
+        agencyTypeService.deleteById(agencyType.getId());
+        companyService.deleteById(company.getId());
 	}
 
+	
 	@Test
 	public void testSaveAdminPost() {
-		AdminPost adminPost = createNewAdminPost();
-		adminPost.setId(7L);
+		adminPost = createNewAdminPost();
+		adminPost.setId(id);
 		Mockito.when(adminPostRepository.save(adminPost)).thenReturn(adminPost);
 		adminPostService.save(adminPost);
 		AdminPost savedAdminPost = adminPostService.findById(adminPost.getId());
@@ -116,8 +104,8 @@ public class AdminPostServiceRedisTest {
 	public void testUpdateAdminPost() {
 		String newPostText = "This is new post text";
 
-		AdminPost adminPost = createNewAdminPost();
-		adminPost.setId(7L);
+		adminPost = createNewAdminPost();
+		adminPost.setId(id);
 		Mockito.when(adminPostRepository.save(adminPost)).thenReturn(adminPost);
 		adminPostService.save(adminPost);
 		AdminPost savedAdminPost = adminPostService.findById(adminPost.getId());
@@ -131,7 +119,7 @@ public class AdminPostServiceRedisTest {
 	@Test
 	public void testDeleteAdminPost() {
 		AdminPost adminPost = createNewAdminPost();
-		adminPost.setId(7L);
+		adminPost.setId(id);
 		Mockito.when(adminPostRepository.save(adminPost)).thenReturn(adminPost);
 		adminPostService.save(adminPost);
 		Mockito.doNothing().when(adminPostRepository).delete(10L);
@@ -147,92 +135,4 @@ public class AdminPostServiceRedisTest {
 		return adminPost;
 	}
 
-	private Admin createNewAdmin() {
-		Admin admin = new Admin();
-		admin.setUsername(username);
-		admin.setPassword(password);
-		admin.setFirstName(firstName);
-		admin.setMiddleName(middleName);
-		admin.setLastName(lastName);
-		admin.setGender(GenderEnum.MAN.name());
-		admin.setPhone(phone);
-		admin.setEmail(email);
-		admin.setDeviceAddress(deviceAddress);
-		admin.setIp(ip);
-		admin.setProfilePhoto(profilePhoto);
-		admin.setRememberToken(rememberToken);
-		admin.setSecondaryPhone(secondaryPhone);
-		admin.setStatus(status);
-		admin.setRole(createNewRole());
-		return adminService.save(admin);
-	}
-
-	private Role createNewRole() {
-		String levelName = "levelName";
-		long level = 1;
-		long status = 1;
-
-		Role role = new Role();
-		role.setLevel(level);
-		role.setLevelName(levelName);
-		role.setStatus(status);
-		role.setAgency(createNewAgency());
-		return roleService.save(role);
-	}
-
-	private Agency createNewAgency() {
-		Agency agency = new Agency();
-		Company company = createNewCompany();
-		agency.setAddressOne(addressOne);
-		agency.setAddressTwo(addressTwo);
-		agency.setAgencyType(createNewAgencyType());
-		agency.setCity(city);
-		agency.setCompany(company);
-		agency.setCompany1(company);
-		agency.setContactPerson(contactPerson);
-		agency.setEmail(email);
-		agency.setFax(fax);
-		agency.setHoliday(holiday);
-		agency.setLicenseNo(licenseNo);
-		agency.setName("Agency Name");
-		agency.setPhone(phone);
-		agency.setState(state);
-		agency.setTimezone(timezone);
-		agency.setTrackingMode(trackingMode);
-		agency.setZipcode(zipcode);
-		return agencyService.save(agency);
-	}
-
-	private Company createNewCompany() {
-		Company company = new Company();
-		company.setAddressOne(addressOne);
-		company.setAddressTwo(addressTwo);
-		company.setCity(city);
-		company.setEmail(email);
-		company.setFax(fax);
-		company.setFederalTax(federalTax);
-		company.setFederalTaxExpire(new Timestamp(federalTaxExpire.getTimeInMillis()));
-		company.setFederalTaxStart(new Timestamp(federalTaxStart.getTimeInMillis()));
-		company.setFederalTaxStatus(1);
-		company.setLicenseNo(licenseNo);
-		company.setName("Company Name");
-		company.setPhone(phone);
-		company.setState(state);
-		company.setStateTax(stateTax);
-		company.setStateTaxExpire(new Timestamp(stateTaxExpire.getTimeInMillis()));
-		company.setStateTaxStart(new Timestamp(stateTaxStart.getTimeInMillis()));
-		company.setStateTaxStatus(1);
-		company.setStatus(1);
-		company.setWorktimeEnd(new Time(worktimeEnd.getTimeInMillis()));
-		company.setWorktimeStart(new Time(worktimeStart.getTimeInMillis()));
-		company.setZipcode(zipcode);
-		return companyService.save(company);
-	}
-
-	private AgencyType createNewAgencyType() {
-		AgencyType agencyType = new AgencyType();
-		agencyType.setName("Agency Type Name");
-		agencyType.setStatus(1);
-		return agencyTpeService.save(agencyType);
-	}
 }

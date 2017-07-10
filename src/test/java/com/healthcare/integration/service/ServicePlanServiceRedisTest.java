@@ -6,6 +6,7 @@ import java.util.Calendar;
 
 import javax.transaction.Transactional;
 
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -144,16 +145,34 @@ public class ServicePlanServiceRedisTest {
 	String comment = "No comments";
 	String vacationNote = ".";
 
+	private Agency agency;
+	private Company company;
+	private AgencyType agencyType;
+
 	@Before
 	public void setup() {
+		company = createNewCompany();
+    	agencyType = createNewAgencyType();
+    	agency = createNewAgency(company,agencyType);
 		user = createNewUser();
-		employee = createNewEmployee();
+		employee = createNewEmployee(agency);
+	}
+
+	private Long id = 7L;
+	@After
+	public void rollback() {
+		servicePlanService.deleteById(id);
+		employeeService.deleteById(employee.getId());
+		userService.deleteById(user.getId());
+        agencyService.deleteById(agency.getId());
+        agencyTypeService.deleteById(agencyType.getId());
+        companyService.deleteById(company.getId());
 	}
 
 	@Test
 	public void testSaveServicePlan() {
 		ServicePlan servicePlan = createNewServicePlan();
-		servicePlan.setId(7L);
+		servicePlan.setId(id);
 		Mockito.when(servicePlanRepository.save(servicePlan)).thenReturn(servicePlan);
 		servicePlan = servicePlanService.save(servicePlan);
 		Assert.assertNotNull(servicePlanService.findById(servicePlan.getId()));
@@ -163,7 +182,7 @@ public class ServicePlanServiceRedisTest {
 	public void testUpdateServicePlan() {
 		String newDocUrl = "/doc/new/a";
 		ServicePlan servicePlan = createNewServicePlan();
-		servicePlan.setId(7L);
+		servicePlan.setId(id);
 		Mockito.when(servicePlanRepository.save(servicePlan)).thenReturn(servicePlan);
 		servicePlan = servicePlanService.save(servicePlan);
 		ServicePlan savedServicePlan = servicePlanService.findById(servicePlan.getId());
@@ -177,7 +196,7 @@ public class ServicePlanServiceRedisTest {
 	@Test
 	public void testDeleteServicePlan() {
 		ServicePlan servicePlan = createNewServicePlan();
-		servicePlan.setId(7L);
+		servicePlan.setId(id);
 		Mockito.when(servicePlanRepository.save(servicePlan)).thenReturn(servicePlan);
 		servicePlan = servicePlanService.save(servicePlan);
 		Mockito.doNothing().when(servicePlanRepository).delete(servicePlan.getId());
@@ -258,9 +277,9 @@ public class ServicePlanServiceRedisTest {
 		return userService.save(user);
 	}
 
-	private Employee createNewEmployee() {
+	private Employee createNewEmployee(Agency agency) {
 		Employee employee = new Employee();
-		employee.setAgency(createNewAgency());
+		employee.setAgency(agency);
 		employee.setFirstName(firstName);
 		employee.setLastName(lastName);
 		employee.setGender(gender);
@@ -280,12 +299,10 @@ public class ServicePlanServiceRedisTest {
 		return employeeService.save(employee);
 	}
 
-	private Agency createNewAgency() {
+	private Agency createNewAgency(Company company, AgencyType agencyType) {
 		Agency agency = new Agency();
-		Company company = createNewCompany();
 		agency.setAddressOne(addressOne);
 		agency.setAddressTwo(addressTwo);
-		AgencyType agencyType = createNewAgencyType();
 		agency.setAgencyType(agencyType);
 		agency.setCity(city);
 		agency.setCompany(company);
