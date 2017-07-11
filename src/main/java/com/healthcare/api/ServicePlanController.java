@@ -53,6 +53,14 @@ public class ServicePlanController {
 		return servicePlanService.findAll();
 	}
 
+	@ApiOperation(value = "get service calendar by servce plan id", notes = "get service calendar by service plan id")
+	@ApiImplicitParam(name = "servicePlanId", value = "service plan id", required = true, dataType = "Long")
+	@GetMapping("/calendar/{servicePlanId}")
+	public List<String> getServiceCalendar(@PathVariable Long servicePlanId) {
+		logger.info("id : " + servicePlanId);
+		return servicePlanService.getServiceCalendar(servicePlanId);
+	}
+
 	@ApiOperation(value = "update service plan", notes = "update service plan")
 	@ApiParam(name = "servicePlan", value = "service plan to update", required = true)
 	@PutMapping()

@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.healthcare.model.entity.User;
 import com.healthcare.service.UserService;
+import com.healthcare.util.PasswordUtils;
 
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
@@ -33,6 +34,8 @@ public class UserController {
 	@ApiParam(name = "user", value = "user to update", required = true)
 	@RequestMapping(method = RequestMethod.POST)
 	public ResponseEntity<User> create(@RequestBody User user) {
+		String hashedPassword = PasswordUtils.hashPassword(user.getPassword());
+		user.setPassword(hashedPassword);
 		user = userService.save(user);
 		return new ResponseEntity<User>(user, HttpStatus.OK);
 	}

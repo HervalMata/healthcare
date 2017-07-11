@@ -38,11 +38,11 @@ public class VisitActivityServiceImpl implements VisitActivityService {
 	@Override
 	public VisitActivity findById(VisitActivityPK pk) {
 		VisitActivity visitActivity = (VisitActivity) visitActivityRedisTemplate.opsForHash().get(KEY, pk);
-		if (visitActivity == null || visitActivity.getActivity() == null || visitActivity.getVisit() == null){
+		if (visitActivity == null || visitActivity.getActivity() == null || visitActivity.getVisit() == null) {
 			visitActivity = visitActivityRepository.findOne(pk);
 			visitActivityRedisTemplate.opsForHash().put(KEY, getPk(visitActivity), visitActivity);
 		}
-			
+
 		return visitActivity;
 	}
 
@@ -51,28 +51,28 @@ public class VisitActivityServiceImpl implements VisitActivityService {
 		visitActivityRepository.delete(pk);
 		return visitActivityRedisTemplate.opsForHash().delete(KEY, pk);
 	}
-	
+
 	@Override
 	public List<VisitActivity> findVisitActivityByActivityId(Long id) {
 		List<VisitActivity> visitActivityReturnList = getList(id, true);
-		
-		if (visitActivityReturnList.isEmpty() || checkVisitOrActivityIsNull(visitActivityReturnList)){
+
+		if (visitActivityReturnList.isEmpty() || checkVisitOrActivityIsNull(visitActivityReturnList)) {
 			visitActivityReturnList = visitActivityRepository.findVisitActivityByActivityId(id);
 			putResultInRedis(visitActivityReturnList);
 		}
-		
+
 		return visitActivityReturnList;
 	}
-	
+
 	private void putResultInRedis(List<VisitActivity> visitActivityReturnList) {
-		for(VisitActivity visitActivity : visitActivityReturnList){
+		for (VisitActivity visitActivity : visitActivityReturnList) {
 			visitActivityRedisTemplate.opsForHash().put(KEY, getPk(visitActivity), visitActivity);
 		}
 	}
 
 	private boolean checkVisitOrActivityIsNull(List<VisitActivity> visitActivityReturnList) {
-		for(VisitActivity visitActivity : visitActivityReturnList){
-			if(visitActivity.getActivity()==null || visitActivity.getVisit()==null){
+		for (VisitActivity visitActivity : visitActivityReturnList) {
+			if (visitActivity.getActivity() == null || visitActivity.getVisit() == null) {
 				return true;
 			}
 		}
@@ -82,15 +82,14 @@ public class VisitActivityServiceImpl implements VisitActivityService {
 	@Override
 	public List<VisitActivity> findVisitActivityByVisitId(Long id) {
 		List<VisitActivity> visitActivityReturnList = getList(id, false);
-		
-		if (visitActivityReturnList.isEmpty() || checkVisitOrActivityIsNull(visitActivityReturnList)){
+
+		if (visitActivityReturnList.isEmpty() || checkVisitOrActivityIsNull(visitActivityReturnList)) {
 			visitActivityReturnList = visitActivityRepository.findVisitActivityByVisitId(id);
 			putResultInRedis(visitActivityReturnList);
 		}
-		
+
 		return visitActivityReturnList;
 	}
-
 
 	private List<VisitActivity> getList(Long id, boolean isActivityId) {
 		List<VisitActivity> visitActivityReturnList = new ArrayList<VisitActivity>();
@@ -99,7 +98,7 @@ public class VisitActivityServiceImpl implements VisitActivityService {
 
 		if (!visitActivityMap.isEmpty()) {
 			for (VisitActivityPK pk : visitActivityPkList) {
-				if(matchFound(id, isActivityId, pk)){
+				if (matchFound(id, isActivityId, pk)) {
 					visitActivityReturnList.add((VisitActivity) visitActivityRedisTemplate.opsForHash().get(KEY, pk));
 				}
 			}
@@ -125,9 +124,8 @@ public class VisitActivityServiceImpl implements VisitActivityService {
 	public Long deleteById(Long id) {
 		return null;
 	}
-	
+
 	private VisitActivityPK getPk(VisitActivity visitActivity) {
-		return new VisitActivityPK(visitActivity.getVisitId(),visitActivity.getActivityId());
+		return new VisitActivityPK(visitActivity.getVisitId(), visitActivity.getActivityId());
 	}
-	
 }

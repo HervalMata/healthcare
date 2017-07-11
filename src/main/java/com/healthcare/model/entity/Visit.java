@@ -56,5 +56,4 @@ public @Data class Visit extends Audit implements Serializable {
 	private User user;
 	@Column(name = "signature")
 	private String signature;
-
 }

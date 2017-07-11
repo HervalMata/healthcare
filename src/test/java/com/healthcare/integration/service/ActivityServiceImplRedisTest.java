@@ -22,108 +22,89 @@ import org.springframework.test.context.junit4.SpringRunner;
 import com.healthcare.model.entity.Activity;
 import com.healthcare.repository.ActivityRepository;
 import com.healthcare.service.ActivityService;
-import com.healthcare.service.AgencyService;
-import com.healthcare.service.AgencyTypeService;
-import com.healthcare.service.CompanyService;
-import com.healthcare.service.EmployeeService;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class ActivityServiceImplRedisTest {
 
-    @Autowired
-    private ActivityService activityService;
-
-    @MockBean
-    private ActivityRepository activityRepository;
-   
-    @Autowired
-	private CompanyService companyService;
-
 	@Autowired
-	private AgencyService agencyService;
+	private ActivityService activityService;
 
-	@Autowired
-	private AgencyTypeService agencyTypeService;
-	
-	@Autowired
-    private EmployeeService employeeService;
+	@MockBean
+	private ActivityRepository activityRepository;
 
+	private Long id = 1L;
+	private Activity activity;
 
-    private Long id = 1L;
-    private Activity activity;
-    
-    @Before
-    public void setup(){
-    	activity = null;
-    }
-    @After
-    public void rollback(){
-    	if(activity!=null)
-    		activityService.deleteById(activity.getId());
-    }
-    
-    @Test
-    public void testCreate() {
-        // given
-        final Long activityId = id;
-        activity = new Activity();
-        activity.setId(activityId);
+	@Before
+	public void setup() {
+		activity = null;
+	}
 
-        given(activityRepository.save(any(Activity.class)))
-                .willReturn(activity);
-        // when
-        activityService.save(activity);
-        // then
-        verify(activityRepository, only()).save(activity);
+	@After
+	public void rollback() {
+		if (activity != null)
+			activityService.deleteById(activity.getId());
+	}
 
-        Activity result = activityService.findById(activity.getId());
+	@Test
+	public void testCreate() {
+		// given
+		final Long activityId = id;
+		activity = new Activity();
+		activity.setId(activityId);
 
-        assertThat(result, notNullValue());
-    }
+		given(activityRepository.save(any(Activity.class))).willReturn(activity);
+		// when
+		activityService.save(activity);
+		// then
+		verify(activityRepository, only()).save(activity);
 
-    @Test
-    public void testUpdate() {
-        // given
-        final Long activityId = id;
-        final String name = "Activity name";
-        activity = new Activity();
-        activity.setId(activityId);
+		Activity result = activityService.findById(activity.getId());
 
-        given(activityRepository.save(any(Activity.class)))
-                .willReturn(activity);
-        activityService.save(activity);
-        activity.setName(name);
-        // when
-        activityService.save(activity);
-        // then
-        verify(activityRepository, atLeast(1)).save(activity);
+		assertThat(result, notNullValue());
+	}
 
-        Activity result = activityService.findById(activity.getId());
+	@Test
+	public void testUpdate() {
+		// given
+		final Long activityId = id;
+		final String name = "Activity name";
+		activity = new Activity();
+		activity.setId(activityId);
 
-        assertThat(result, notNullValue());
-        assertThat(result.getName(), IsEqual.equalTo(name));
-    }
+		given(activityRepository.save(any(Activity.class))).willReturn(activity);
+		activityService.save(activity);
+		activity.setName(name);
+		// when
+		activityService.save(activity);
+		// then
+		verify(activityRepository, atLeast(1)).save(activity);
 
-    @Test
-    public void testDeleteById() {
-        // given
-        final Long activityId = 1L;
-        final Activity activity = new Activity();
-        activity.setId(activityId);
+		Activity result = activityService.findById(activity.getId());
 
-        given(activityRepository.save(any(Activity.class)))
-                .willReturn(activity);
-        activityService.save(activity);
-        // when
-        Long result = activityService.deleteById(activity.getId());
-        // then
-        verify(activityRepository).delete(activity.getId());
-        assertThat(result, notNullValue());
+		assertThat(result, notNullValue());
+		assertThat(result.getName(), IsEqual.equalTo(name));
+	}
 
-        Activity savedActivity = activityService.findById(activity.getId());
+	@Test
+	public void testDeleteById() {
+		// given
+		final Long activityId = 1L;
+		final Activity activity = new Activity();
+		activity.setId(activityId);
 
-        assertThat(savedActivity, nullValue());
-    }
+		given(activityRepository.save(any(Activity.class))).willReturn(activity);
+		activityService.save(activity);
+		// when
+		Long result = activityService.deleteById(activity.getId());
+		// then
+		verify(activityRepository).delete(activity.getId());
+		assertThat(result, notNullValue());
+
+		Activity savedActivity = activityService.findById(activity.getId());
+
+		assertThat(savedActivity, nullValue());
+	}
 
 }

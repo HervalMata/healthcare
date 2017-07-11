@@ -25,16 +25,12 @@ public @Data class VisitActivity implements Serializable {
 	@Id
     @Column(name = "visit_id")
     protected Long visitId;
-	
 	@Id
     @Column(name = "activity_id")
-    protected Long activityId;
-	
-	
+    protected Long activityId;	
 	@ManyToOne
 	@JoinColumn(name = "visit_id" , insertable = false, updatable = false)
 	private Visit visit;
-
 	@ManyToOne
 	@JoinColumn(name = "activity_id" ,insertable = false, updatable = false)
 	private Activity activity;
@@ -44,5 +40,4 @@ public @Data class VisitActivity implements Serializable {
 	private Timestamp startTime;
 	@Column(name = "end_time")
 	private Timestamp endTime;
-
 }

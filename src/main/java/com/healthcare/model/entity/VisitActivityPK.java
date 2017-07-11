@@ -13,12 +13,14 @@ import lombok.Data;
 public @Data class VisitActivityPK implements Serializable {
 
 	private static final long serialVersionUID = -4912913092398276257L;
-    private Long visitId;
-    private Long activityId;
-    
-    public VisitActivityPK(){}
-    public VisitActivityPK(Long visitId,Long activityId){
-    	this.visitId = visitId;
-    	this.activityId = activityId;
-    }
+	private Long visitId;
+	private Long activityId;
+
+	public VisitActivityPK() {
+	}
+
+	public VisitActivityPK(Long visitId, Long activityId) {
+		this.visitId = visitId;
+		this.activityId = activityId;
+	}
 }

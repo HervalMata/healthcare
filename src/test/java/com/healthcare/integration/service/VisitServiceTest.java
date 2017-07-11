@@ -16,6 +16,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.healthcare.EntityFactory;
@@ -24,12 +25,14 @@ import com.healthcare.exception.ApplicationException;
 import com.healthcare.model.entity.Agency;
 import com.healthcare.model.entity.AgencyType;
 import com.healthcare.model.entity.Company;
+import com.healthcare.model.entity.ServicePlan;
 import com.healthcare.model.entity.User;
 import com.healthcare.model.entity.Visit;
 import com.healthcare.model.enums.VisitStatusEnum;
 import com.healthcare.service.AgencyService;
 import com.healthcare.service.AgencyTypeService;
 import com.healthcare.service.CompanyService;
+import com.healthcare.service.ServicePlanService;
 import com.healthcare.service.UserService;
 import com.healthcare.service.VisitService;
 
@@ -49,16 +52,23 @@ public class VisitServiceTest extends EntityFactory {
 
 	@Autowired
 	public AgencyTypeService agencyTypeService;
+	
+	@Autowired
+	public ServicePlanService servicePlanService;
 
 	@Autowired
 	private VisitService visitService;
+	
+	@Autowired
+	private RedisTemplate<String, Visit> redisTemplate;
 
 	private Company company;
 	private AgencyType agencyType;
 	private Agency agency;
 	private User user;
+	private ServicePlan servicePlan;
 	private Visit visit;
-	
+
 	@Before
 	public void setup() {
 		init();
@@ -70,7 +80,10 @@ public class VisitServiceTest extends EntityFactory {
 		agencyService.save(agency);
 		user = createNewUser();
 		userService.save(user);
+		servicePlan = createNewServicePlan(user);
+		servicePlanService.save(servicePlan);
 		visit = null;
+		redisTemplate.delete(Visit.class.getSimpleName());
 	}
 	
 
@@ -97,6 +110,13 @@ public class VisitServiceTest extends EntityFactory {
 		visit = createNewVisit(user, agency);
 		visit = visitService.save(visit);
 		Assert.assertNotNull(visitService.findById(visit.getId()));
+	}
+	
+	@Test
+	public void shouldFindAllVisitByServiceId() {
+		Visit visit = createNewVisit(user, agency);
+		visitService.save(visit);
+		Assert.assertNotNull(visitService.findAllByServicePlanId(servicePlan.getId()));
 	}
 
 	@Test
@@ -240,7 +260,6 @@ public class VisitServiceTest extends EntityFactory {
 		VisitRequest visitRequest = new VisitRequest();
 		visitService.checkOut(visitRequest);
 	}
-
 	
 	@Test
 	public void souldFindAll() {

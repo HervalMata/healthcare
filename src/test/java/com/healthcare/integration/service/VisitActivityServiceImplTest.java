@@ -9,10 +9,12 @@ import java.util.List;
 import javax.persistence.EntityManager;
 
 import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -40,6 +42,9 @@ public class VisitActivityServiceImplTest {
 
     @Autowired
     private VisitActivityService visitActivityService;
+    
+    @Autowired
+	private RedisTemplate<String, VisitActivity> redisTemplate;
 
     @Autowired
     private EntityManager em;
@@ -48,6 +53,11 @@ public class VisitActivityServiceImplTest {
 	private Long activityId = 100L;
 	boolean isDeleted = false;
 
+	@Before
+	public void setup() {
+		redisTemplate.delete(VisitActivity.class.getSimpleName());
+	}
+	
 	@After
 	public void rollback() {
 		if(!isDeleted)

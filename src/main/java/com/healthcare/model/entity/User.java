@@ -13,7 +13,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
 
@@ -126,7 +125,7 @@ public @Data class User extends Audit implements Serializable {
 	private String expertDoctorTel;
 	@Column(name = "medical_condition")
 	private String medicalCondition;
-	private Integer status;
+	private long status;
 	@Column(name = "vacation_note")
 	private String vacationNote;
 	@Column(name = "vacation_start")
@@ -137,6 +136,10 @@ public @Data class User extends Audit implements Serializable {
 	@JoinColumn(name = "agency_id")
 	private Agency agency;
 	@Column(name = "status_second")
-	private Integer statusSecond;
-
+	private long statusSecond;
+	@Column(name = "remember_token")
+	private String rememberToken;
+	@ManyToOne
+	@JoinColumn(name = "role_id")
+	private Role role;
 }

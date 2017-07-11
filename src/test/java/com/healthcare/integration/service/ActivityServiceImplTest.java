@@ -2,6 +2,9 @@ package com.healthcare.integration.service;
 
 import static org.hamcrest.core.IsNull.notNullValue;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+
+import java.util.List;
 
 import javax.persistence.EntityManager;
 
@@ -103,6 +106,14 @@ public class ActivityServiceImplTest {
         // then
         assertThat(result, notNullValue());
     }
+    
+    @Test
+    public void testFindAll() {
+        // when
+        List<Activity> result = sut.findAll();
+        // then
+        assertTrue(result.size() > 0);
+    }   
 
     @Test
     @ExpectedDatabase(

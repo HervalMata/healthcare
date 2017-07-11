@@ -4,16 +4,23 @@ import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.Date;
+
+import com.healthcare.model.entity.Activity;
 import com.healthcare.model.entity.Agency;
 import com.healthcare.model.entity.AgencyType;
 import com.healthcare.model.entity.Company;
+import com.healthcare.model.entity.Employee;
+import com.healthcare.model.entity.ServicePlan;
 import com.healthcare.model.entity.User;
 import com.healthcare.model.entity.Visit;
+import com.healthcare.model.entity.VisitActivity;
 import com.healthcare.model.entity.WorkItem;
+import com.healthcare.model.enums.DayEnum;
 import com.healthcare.model.enums.GenderEnum;
 import com.healthcare.model.enums.LanguageEnum;
 import com.healthcare.model.enums.StateEnum;
 import com.healthcare.model.enums.VisitStatusEnum;
+import com.healthcare.util.DateUtils;
 
 public class EntityFactory {
 	public Calendar eligiableStart = Calendar.getInstance();
@@ -77,10 +84,30 @@ public class EntityFactory {
 	public String selectedSeat = "AB";
 	public String userSignature = "userSignature";
 
+	public String approvedBy = "Manager";
+	public Timestamp planStart = new Timestamp(DateUtils.stringToDate("yyyy-MM-dd", "2017-06-01").getTime());
+	public Timestamp planEnd = new Timestamp(DateUtils.stringToDate("yyyy-MM-dd", "2017-12-01").getTime());
+	String days = DayEnum.MONDAY.name() + "," + DayEnum.THURSDAY.name();
+	public String docUrl = "/doc/a";
+
+	public String gender = GenderEnum.MAN.name();
+	public String physicalExam = "physicalExam";
+	public String certificateName = "certificateName";
+	public Calendar certificateStart = Calendar.getInstance();
+	public Calendar certificateEnd = Calendar.getInstance();
+	public Calendar workStart = Calendar.getInstance();
+	public Calendar workEnd = Calendar.getInstance();
+	public String position = "position";
+	public String manager = "manager";
+	public String type = "type";
+	public String statusString = "status";
+	public String backgroundCheck = "backgroundCheck";
+
+	public String seat = "10A";
+
 	public String itemName = "help on shopping";
 	public String itemNote = "help on shopping note";
-	
-	
+
 	protected void init() {
 		eligiableStart.set(Calendar.YEAR, 2017);
 		eligiableStart.set(Calendar.MONTH, 1);
@@ -200,6 +227,18 @@ public class EntityFactory {
 		return user;
 	}
 
+	protected ServicePlan createNewServicePlan(User user) {
+		ServicePlan servicePlan = new ServicePlan();
+		servicePlan.setApprovedBy(approvedBy);
+		servicePlan.setDays(days);
+		servicePlan.setDocUrl(docUrl);
+		servicePlan.setEmployee(null);
+		servicePlan.setPlanEnd(planEnd);
+		servicePlan.setPlanStart(planStart);
+		servicePlan.setUser(user);
+		return servicePlan;
+	}
+
 	protected Visit createNewVisit(User user, Agency agency) {
 		Visit visit = new Visit();
 		visit.setUser(user);
@@ -209,21 +248,65 @@ public class EntityFactory {
 		visit.setSelectedSeat(selectedTable);
 		visit.setSelectedSeat(selectedSeat);
 		visit.setUserSignature(userSignature);
-        // visit.setServicePlan(servicePlan);// TODO not yet finished ServicePlan CRUD
-		// visit.setSelectedMeal(selectedMeal);// TODO not yet finished Meal CRUD
-		// visit.setUserBarcodeId(userBarcodeId);// TODO not yet validates there is asigned when agency accepts Patient
+		// visit.setServicePlan(servicePlan);// TODO not yet finished
+		// ServicePlan CRUD
+		// visit.setSelectedMeal(selectedMeal);// TODO not yet finished Meal
+		// CRUD
+		// visit.setUserBarcodeId(userBarcodeId);// TODO not yet validates there
+		// is asigned when agency accepts Patient
 		visit.setUserComments(userComments);
 		visit.setNotes(notes);
 		visit.setStatus(VisitStatusEnum.BOOKED.name());
 		return visit;
 	}
 
-	
-	protected WorkItem createNewWorkItem(){
+	protected Employee createNewEmployee(Agency agency) {
+		Employee employee = new Employee();
+		employee.setAgency(agency);
+		employee.setFirstName(firstName);
+		employee.setLastName(lastName);
+		employee.setGender(gender);
+		employee.setSocialSecurityNumber(socialSecurityNumber);
+		employee.setDateOfBirth(new Timestamp(dob.getTimeInMillis()));
+		employee.setPhysicalExam(physicalExam);
+		employee.setWorkStart(new Timestamp(workStart.getTimeInMillis()));
+		employee.setWorkEnd(new Timestamp(workEnd.getTimeInMillis()));
+		employee.setCertificateName(certificateName);
+		employee.setCertificateStart(new Timestamp(certificateStart.getTimeInMillis()));
+		employee.setCertificateEnd(new Timestamp(certificateEnd.getTimeInMillis()));
+		employee.setPosition(position);
+		employee.setManager(manager);
+		employee.setType(type);
+		employee.setStatus(statusString);
+		employee.setBackgroundCheck(backgroundCheck);
+		return employee;
+	}
+
+	protected Activity createNewActivity(Employee employee) {
+		Activity activity = new Activity();
+		activity.setCreatedAt(new Timestamp(workStart.getTimeInMillis()));
+		activity.setInstructorEmployee(employee);
+		activity.setName(firstName);
+		activity.setStatus(Integer.getInteger("1"));
+		return activity;
+	}
+
+	protected VisitActivity createNewVisitActivity(Visit visit, Activity activity) {
+		VisitActivity visitActivity = new VisitActivity();
+		// visitActivity.setId(new VisitActivityPK(visit.getId(),
+		// activity.getId()));
+//		visitActivity.setActivity(activity);
+		visitActivity.setActivityId(activity.getId());
+		visitActivity.setSeat(seat);
+//		visitActivity.setVisit(visit);
+		visitActivity.setVisitId(visit.getId());
+		return visitActivity;
+	}
+
+	protected WorkItem createNewWorkItem() {
 		WorkItem workItem = new WorkItem();
 		workItem.setItemName(itemName);
 		workItem.setItemNote(itemNote);
 		return workItem;
 	}
-	
 }

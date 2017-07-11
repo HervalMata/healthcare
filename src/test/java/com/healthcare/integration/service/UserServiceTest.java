@@ -27,7 +27,7 @@ import com.healthcare.service.UserService;
 public class UserServiceTest extends EntityFactory {
 	@Autowired
 	private UserService userService;
-
+	
 	@Autowired
 	private RedisTemplate<String, User> redisTemplate;
 

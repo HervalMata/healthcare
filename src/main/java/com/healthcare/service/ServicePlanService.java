@@ -6,4 +6,6 @@ import com.healthcare.model.entity.ServicePlan;
 
 public interface ServicePlanService extends IService<ServicePlan> {
 	List<ServicePlan> findAll();
+
+	List<String> getServiceCalendar(Long servicePlanId);
 }

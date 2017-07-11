@@ -49,26 +49,25 @@ public class VisitActivityControllerTest {
 	@Test
 	public void testSaveVisitActivity() throws Exception {
 		VisitActivity visitActivity = getVisitActivity();
-		
+
 		Mockito.when(visitActivityService.save(visitActivity)).thenReturn(visitActivity);
 		ObjectMapper mapper = new ObjectMapper();
 		String jsonInString = mapper.writeValueAsString(visitActivity);
 		this.mockMvc.perform(put("/api/visitActivity").contentType(MediaType.APPLICATION_JSON).content(jsonInString))
 				.andExpect(status().isOk());
 	}
-	
+
 	@Test
 	public void testUpdateVisitActivity() throws Exception {
 		VisitActivity visitActivity = getVisitActivity();
 		VisitActivity visitActivityModified = visitActivity;
 		visitActivityModified.setTableName("table name updated");
-		
+
 		Mockito.when(visitActivityService.save(visitActivityModified)).thenReturn(visitActivityModified);
 		ObjectMapper mapper = new ObjectMapper();
 		String jsonInString = mapper.writeValueAsString(visitActivity);
 		this.mockMvc.perform(put("/api/visitActivity").contentType(MediaType.APPLICATION_JSON).content(jsonInString))
-				.andExpect(status().isOk())
-				.andExpect(jsonPath("tableName").value("table name updated"));
+				.andExpect(status().isOk()).andExpect(jsonPath("tableName").value("table name updated"));
 	}
 
 	private VisitActivity getVisitActivity() {
@@ -82,15 +81,15 @@ public class VisitActivityControllerTest {
 	@Test
 	public void testGetVisitActivity() throws Exception {
 		VisitActivityPK pk = getPk();
-		
+
 		VisitActivity visitActivity = getVisitActivity();
 		Mockito.when(visitActivityService.findById(pk)).thenReturn(visitActivity);
 		this.mockMvc.perform(get("/api/visitActivity/visit/1/activity/1")).andExpect(status().isOk())
-		.andExpect(jsonPath("tableName").value("table name"));
+				.andExpect(jsonPath("tableName").value("table name"));
 	}
 
 	private VisitActivityPK getPk() {
-		return new VisitActivityPK(1L,1L);
+		return new VisitActivityPK(1L, 1L);
 	}
 
 	@Test
@@ -100,17 +99,15 @@ public class VisitActivityControllerTest {
 		this.mockMvc.perform(delete("/api/visitActivity/visit/1/activity/1")).andExpect(status().isOk());
 	}
 
-	
 	@Test
 	public void testFindAllVisitActivityByActivityId() throws Exception {
 		Mockito.when(visitActivityService.findVisitActivityByActivityId(1L)).thenReturn(new ArrayList<VisitActivity>());
 		this.mockMvc.perform(get("/api/visitActivity/activity/1")).andExpect(status().isOk());
 	}
-	
+
 	@Test
 	public void testFindAllVisitActivityByVisitId() throws Exception {
 		Mockito.when(visitActivityService.findVisitActivityByActivityId(1L)).thenReturn(new ArrayList<VisitActivity>());
 		this.mockMvc.perform(get("/api/visitActivity/visit/1")).andExpect(status().isOk());
 	}
-
 }
