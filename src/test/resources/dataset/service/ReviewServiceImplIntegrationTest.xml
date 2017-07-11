@@ -62,7 +62,7 @@
           eligiable_end="2017-05-01"
           family_doctor="Family Doctor" 
           status="1" 
-          statusSecond="1"/>
+          status_second="1"/>
 
     <employee id="100"
               first_name="First Name"

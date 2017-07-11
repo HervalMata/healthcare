@@ -96,7 +96,7 @@ public class ServicePlanServiceTest extends EntityFactory {
 
 	@Test
 	public void testGetServicePlan() {
-		ServicePlan servicePlan = createNewServicePlan(user);
+		servicePlan = createNewServicePlan(user);
 		servicePlanService.save(servicePlan);
 		Assert.assertNotNull(servicePlanService.findById(servicePlan.getId()));
 	}
@@ -126,33 +126,36 @@ public class ServicePlanServiceTest extends EntityFactory {
 		Timestamp temp = servicePlan.getPlanEnd();
 		servicePlan.setPlanEnd(servicePlan.getPlanStart());
 		servicePlan.setPlanStart(temp);
-		servicePlan = servicePlanService.save(servicePlan);
+		ServicePlan result = servicePlanService.save(servicePlan);
 
 		// expect return null cause of invalid period
-		Assert.assertNull(servicePlan);
+		Assert.assertNull(result);
 
 		// update the days, input any string that not in DayEnum
-		servicePlan = createNewServicePlan(user);
-		servicePlan.setDays("MON,TUE");
-		servicePlan = servicePlanService.save(servicePlan);
+		ServicePlan servicePlan1 = createNewServicePlan(user);
+		servicePlan1.setDays("MON,TUE");
+		servicePlan1 = servicePlanService.save(servicePlan1);
 
 		// expect return null cause of invalid days
-		Assert.assertNull(servicePlan);
+		Assert.assertNull(servicePlan1);
 
 		// update the days, input any day but not in period;
-		servicePlan = createNewServicePlan(user);
-		servicePlan.setDays(DayEnum.MONDAY.name() + "," + DayEnum.WEDNESDAY.name());
-		servicePlan.setPlanEnd(new Timestamp(DateUtils.stringToDate("yyyy-MM-dd", "2017-06-04").getTime()));
-		servicePlanService.save(servicePlan);
+		ServicePlan servicePlanNew = createNewServicePlan(user);
+		servicePlanNew.setDays(DayEnum.MONDAY.name() + "," + DayEnum.WEDNESDAY.name());
+		servicePlanNew.setPlanEnd(new Timestamp(DateUtils.stringToDate("yyyy-MM-dd", "2017-06-04").getTime()));
+		servicePlanService.save(servicePlanNew);
 
 		// expect return empty array list
-		Assert.assertTrue(servicePlanService.getServiceCalendar(servicePlan.getId()).isEmpty());
+		Assert.assertTrue(servicePlanService.getServiceCalendar(servicePlanNew.getId()).isEmpty());
+		
+		//Cleanup
+		servicePlanService.deleteById(servicePlanNew.getId());
 	}
 
 	@Test
 	public void testUpdateServicePlan() {
 		String newDocUrl = "/doc/new/a";
-		ServicePlan servicePlan = createNewServicePlan(user);
+		servicePlan = createNewServicePlan(user);
 		servicePlanService.save(servicePlan);
 		Assert.assertEquals(servicePlan.getDocUrl(), docUrl);
 		ServicePlan savedServicePlan = servicePlanService.findById(servicePlan.getId());
@@ -160,7 +163,6 @@ public class ServicePlanServiceTest extends EntityFactory {
 		servicePlanService.save(savedServicePlan);
 		ServicePlan modifiedServicePlan = servicePlanService.findById(servicePlan.getId());
 		Assert.assertEquals(modifiedServicePlan.getDocUrl(), newDocUrl);
-		this.servicePlan = servicePlan;
 	}
 
 	@Test

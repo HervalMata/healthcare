@@ -47,8 +47,8 @@ public class EmployeeController extends AbstractBasedAPI {
 	}
 
 	@ApiOperation(value = "get employee by id", notes = "get employee by id")
-	@ApiImplicitParam(name = "id", value = "employee id", required = true, dataType = "Long")
-	@GetMapping("/{employee}")
+	@ApiImplicitParam(name = "id", value = "employee id", required = true, dataType = "Long" ,  paramType = "path")
+	@GetMapping("/{id}")
 	public Employee read(@PathVariable Long id) {
 		logger.info("id : " + id);
 		return employeeService.findById(id);
