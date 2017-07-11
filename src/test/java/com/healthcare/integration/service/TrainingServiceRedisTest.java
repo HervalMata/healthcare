@@ -1,8 +1,11 @@
 package com.healthcare.integration.service;
 
-import com.healthcare.model.entity.Training;
-import com.healthcare.repository.TrainingRepository;
-import com.healthcare.service.TrainingService;
+import java.sql.Timestamp;
+import java.util.Calendar;
+
+import javax.transaction.Transactional;
+
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -13,9 +16,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import javax.transaction.Transactional;
-import java.sql.Timestamp;
-import java.util.Calendar;
+import com.healthcare.model.entity.Training;
+import com.healthcare.repository.TrainingRepository;
+import com.healthcare.service.TrainingService;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -45,13 +48,21 @@ public class TrainingServiceRedisTest {
         endTime.set(Calendar.DAY_OF_MONTH, 31);
     }
 
+
+	private Long id = 1L;
+
+	@After
+	public void rollback() {
+		trainingService.deleteById(id);
+	}
+
     @Test
     public void shouldSaveATrainingToRedisAndRetrievedItFromRedis() {
         Training training = createNewTraining();
-        training.setId(1L);
+        training.setId(id);
         Mockito.when(trainingRepository.save(training)).thenReturn(training);
         trainingService.save(training);
-        Training trainingSaved = trainingService.findById(1L);
+        Training trainingSaved = trainingService.findById(id);
         Assert.assertNotNull(trainingSaved);
     }
 
@@ -61,7 +72,7 @@ public class TrainingServiceRedisTest {
         String newLocation = "location2";
 
         Training training = createNewTraining();
-        training.setId(1L);
+        training.setId(id);
         Mockito.when(trainingRepository.save(training)).thenReturn(training);
         trainingService.save(training);
         Training trainingSaved = trainingService.findById(training.getId());
@@ -77,10 +88,10 @@ public class TrainingServiceRedisTest {
     @Test
     public void shouldDeleteATraining() {
         Training training = createNewTraining();
-        training.setId(1L);
+        training.setId(id);
         Mockito.when(trainingRepository.save(training)).thenReturn(training);
         trainingService.save(training);
-        Mockito.doNothing().when(trainingRepository).delete(1L);
+        Mockito.doNothing().when(trainingRepository).delete(id);
         Assert.assertNotNull(trainingService.deleteById(training.getId()));
     }
 

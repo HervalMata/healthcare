@@ -9,7 +9,7 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 import com.healthcare.util.RedisObjectSerializer;
 /**
- * 
+ *
  * @author zhao
  *
  */
@@ -34,8 +34,10 @@ public class RedisConfig {
 	public RedisTemplate redisTemplate() {
 		RedisTemplate<String, Object> template = new RedisTemplate<String, Object>();
 		template.setConnectionFactory(jedisConnectionFactory());
+		template.setHashValueSerializer(new RedisObjectSerializer());
 		template.setKeySerializer(new StringRedisSerializer());
 		template.setValueSerializer(new RedisObjectSerializer());
+//		template.setEnableTransactionSupport(true);
 		return template;
 	}
 

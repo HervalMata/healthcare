@@ -4,6 +4,7 @@ import java.util.Base64;
 
 import javax.transaction.Transactional;
 
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,32 +29,37 @@ public class ContentServiceRedisTest {
     @Autowired
     private ContentService contentService;
 
+    
+    private Long id = 100L;
+    private Content content;
+    
     @Before
     public void setup() {
+    	content = null;
     }
     
-    // Remove data added during test from redis once test case executed successfully
-    public void cleanup(Long id){
-    	  contentService.deleteById(id);
+    @After
+    public void rollback(){
+    	if(content!=null)
+    		contentService.deleteById(content.getId());
     }
     
 
     @Test
     public void testSaveContentToRedisAndRetrievedItFromRedis() {
     	//given
-		final Content content = getContent();
-	    content.setId(100L);
+		content = getContent();
+	    content.setId(id);
 	    
 	    //Mock
         Mockito.when(contentRepository.save(content)).thenReturn(content);
-        contentService.save(content);
+        content = contentService.save(content);
         
         //Execute
-        Content contentSaved = contentService.findById(100L);
+        Content contentSaved = contentService.findById(id);
         
         //Assert
         Assert.assertNotNull(contentSaved);
-        cleanup(100L);
     }
 
     @Test
@@ -61,8 +67,8 @@ public class ContentServiceRedisTest {
     	String pageDescUpdated = "page description updated";
     	
     	//given
-		final Content content = getContent();
-	    content.setId(100L);
+		content = getContent();
+	    content.setId(id);
         
 	    //Mock
 	    Mockito.when(contentRepository.save(content)).thenReturn(content);
@@ -78,16 +84,18 @@ public class ContentServiceRedisTest {
         
         //Assert
         Assert.assertEquals(modifiedContentFromRedis.getPageDescription(), pageDescUpdated);
-        cleanup(100L);
     }
 
     @Test
     public void testDeleteContentFromRedis() {
     	//given
 		final Content content = getContent();
-	    content.setId(100L);
+	    content.setId(id);
+	    
+        Mockito.when(contentRepository.save(content)).thenReturn(content);
+        contentService.save(content);
         
-        Mockito.doNothing().when(contentRepository).delete(100L);
+        Mockito.doNothing().when(contentRepository).delete(id);
         Assert.assertNotNull(contentService.deleteById(content.getId()));
     }
     

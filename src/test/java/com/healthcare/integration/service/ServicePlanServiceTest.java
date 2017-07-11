@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.transaction.Transactional;
 
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -51,12 +52,13 @@ public class ServicePlanServiceTest extends EntityFactory {
 	@Autowired
 	private AgencyTypeService agencyTypeService;
 
-	User user;
-	Employee employee;
-	Company company;
-	AgencyType agencyType;
-	Agency agency;
-
+	private User user;
+	private Employee employee;
+	private Company company;
+	private AgencyType agencyType;
+	private Agency agency;
+	private ServicePlan servicePlan;
+	
 	@Before
 	public void setup() {
 		init();
@@ -70,11 +72,24 @@ public class ServicePlanServiceTest extends EntityFactory {
 		agencyService.save(agency);
 		employee = createNewEmployee(agency);
 		employeeService.save(employee);
+		servicePlan = null;
 	}
 
+	@After
+	public void rollback() {
+		if(servicePlan!=null)
+			servicePlanService.deleteById(servicePlan.getId());
+		employeeService.deleteById(employee.getId());
+		userService.deleteById(user.getId());
+        agencyService.deleteById(agency.getId());
+        agencyTypeService.deleteById(agencyType.getId());
+        companyService.deleteById(company.getId());
+	}
+
+	
 	@Test
 	public void testSaveServicePlan() {
-		ServicePlan servicePlan = createNewServicePlan(user);
+		servicePlan = createNewServicePlan(user);
 		servicePlanService.save(servicePlan);
 		Assert.assertNotNull(servicePlan.getId());
 	}
@@ -91,7 +106,7 @@ public class ServicePlanServiceTest extends EntityFactory {
 		// days = MONDAY,THURSDAY
 		// plan_start = 2017-06-01
 		// plan_end = 2017-12-01
-		ServicePlan servicePlan = createNewServicePlan(user);
+		servicePlan = createNewServicePlan(user);
 		servicePlanService.save(servicePlan);
 		List<String> serviceCalendar = servicePlanService.getServiceCalendar(servicePlan.getId());
 
@@ -145,14 +160,16 @@ public class ServicePlanServiceTest extends EntityFactory {
 		servicePlanService.save(savedServicePlan);
 		ServicePlan modifiedServicePlan = servicePlanService.findById(servicePlan.getId());
 		Assert.assertEquals(modifiedServicePlan.getDocUrl(), newDocUrl);
+		this.servicePlan = servicePlan;
 	}
 
 	@Test
 	public void testDeleteServicePlan() {
-		ServicePlan servicePlan = createNewServicePlan(user);
+		servicePlan = createNewServicePlan(user);
 		servicePlanService.save(servicePlan);
 		Assert.assertNotNull(servicePlan.getId());
 		servicePlanService.deleteById(servicePlan.getId());
-		Assert.assertNull(servicePlanService.findById(servicePlan.getId()));
+		servicePlan = servicePlanService.findById(servicePlan.getId());
+		Assert.assertNull(servicePlan);
 	}
 }

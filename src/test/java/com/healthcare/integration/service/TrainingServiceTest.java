@@ -1,17 +1,21 @@
 package com.healthcare.integration.service;
 
-import com.healthcare.model.entity.Training;
-import com.healthcare.service.TrainingService;
+import java.sql.Timestamp;
+import java.util.Calendar;
+
+import javax.transaction.Transactional;
+
+import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import javax.transaction.Transactional;
-import java.sql.Timestamp;
-import java.util.Calendar;
+import com.healthcare.model.entity.Training;
+import com.healthcare.service.TrainingService;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -29,11 +33,25 @@ public class TrainingServiceTest {
     String location = "location";
     String note = "note";
 
+	private Long id;
+
+	@Before
+	public void init(){
+		id=0L;
+	}
+	
+	@After
+	public void rollback() {
+		if(id!=0L)
+			trainingService.deleteById(id);
+	}
+	
     @Test
     public void testSaveTraining() {
         Training training = createNewTraining();
         trainingService.save(training);
         Assert.assertNotNull(training.getId());
+        id=training.getId();
     }
 
     @Test
@@ -41,6 +59,7 @@ public class TrainingServiceTest {
         Training training = createNewTraining();
         trainingService.save(training);
         Assert.assertNotNull(trainingService.findById(training.getId()));
+        id=training.getId();
     }
 
     @Test
@@ -59,6 +78,7 @@ public class TrainingServiceTest {
         Training trainingMofified = trainingService.findById(training.getId());
         Assert.assertEquals(trainingMofified.getTrainer(), newTrainer);
         Assert.assertEquals(trainingMofified.getLocation(), newLocation);
+        id=trainingMofified.getId();
     }
 
     @Test

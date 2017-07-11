@@ -2,6 +2,7 @@ package com.healthcare.integration.service;
 
 import javax.transaction.Transactional;
 
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -52,11 +53,11 @@ public class ServicePlanServiceRedisTest extends EntityFactory {
 	@Autowired
 	private AgencyTypeService agencyTypeService;
 
-	User user;
-	Employee employee;
-	Company company;
-	AgencyType agencyType;
-	Agency agency;
+	private User user;
+	private Employee employee;
+	private Company company;
+	private AgencyType agencyType;
+	private Agency agency;
 
 	@Before
 	public void setup() {
@@ -73,10 +74,21 @@ public class ServicePlanServiceRedisTest extends EntityFactory {
 		employeeService.save(employee);
 	}
 
+	private Long id = 7L;
+	@After
+	public void rollback() {
+		servicePlanService.deleteById(id);
+		employeeService.deleteById(employee.getId());
+		userService.deleteById(user.getId());
+        agencyService.deleteById(agency.getId());
+        agencyTypeService.deleteById(agencyType.getId());
+        companyService.deleteById(company.getId());
+	}
+
 	@Test
 	public void testSaveServicePlan() {
 		ServicePlan servicePlan = createNewServicePlan(user);
-		servicePlan.setId(7L);
+		servicePlan.setId(id);
 		Mockito.when(servicePlanRepository.save(servicePlan)).thenReturn(servicePlan);
 		servicePlanService.save(servicePlan);
 		ServicePlan savedServicePlan = servicePlanService.findById(servicePlan.getId());
@@ -87,7 +99,7 @@ public class ServicePlanServiceRedisTest extends EntityFactory {
 	public void testUpdateServicePlan() {
 		String newDocUrl = "/doc/new/a";
 		ServicePlan servicePlan = createNewServicePlan(user);
-		servicePlan.setId(7L);
+		servicePlan.setId(id);
 		Mockito.when(servicePlanRepository.save(servicePlan)).thenReturn(servicePlan);
 		servicePlanService.save(servicePlan);
 		ServicePlan savedServicePlan = servicePlanService.findById(servicePlan.getId());
@@ -101,7 +113,7 @@ public class ServicePlanServiceRedisTest extends EntityFactory {
 	@Test
 	public void testDeleteServicePlan() {
 		ServicePlan servicePlan = createNewServicePlan(user);
-		servicePlan.setId(7L);
+		servicePlan.setId(id);
 		Mockito.when(servicePlanRepository.save(servicePlan)).thenReturn(servicePlan);
 		servicePlanService.save(servicePlan);
 		Mockito.doNothing().when(servicePlanRepository).delete(servicePlan.getId());

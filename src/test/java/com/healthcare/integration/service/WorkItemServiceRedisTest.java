@@ -1,6 +1,8 @@
 package com.healthcare.integration.service;
 
 import javax.transaction.Transactional;
+
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -8,7 +10,9 @@ import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
+
 import com.healthcare.model.entity.WorkItem;
 import com.healthcare.repository.WorkItemRepository;
 import com.healthcare.service.WorkItemService;
@@ -27,7 +31,7 @@ public class WorkItemServiceRedisTest {
 	@Autowired
 	public WorkItemService workItemService;
 	
-	@Autowired
+	@MockBean
 	public WorkItemRepository workItemRepository;
 
 	
@@ -36,13 +40,20 @@ public class WorkItemServiceRedisTest {
 	
 	@Before
 	public void setup() {
-		workItemRepository = org.mockito.Mockito.mock(WorkItemRepository.class); 
+	}
+
+
+	private Long id = 1L;
+
+	@After
+	public void rollback() {
+		workItemService.deleteById(id);
 	}
 
 	@Test
 	public void saveWorkItem() {
 		WorkItem workItem = createWorkItem();
-		workItem.setId(1L);
+		workItem.setId(id);
 		Mockito.when(workItemRepository.save(workItem)).thenReturn(workItem);
 		workItem = workItemService.save(workItem);
 		WorkItem savedWorkItem = workItemService.findById(workItem.getId());
@@ -53,7 +64,7 @@ public class WorkItemServiceRedisTest {
 	public void updateWorkItem() {
 		String newWorkItemName = "help on cooking";
 		WorkItem workItem = createWorkItem();
-		workItem.setId(1L);
+		workItem.setId(id);
 		Mockito.when(workItemRepository.save(workItem)).thenReturn(workItem);
 		workItem = workItemService.save(workItem);
 		WorkItem savedWorkItem = workItemService.findById(workItem.getId());
@@ -67,7 +78,7 @@ public class WorkItemServiceRedisTest {
 	@Test
 	public void deleteWorkItem() {
 		WorkItem workItem = createWorkItem();
-		workItem.setId(1L);
+		workItem.setId(id);
 		Mockito.when(workItemRepository.save(workItem)).thenReturn(workItem);
 		workItem = workItemService.save(workItem);
 		Mockito.doNothing().when(workItemRepository).delete(workItem.getId());

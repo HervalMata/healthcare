@@ -1,10 +1,15 @@
 package com.healthcare.integration.service;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 import java.sql.Timestamp;
 import java.util.Calendar;
+import java.util.List;
 
 import javax.transaction.Transactional;
 
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -13,6 +18,7 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.healthcare.model.entity.User;
@@ -28,9 +34,12 @@ import com.healthcare.service.UserService;
 public class UserServiceRedisTest {
 	@MockBean
 	private UserRepository userRepository;
-	
+
 	@Autowired
 	private UserService userService;
+
+	@Autowired
+	private RedisTemplate<String, User> redisTemplate;
 
 	Calendar eligiableStart = Calendar.getInstance();
 	Calendar eligiableEnd = Calendar.getInstance();
@@ -84,15 +93,24 @@ public class UserServiceRedisTest {
 		dob.set(Calendar.YEAR, 1950);
 		dob.set(Calendar.MONTH, 1);
 		dob.set(Calendar.DAY_OF_MONTH, 1);
+		redisTemplate.delete(User.class.getSimpleName());
+	}
+
+
+	private Long id = 10L;
+
+	@After
+	public void rollback() {
+		userService.deleteById(id);
 	}
 
 	@Test
 	public void shouldSaveAUserToRedisAndRetrievedItFromRedis() {
 		User user = createNewUser();
-		user.setId(10L);
+		user.setId(id);
 		Mockito.when(userRepository.save(user)).thenReturn(user);
 		userService.save(user);
-		User userSaved = userService.findById(10L);
+		User userSaved = userService.findById(id);
 		Assert.assertNotNull(userSaved);
 	}
 
@@ -102,7 +120,7 @@ public class UserServiceRedisTest {
 		String newAddress = "Av. 57 y 23 St.";
 
 		User user = createNewUser();
-		user.setId(10L);
+		user.setId(id);
 		Mockito.when(userRepository.save(user)).thenReturn(user);
 		userService.save(user);
 		User userSaved = userService.findById(user.getId());
@@ -118,33 +136,40 @@ public class UserServiceRedisTest {
 	@Test
 	public void shouldDeleteAUser() {
 		User user = createNewUser();
-		user.setId(10L);
+		user.setId(id);
 		Mockito.when(userRepository.save(user)).thenReturn(user);
 		userService.save(user);
-		Mockito.doNothing().when(userRepository).delete(10L);
+		Mockito.doNothing().when(userRepository).delete(id);
 		Assert.assertNotNull(userService.deleteById(user.getId()));
 	}
-	
-	
+
+
 	@Test
 	public void souldFindAll() {
 		User user = createNewUser();
 		user.setId(111L);
 		Mockito.when(userRepository.save(user)).thenReturn(user);
-		userService.save(user);
+		user = userService.save(user);
 
 		User user1= createNewUser();
 		user1.setId(112L);
 		Mockito.when(userRepository.save(user1)).thenReturn(user1);
-		userService.save(user1);
+		user1 = userService.save(user1);
 
 		User user2= createNewUser();
 		user2.setId(113L);
 		Mockito.when(userRepository.save(user2)).thenReturn(user2);
-		userService.save(user2);
-		
-		Assert.assertNotNull(userService.findAll());
-		Assert.assertTrue(userService.findAll().size()>=3);
+		user2 = userService.save(user2);
+
+		List<User> list= userService.findAll();
+		assertNotNull(list);
+		assertEquals(3, list.size());
+
+		id=user.getId();
+		rollback();
+		id=user1.getId();
+		rollback();
+		id=user2.getId();
 	}
 
 	private User createNewUser() {

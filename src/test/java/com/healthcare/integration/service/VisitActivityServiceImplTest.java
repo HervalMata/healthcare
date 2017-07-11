@@ -8,10 +8,13 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -39,21 +42,38 @@ public class VisitActivityServiceImplTest {
 
     @Autowired
     private VisitActivityService visitActivityService;
+    
+    @Autowired
+	private RedisTemplate<String, VisitActivity> redisTemplate;
 
     @Autowired
     private EntityManager em;
 
-    // Remove data added during test from redis once test case executed successfully
-    public void cleanup(Long visitId,Long activityId){
-  	  visitActivityService.deleteById(new VisitActivityPK(visitId, activityId));
-    }
+    private Long visitId = 100L;
+	private Long activityId = 100L;
+	boolean isDeleted = false;
+
+	@Before
+	public void setup() {
+		redisTemplate.delete(VisitActivity.class.getSimpleName());
+	}
+	
+	@After
+	public void rollback() {
+		if(!isDeleted)
+			visitActivityService.deleteById(getPk(visitId, activityId));
+	}
+	
+	private VisitActivityPK getPk(Long visitId,Long activityId) {
+		return new VisitActivityPK(visitId,activityId);
+	}
     
     @Test
 	public void testCreateVisitActivity() {
 		// given
 		final VisitActivity visitActivity = new VisitActivity();
-		visitActivity.setActivityId(100L);
-		visitActivity.setVisitId(100L);
+		visitActivity.setActivityId(activityId);
+		visitActivity.setVisitId(visitId);
 		
 		// when
 		VisitActivity result = visitActivityService.save(visitActivity);
@@ -61,7 +81,6 @@ public class VisitActivityServiceImplTest {
 		assertThat(result, notNullValue());
 		assertThat(result.getActivityId(), notNullValue());
 		assertThat(result.getVisitId(), notNullValue());
-		cleanup(result.getVisitId(), result.getActivityId());
 	}
 
    @Test
@@ -74,7 +93,7 @@ public class VisitActivityServiceImplTest {
        String updatedTableName = "table name updated";
        
 	   // given
-		final VisitActivity visitActivity = visitActivityService.findById(new VisitActivityPK(100L,100L));
+		final VisitActivity visitActivity = visitActivityService.findById(getPk(visitId, activityId));
 		assertEquals(dbTableName, visitActivity.getTableName());
 		
 		visitActivity.setTableName(updatedTableName);
@@ -86,13 +105,12 @@ public class VisitActivityServiceImplTest {
         assertEquals(updatedTableName, result.getTableName());
 		
         em.flush();
-        cleanup(100L, 100L);
     }
 
     @Test
     public void testFindById() {
         // given
-        final VisitActivityPK pk  = new VisitActivityPK(100L,100L);
+        final VisitActivityPK pk  = getPk(visitId, activityId);
         // when
         VisitActivity result = visitActivityService.findById(pk);
         // then
@@ -101,8 +119,6 @@ public class VisitActivityServiceImplTest {
 
     @Test
     public void testFindByActivityId() {
-        // given
-        final Long activityId = 100L;
         // when
         List<VisitActivity> result = visitActivityService.findVisitActivityByActivityId(activityId);
         // then
@@ -113,8 +129,6 @@ public class VisitActivityServiceImplTest {
     
     @Test
     public void testFindByVisitId() {
-        // given
-        final Long visitId = 100L;
         // when
         List<VisitActivity> result = visitActivityService.findVisitActivityByVisitId(visitId);
         // then
@@ -128,13 +142,15 @@ public class VisitActivityServiceImplTest {
             value = "/dataset/service/VisitActivityServiceImplIntegrationTest.testDelete.expected.xml",
             assertionMode = DatabaseAssertionMode.NON_STRICT
     )
+    
     public void testDeleteById() {
         // given
-    	 final VisitActivityPK pk  = new VisitActivityPK(100L,100L);
+    	 final VisitActivityPK pk  = new VisitActivityPK(visitId,activityId);
          // when
         visitActivityService.deleteById(pk);
         // then
         em.flush();
+        isDeleted = true;
     }
 
 }

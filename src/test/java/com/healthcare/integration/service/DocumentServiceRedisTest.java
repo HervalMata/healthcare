@@ -2,6 +2,7 @@ package com.healthcare.integration.service;
 
 import javax.transaction.Transactional;
 
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,36 +31,48 @@ public class DocumentServiceRedisTest {
 	
 	@Before
 	public void setup() {
+		document = null;
+	}
+
+
+	private Long id = 7L;
+	private Document document;
+	
+	@After
+	public void rollback() {
+		if(document!=null)
+			documentService.deleteById(document.getId());
 	}
 
 	@Test
 	public void shouldSaveDocument() throws Exception  {
-		Document document = createNewDocument();
-		document.setId(7L);
+		document = createNewDocument();
+		document.setId(id);
 		Mockito.when(documentRepository.save(document)).thenReturn(document);
+		document = documentService.save(document);
 		Assert.assertNotNull(document.getId());
 	}
 
 	@Test
 	public void shouldGetDocument() {
-		Document document = createNewDocument();
-		document.setId(7L);
+		document = createNewDocument();
+		document.setId(id);
 		Mockito.when(documentRepository.save(document)).thenReturn(document);
-		documentService.save(document);
-		Assert.assertNotNull(documentService.findById(7L));
+		document = documentService.save(document);
+		Assert.assertNotNull(documentService.findById(id));
 	}
 
 	@Test
 	public void shouldUpdateDocument() {
-		Document document = createNewDocument();
-		document.setId(7L);
+		document = createNewDocument();
+		document.setId(id);
 		Mockito.when(documentRepository.save(document)).thenReturn(document);
 		documentService.save(document);
 
 		String oldEntityValue = document.getEntity();
 		Long oldEntityIdValue = document.getEntityId();
 		String oldFileClassValue = document.getFileClass();
-		Document savedDocument = documentService.findById(7L);
+		Document savedDocument = documentService.findById(id);
 		Assert.assertNotNull(savedDocument);
 		Assert.assertNotNull(savedDocument.getId());
 
@@ -83,9 +96,10 @@ public class DocumentServiceRedisTest {
 		document.setId(10L); 
 		Mockito.when(documentRepository.save(document)).thenReturn(document);
 		documentService.save(document);
+		
 		Assert.assertNotNull(documentService.findById(document.getId()));
-		Mockito.doNothing().when(documentRepository).delete(10L);
-		Assert.assertNotNull(documentService.findById(document.getId()));
+		documentService.deleteById(document.getId());
+		Assert.assertNull(documentService.findById(document.getId()));
 	}
 
 	private Document createNewDocument() {

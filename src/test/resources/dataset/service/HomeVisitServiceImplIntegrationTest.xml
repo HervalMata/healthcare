@@ -59,7 +59,9 @@
 		  insurance_eligiable="Eligiable"
 		  eligiable_start="2017-05-01"
 		  eligiable_end="2017-05-01"
-		  family_doctor="Family Doctor" />
+		  family_doctor="Family Doctor" 
+		  status="1" 
+          statusSecond="1"/>
    
    <employee id="100"
 			  first_name="first_name"

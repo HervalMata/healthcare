@@ -6,6 +6,7 @@ import java.util.Calendar;
 
 import javax.transaction.Transactional;
 
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -59,20 +60,28 @@ public class CompanyServiceTest {
 	Calendar worktimeStart = Calendar.getInstance();
 	Calendar worktimeEnd = Calendar.getInstance();
 
+	private Company company;
 	@Before
 	public void setup() {
+		company=null;
+	}
+	
+	@After
+	public void rollback() {
+		if(company!=null)
+			companyService.deleteById(company.getId());
 	}
 
 	@Test
 	public void testSaveCompany() {
-		Company company = createNewCompany();
+		company = createNewCompany();
 		companyService.save(company);
 		Assert.assertNotNull(company.getId());
 	}
 
 	@Test
 	public void testGetCompany() {
-		Company company = createNewCompany();
+		company = createNewCompany();
 		companyService.save(company);
 		Assert.assertNotNull(companyService.findById(company.getId()));
 	}
@@ -81,7 +90,7 @@ public class CompanyServiceTest {
 	public void testUpdateCompany() {
 		String newAddressOne = "25, Green St";
 
-		Company company = createNewCompany();
+		company = createNewCompany();
 		companyService.save(company);
 		Assert.assertEquals(company.getAddressOne(), addressOne);
 		Company savedCompany = companyService.findById(company.getId());

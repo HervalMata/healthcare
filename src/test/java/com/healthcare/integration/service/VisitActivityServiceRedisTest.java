@@ -15,6 +15,7 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.healthcare.model.entity.Activity;
@@ -34,8 +35,12 @@ public class VisitActivityServiceRedisTest {
 	@Autowired
 	private VisitActivityService visitActivityService;
 
+	@Autowired
+	private RedisTemplate<String, VisitActivity> redisTemplate;
+
 	@Before
 	public void setup() {
+		redisTemplate.delete(VisitActivity.class.getSimpleName());
 	}
 
 	// Remove data added during test from redis once test case executed
