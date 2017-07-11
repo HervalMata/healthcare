@@ -23,7 +23,6 @@ import com.healthcare.service.CompanyService;
 import com.healthcare.service.EmployeeService;
 
 import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 
@@ -79,7 +78,7 @@ public class CompanyController {
 	@ApiImplicitParam(name = "companyId", value = "company id", required = true, dataType = "Long")
 	@ApiParam(name = "agencyId", value = "agency id")
 	@GetMapping("/{companyId}/employees")
-	public List<Employee> getEmployeesByCompagny(@PathVariable("companyId") Long companyId, @RequestParam("agencyId") Long agencyId){
+	public List<Employee> getEmployeesByCompany(@PathVariable("companyId") Long companyId, @RequestParam("agencyId") Long agencyId){
 		return employeeService.findByCampanyIdAndAgencyId(companyId, agencyId);
 	}
 }

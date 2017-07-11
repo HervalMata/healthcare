@@ -6,6 +6,7 @@ import java.util.Calendar;
 
 import javax.transaction.Transactional;
 
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -85,15 +86,30 @@ public class RoleServiceRedisTest {
 
 	Agency agency;
 
+	private Long id = 7L;
+	private Company company;
+	private AgencyType agencyType;
+	
 	@Before
 	public void setup() {
-		agency = createNewAgency();
+		company = createNewCompany();
+    	agencyType = createNewAgencyType();
+    	agency = createNewAgency(company,agencyType);
 	}
+
+	@After
+	public void rollback() {
+		roleService.deleteById(id);
+        agencyService.deleteById(agency.getId());
+        agencyTypeService.deleteById(agencyType.getId());
+        companyService.deleteById(company.getId());
+	}
+
 
 	@Test
 	public void testSaveRole() {
-		Role role = createNewRole(level);
-		role.setId(7L);
+		Role role = createNewRole(level,agency);
+		role.setId(id);
 		Mockito.when(roleRepository.save(role)).thenReturn(role);
 		role = roleService.save(role);
 		Role savedRole = roleService.findById(role.getId());
@@ -103,8 +119,8 @@ public class RoleServiceRedisTest {
 	@Test
 	public void testUpdateRole() {
 		String newLevelName = "new level name";
-		Role role = createNewRole(level);
-		role.setId(7L);
+		Role role = createNewRole(level,agency);
+		role.setId(id);
 		Mockito.when(roleRepository.save(role)).thenReturn(role);
 		role = roleService.save(role);
 		Role roleSaved = roleService.findById(role.getId());
@@ -117,15 +133,15 @@ public class RoleServiceRedisTest {
 
 	@Test
 	public void testDeleteRole() {
-		Role role = createNewRole(level);
-		role.setId(7L);
+		Role role = createNewRole(level,agency);
+		role.setId(id);
 		Mockito.when(roleRepository.save(role)).thenReturn(role);
 		role = roleService.save(role);
 		Mockito.doNothing().when(roleRepository).delete(role.getId());
 		Assert.assertNotNull(roleService.deleteById(role.getId()));
 	}
 
-	private Role createNewRole(long level) {
+	private Role createNewRole(long level,Agency agency) {
 		Role role = new Role();
 		role.setLevel(level);
 		role.setLevelName(levelName);
@@ -134,12 +150,10 @@ public class RoleServiceRedisTest {
 		return role;
 	}
 
-	private Agency createNewAgency() {
+	private Agency createNewAgency(Company company,AgencyType agencyType) {
 		Agency agency = new Agency();
-		Company company = createNewCompany();
 		agency.setAddressOne(addressOne);
 		agency.setAddressTwo(addressTwo);
-		AgencyType agencyType = createNewAgencyType();
 		agency.setAgencyType(agencyType);
 		agency.setCity(city);
 		agency.setCompany(company);

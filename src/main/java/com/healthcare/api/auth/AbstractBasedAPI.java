@@ -15,8 +15,10 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.healthcare.exception.ApplicationException;
 import com.healthcare.exception.ResourceNotFoundException;
 import com.healthcare.model.entity.Admin;
+import com.healthcare.model.entity.User;
 import com.healthcare.model.response.Response;
 import com.healthcare.service.AdminService;
+import com.healthcare.service.UserService;
 
 /**
  * Created by orange on 2/23/17.
@@ -29,12 +31,19 @@ public abstract class AbstractBasedAPI implements ApplicationEventPublisherAware
 
 	@Autowired
 	public UtilsResponse responseBulder;
-	
-	public AbstractBasedAPI(){}
-	
-	public AbstractBasedAPI(UtilsResponse responseBulder,AdminService adminService,AuthTokenUtil authTokenUtil){
+
+	public AbstractBasedAPI() {
+	}
+
+	public AbstractBasedAPI(UtilsResponse responseBulder, AdminService adminService, AuthTokenUtil authTokenUtil) {
 		this.responseBulder = responseBulder;
 		this.adminService = adminService;
+		this.authTokenUtil = authTokenUtil;
+	}
+
+	public AbstractBasedAPI(UtilsResponse responseBulder, UserService userService, AuthTokenUtil authTokenUtil) {
+		this.responseBulder = responseBulder;
+		this.userService = userService;
 		this.authTokenUtil = authTokenUtil;
 	}
 
@@ -83,10 +92,12 @@ public abstract class AbstractBasedAPI implements ApplicationEventPublisherAware
 	@Autowired
 	AdminService adminService;
 	@Autowired
+	UserService userService;
+	@Autowired
 	AuthTokenUtil authTokenUtil;
 
 	// Get current Admin authen user
-	protected Admin getCurrentAuthenUser(HttpServletRequest request) {
+	protected Admin getCurrentAuthenAdminUser(HttpServletRequest request) {
 		String token = request.getHeader("token");
 		String username = authTokenUtil.getUsernameFromToken(token);
 		Admin adminUser = adminService.getUser(username);
@@ -94,6 +105,22 @@ public abstract class AbstractBasedAPI implements ApplicationEventPublisherAware
 			UserDetails userDetails = AuthUserFactory.create(adminUser);
 			if (authTokenUtil.validateToken(token, userDetails)) {
 				return adminUser;
+			} else {
+				throw new ApplicationException(Response.ResultCode.INVALID_TOKEN, "Invalid request token");
+			}
+		} else
+			throw new ApplicationException(Response.ResultCode.INVALID_TOKEN, "Invalid request token");
+	}
+
+	// Get current User authen user
+	protected User getCurrentAuthenUser(HttpServletRequest request) {
+		String token = request.getHeader("token");
+		String username = authTokenUtil.getUsernameFromToken(token);
+		User user = userService.getUser(username);
+		if (user != null) {
+			UserDetails userDetails = AuthUserFactory.create(user);
+			if (authTokenUtil.validateToken(token, userDetails)) {
+				return user;
 			} else {
 				throw new ApplicationException(Response.ResultCode.INVALID_TOKEN, "Invalid request token");
 			}

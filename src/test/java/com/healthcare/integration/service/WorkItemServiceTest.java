@@ -1,6 +1,8 @@
 package com.healthcare.integration.service;
 
 import javax.transaction.Transactional;
+
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -8,6 +10,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+
 import com.healthcare.EntityFactory;
 import com.healthcare.model.entity.WorkItem;
 import com.healthcare.service.WorkItemService;
@@ -34,11 +37,21 @@ public class WorkItemServiceTest extends EntityFactory{
 
 	}
 
+
+	private Long id = 0L;
+
+	@After
+	public void rollback() {
+		if(id!=0L)
+			workItemService.deleteById(id);
+	}
+
 	@Test
 	public void saveWorkItem() {
 		WorkItem workItem = createNewWorkItem();
 		workItem = workItemService.save(workItem);
 		Assert.assertNotNull(workItem.getId());
+		id=workItem.getId();
 	}
 	
 	@Test
@@ -46,6 +59,7 @@ public class WorkItemServiceTest extends EntityFactory{
 		WorkItem workItem = createNewWorkItem();
 		workItem = workItemService.save(workItem);
 		Assert.assertNotNull(workItemService.findById(workItem.getId()));
+		id=workItem.getId();
 	}
 
 	@Test
@@ -59,6 +73,8 @@ public class WorkItemServiceTest extends EntityFactory{
 		workItemService.save(savedWorkItem);
 		WorkItem modifiedWorkItem = workItemService.findById(workItem.getId());
 		Assert.assertEquals(modifiedWorkItem.getItemName(), newWorkItemName);
+		
+		id=modifiedWorkItem.getId();
 	}
 
 	@Test

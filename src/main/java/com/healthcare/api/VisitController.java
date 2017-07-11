@@ -91,4 +91,10 @@ public class VisitController {
 		return visitService.findAll();
 	}
 
+	@ApiOperation(value = "get all visit by service plan id", notes = "get all visit by service plan id")
+	@ApiImplicitParam(name = "servicePlanId", value = "service plan id", required = true, dataType = "Long")
+	@RequestMapping(value = "/serviceplan/{servicePlanId}", method = RequestMethod.GET)
+	public List<Visit> findAllByServicePlanId(@PathVariable Long servicePlanId) {
+		return visitService.findAllByServicePlanId(servicePlanId);
+	}
 }

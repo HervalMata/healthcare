@@ -64,6 +64,12 @@ public class VisitControllerTest {
 		Mockito.when(visitService.findById(1L)).thenReturn(visit);
 		this.mockMvc.perform(get("/api/visit/1")).andExpect(status().isOk());
 	}
+	
+	@Test
+	public void shouldAcceptFindAllByServicePlanIdRequest() throws Exception {
+		Mockito.when(visitService.findAllByServicePlanId(1L)).thenReturn(new ArrayList<Visit>());
+		this.mockMvc.perform(get("/api/visit/serviceplan/1")).andExpect(status().isOk());
+	}
 
 	@Test
 	public void shouldAcceptUpdateVisitRequest() throws Exception {

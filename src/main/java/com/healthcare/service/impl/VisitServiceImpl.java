@@ -104,6 +104,11 @@ public class VisitServiceImpl implements VisitService {
 	}
 	
 	@Override
+	public List<Visit> findAllByServicePlanId(Long servicePlanId) {
+		return visitRepository.findAllByServicePlanId(servicePlanId);
+	}
+	
+	@Override
 	public List<Visit> findAll() {
 		Map<Object, Object> visitMap = redisTemplate.opsForHash().entries(KEY);
 		List<Visit> visitList = Collections.arrayToList(visitMap.values().toArray());

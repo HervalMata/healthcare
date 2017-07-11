@@ -1,11 +1,11 @@
 package com.healthcare.integration.service;
 
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Calendar;
 
 import javax.transaction.Transactional;
 
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -21,7 +21,6 @@ import com.healthcare.model.entity.AgencyType;
 import com.healthcare.model.entity.Company;
 import com.healthcare.model.entity.Menu;
 import com.healthcare.model.entity.Role;
-import com.healthcare.model.enums.StateEnum;
 import com.healthcare.repository.MenuRepository;
 import com.healthcare.service.AgencyService;
 import com.healthcare.service.AgencyTypeService;
@@ -60,50 +59,41 @@ public class MenuServiceRedisTest {
 	Calendar createdAt = Calendar.getInstance();
 	Integer displayOrder = 1;
 
-	String username = "username";
-	String password = "password";
-	String firstName = "John";
-	String middleName = "B";
-	String lastName = "Watson";
-	String phone = "1234560000";
-	String email = "firstname@yahoo.com";
-	String ip = "127.0.0.1";
-	String secondaryPhone = "1234560001";
-	String profilePhoto = "XXXXXXXXXX";
-	String deviceAddress = "City ABC";
-	String rememberToken = "00000";
-
-	String licenseNo = "12D31";
-	int trackingMode = 1;
-	String contactPerson = "Joe";
-	String addressOne = "20, Green St";
-	String addressTwo = "A st";
-	String city = "Orlando";
-	String state = StateEnum.FLORIDA.name();
-	String zipcode = "2122";
-	String timezone = "UTC";
-	String holiday = "12";
-	String fax = "12212444";
-
-	String federalTax = "federalTax";
-	Calendar federalTaxStart = Calendar.getInstance();
-	Calendar federalTaxExpire = Calendar.getInstance();
-	String stateTax = "stateTax";
-	Calendar stateTaxStart = Calendar.getInstance();
-	Calendar stateTaxExpire = Calendar.getInstance();
-	Calendar worktimeStart = Calendar.getInstance();
-	Calendar worktimeEnd = Calendar.getInstance();
-	Role role;
-
+	private Role role;
+	private Company company;
+	private Agency agency;
+	private AgencyType agencyType;
+	private Menu menu;
+	private Long id = 7L;
+	
+	
 	@Before
 	public void setup() {
-		role = createNewRole();
+		company = TestEntityFactory.createNewCompany();
+		companyService.save(company);
+    	agencyType = TestEntityFactory.createNewAgencyType();
+    	agencyTpeService.save(agencyType);
+    	agency = TestEntityFactory.createNewAgency(company,agencyType);
+        agencyService.save(agency);
+    	role = TestEntityFactory.createNewRole(agency);
+		roleService.save(role);
+	}
+
+	@After
+	public void rollback() {
+		if(menu!=null){
+			menuService.deleteById(menu.getId());
+		}
+		roleService.deleteById(role.getId());
+        agencyService.deleteById(agency.getId());
+        agencyTpeService.deleteById(agencyType.getId());
+        companyService.deleteById(company.getId());
 	}
 
 	@Test
 	public void testSaveMenu() {
-		Menu menu = createNewMenu();
-		menu.setId(7L);
+		menu = createNewMenu();
+		menu.setId(id);
 		Mockito.when(menuRepository.save(menu)).thenReturn(menu);
 		menuService.save(menu);
 		Menu savedMenu = menuService.findById(menu.getId());
@@ -114,8 +104,8 @@ public class MenuServiceRedisTest {
 	public void testUpdateMenu() {
 		String newImgUrl = "/img/new.jpg";
 
-		Menu menu = createNewMenu();
-		menu.setId(7L);
+		menu = createNewMenu();
+		menu.setId(id);
 		Mockito.when(menuRepository.save(menu)).thenReturn(menu);
 		menuService.save(menu);
 		Menu menuSaved = menuService.findById(menu.getId());
@@ -129,7 +119,7 @@ public class MenuServiceRedisTest {
 	@Test
 	public void testDeleteMenu() {
 		Menu menu = createNewMenu();
-		menu.setId(7L);
+		menu.setId(id);
 		Mockito.when(menuRepository.save(menu)).thenReturn(menu);
 		menuService.save(menu);
 		Mockito.doNothing().when(menuRepository).delete(menu.getId());
@@ -151,72 +141,4 @@ public class MenuServiceRedisTest {
 		return menu;
 	}
 
-	private Role createNewRole() {
-		String levelName = "levelName";
-		long level = 1;
-		long status = 1;
-
-		Role role = new Role();
-		role.setLevel(level);
-		role.setLevelName(levelName);
-		role.setStatus(status);
-		role.setAgency(createNewAgency());
-		return roleService.save(role);
-	}
-
-	private Agency createNewAgency() {
-		Agency agency = new Agency();
-		Company company = createNewCompany();
-		agency.setAddressOne(addressOne);
-		agency.setAddressTwo(addressTwo);
-		agency.setAgencyType(createNewAgencyType());
-		agency.setCity(city);
-		agency.setCompany(company);
-		agency.setCompany1(company);
-		agency.setContactPerson(contactPerson);
-		agency.setEmail(email);
-		agency.setFax(fax);
-		agency.setHoliday(holiday);
-		agency.setLicenseNo(licenseNo);
-		agency.setName("Agency Name");
-		agency.setPhone(phone);
-		agency.setState(state);
-		agency.setTimezone(timezone);
-		agency.setTrackingMode(trackingMode);
-		agency.setZipcode(zipcode);
-		return agencyService.save(agency);
-	}
-
-	private Company createNewCompany() {
-		Company company = new Company();
-		company.setAddressOne(addressOne);
-		company.setAddressTwo(addressTwo);
-		company.setCity(city);
-		company.setEmail(email);
-		company.setFax(fax);
-		company.setFederalTax(federalTax);
-		company.setFederalTaxExpire(new Timestamp(federalTaxExpire.getTimeInMillis()));
-		company.setFederalTaxStart(new Timestamp(federalTaxStart.getTimeInMillis()));
-		company.setFederalTaxStatus(1);
-		company.setLicenseNo(licenseNo);
-		company.setName("Company Name");
-		company.setPhone(phone);
-		company.setState(state);
-		company.setStateTax(stateTax);
-		company.setStateTaxExpire(new Timestamp(stateTaxExpire.getTimeInMillis()));
-		company.setStateTaxStart(new Timestamp(stateTaxStart.getTimeInMillis()));
-		company.setStateTaxStatus(1);
-		company.setStatus(1);
-		company.setWorktimeEnd(new Time(worktimeEnd.getTimeInMillis()));
-		company.setWorktimeStart(new Time(worktimeStart.getTimeInMillis()));
-		company.setZipcode(zipcode);
-		return companyService.save(company);
-	}
-
-	private AgencyType createNewAgencyType() {
-		AgencyType agencyType = new AgencyType();
-		agencyType.setName("Agency Type Name");
-		agencyType.setStatus(1);
-		return agencyTpeService.save(agencyType);
-	}
 }

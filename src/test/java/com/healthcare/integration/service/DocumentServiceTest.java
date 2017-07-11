@@ -2,6 +2,7 @@ package com.healthcare.integration.service;
 
 import javax.transaction.Transactional;
 
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -24,25 +25,34 @@ public class DocumentServiceTest {
 	
 	@Before
 	public void setup() {
+		document = null;
 	}
 
+	Document document ;
+
+	@After
+	public void rollback() {
+		if(document!=null)
+			documentService.deleteById(document.getId());
+	}
+	
 	@Test
 	public void shouldSaveDocument() throws Exception  {
-		Document document = createNewDocument();
+		document = createNewDocument();
 		documentService.save(document);
 		Assert.assertNotNull(document.getId());
 	}
 
 	@Test
 	public void shouldGetDocument() {
-		Document document = createNewDocument();
+		document = createNewDocument();
 		documentService.save(document);
 		Assert.assertNotNull(documentService.findById(document.getId()));
 	}
 
 	@Test
 	public void shouldUpdateDocument() {
-		Document document = createNewDocument();
+		document = createNewDocument();
 		documentService.save(document);
 		String oldEntityValue = document.getEntity();
 		Long oldEntityIdValue = document.getEntityId();

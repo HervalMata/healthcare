@@ -1,13 +1,15 @@
 package com.healthcare.integration.service;
 
-import com.github.springtestdbunit.DbUnitTestExecutionListener;
-import com.github.springtestdbunit.annotation.DatabaseSetup;
-import com.github.springtestdbunit.annotation.ExpectedDatabase;
-import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
-import com.healthcare.DbUnitIntegrationTestConfiguration;
-import com.healthcare.model.entity.Activity;
-import com.healthcare.model.entity.Employee;
-import com.healthcare.service.ActivityService;
+import static org.hamcrest.core.IsNull.notNullValue;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+
+import java.util.List;
+
+import javax.persistence.EntityManager;
+
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,10 +19,14 @@ import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
-
-import static org.hamcrest.core.IsNull.notNullValue;
-import static org.junit.Assert.assertThat;
+import com.github.springtestdbunit.DbUnitTestExecutionListener;
+import com.github.springtestdbunit.annotation.DatabaseSetup;
+import com.github.springtestdbunit.annotation.ExpectedDatabase;
+import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
+import com.healthcare.DbUnitIntegrationTestConfiguration;
+import com.healthcare.model.entity.Activity;
+import com.healthcare.model.entity.Employee;
+import com.healthcare.service.ActivityService;
 
 @RunWith(SpringRunner.class)
 @TestExecutionListeners(
@@ -38,12 +44,23 @@ public class ActivityServiceImplTest {
 
     @Autowired
     private EntityManager em;
-
+    private Activity activity;
+    
+    @Before
+    public void setup(){
+    	activity = null;
+    }
+    @After
+    public void rollback(){
+    	if(activity!=null)
+    		sut.deleteById(activity.getId());
+    }
+    
     @Test
     public void testCreate() {
         // given
         final Long employeeId = 100L;
-        final Activity activity = new Activity();
+        activity = new Activity();
         activity.setName("Name");
 
         final Employee employee = new Employee();
@@ -65,7 +82,7 @@ public class ActivityServiceImplTest {
         // given
         final Long activityId = 100L;
         final Long employeeId = 100L;
-        final Activity activity = new Activity();
+        activity = new Activity();
         activity.setId(activityId);
         activity.setName("Name 1");
 
@@ -89,6 +106,14 @@ public class ActivityServiceImplTest {
         // then
         assertThat(result, notNullValue());
     }
+    
+    @Test
+    public void testFindAll() {
+        // when
+        List<Activity> result = sut.findAll();
+        // then
+        assertTrue(result.size() > 0);
+    }   
 
     @Test
     @ExpectedDatabase(
@@ -103,4 +128,5 @@ public class ActivityServiceImplTest {
         // then
         em.flush();
     }
+    
 }

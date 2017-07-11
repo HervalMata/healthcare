@@ -68,6 +68,12 @@ public class ServicePlanControllerTest {
 	}
 
 	@Test
+	public void testGetServiceCalendar() throws Exception {
+		Mockito.when(servicePlanService.getServiceCalendar(1L)).thenReturn(new ArrayList<String>());
+		this.mockMvc.perform(get("/api/serviceplan/calendar/1")).andExpect(status().isOk());
+	}
+
+	@Test
 	public void testFindAllServicePlan() throws Exception {
 		Mockito.when(servicePlanService.findAll()).thenReturn(new ArrayList<ServicePlan>());
 		this.mockMvc.perform(get(SERVICEPLAN_ENDPOINT)).andExpect(status().isOk());
