@@ -124,7 +124,7 @@ public class TestEntityFactory {
 	public static String approvedBy = "Manager";
 	public static Calendar planStart = Calendar.getInstance();
 	public static Calendar planEnd = Calendar.getInstance();
-	public static String days = "Monday";
+	public static String days = "MONDAY";
 	public static String docUrl = "/doc/a";
 
 	/**

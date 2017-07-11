@@ -19,8 +19,7 @@
              city="City"
              state="State"
              zipcode="00000"
-             status="1" 
-             statusSecond="1"/>
+             status="1" />
 	
     <agency_type id="100"
                  name="Name"
@@ -61,7 +60,8 @@
 		  eligiable_start="2017-05-01"
 		  eligiable_end="2017-05-01"
 		  family_doctor="Family Doctor" 
-		  status = "1"/>
+		  status = "1"
+		  status_second="1"/>
    
    <employee id="100"
 			  first_name="first_name"

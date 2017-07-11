@@ -92,6 +92,7 @@ public class VisitServiceTest extends EntityFactory {
 		if(visit!=null){
 			visitService.deleteById(visit.getId());
 		}
+		servicePlanService.deleteById(servicePlan.getId());
 		userService.deleteById(user.getId());
 		agencyService.deleteById(agency.getId());
 		agencyTypeService.deleteById(agencyType.getId());
