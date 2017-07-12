@@ -1,17 +1,5 @@
 package com.healthcare.api;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.healthcare.model.entity.Meal;
-import com.healthcare.service.MealService;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
-import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-
 import static org.hamcrest.text.IsEmptyString.isEmptyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Matchers.any;
@@ -25,6 +13,22 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.util.ArrayList;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.healthcare.model.entity.Meal;
+import com.healthcare.service.MealService;
 
 @RunWith(MockitoJUnitRunner.class)
 public class MealControllerTest {
@@ -154,4 +158,10 @@ public class MealControllerTest {
         // then
         verifyZeroInteractions(mealService);
     }
+    
+	@Test
+	public void testFindAllMeals() throws Exception {
+		Mockito.when(mealService.findAll()).thenReturn(new ArrayList<Meal>());
+		this.mockMvc.perform(get("/api/meal")).andExpect(status().isOk());
+	}
 }

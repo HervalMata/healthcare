@@ -1,5 +1,8 @@
 package com.healthcare.service.impl;
 
+import java.util.List;
+import java.util.Map;
+
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +12,8 @@ import org.springframework.stereotype.Service;
 import com.healthcare.model.entity.Meal;
 import com.healthcare.repository.MealRepository;
 import com.healthcare.service.MealService;
+
+import io.jsonwebtoken.lang.Collections;
 
 /**
  * Meal service
@@ -51,6 +56,19 @@ public class MealServiceImpl implements MealService {
 		mealRepository.delete(id);
 
 		return redisTemplate.opsForHash().delete(REDIS_KEY, id);
+	}
+	
+	/**
+	 *  find all meals
+	 * @return List<Meal>
+	 */
+	@Override
+	public List<Meal> findAll() {
+		Map<Object, Object> mealMap = redisTemplate.opsForHash().entries(REDIS_KEY);
+		List<Meal> mealList = Collections.arrayToList(mealMap.values().toArray());
+		if (mealMap.isEmpty())
+			mealList = mealRepository.findAll();
+		return mealList;
 	}
 
 }
