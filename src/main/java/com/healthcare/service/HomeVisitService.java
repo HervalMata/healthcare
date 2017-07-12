@@ -8,8 +8,5 @@ import com.healthcare.model.entity.HomeVisit;
  * Created by Hitesh on 06/24/17.
  */
 public interface HomeVisitService extends IService<HomeVisit> {
-
-	HomeVisit save(HomeVisit homeVisit);
-
 	List<HomeVisit> findAll();
 }

@@ -1,7 +1,23 @@
 package com.healthcare.integration.service;
 
+import static org.hamcrest.CoreMatchers.hasItems;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.core.IsNot.not;
+import static org.hamcrest.core.IsNull.notNullValue;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.List;
+
 import javax.transaction.Transactional;
 
+import org.hamcrest.collection.IsEmptyCollection;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -11,6 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import com.healthcare.model.entity.Activity;
 import com.healthcare.model.entity.Agency;
 import com.healthcare.model.entity.AgencyType;
 import com.healthcare.model.entity.Company;
@@ -143,6 +160,31 @@ public class MealServiceTest {
         Assert.assertNotNull(meal.getId());
         mealService.deleteById(meal.getId());
         Assert.assertNull(mealService.findById(meal.getId()));
+    }
+    
+    @Test
+    public void testFindAllMeals() {
+    	//given
+    	meal = createNewMeal(visit);
+    	mealService.save(meal);
+    	List<Meal> expectedList = new ArrayList<>();
+    	expectedList.add(meal);
+    	
+        // when
+        List<Meal> result = mealService.findAll();
+       
+        // then
+        assertTrue(result.size() > 0);
+    	//assert not null
+    	assertThat(result, notNullValue());
+    	//assert is expected
+    	assertThat(result, is(expectedList));
+        //assert has item
+        assertThat(result, hasItems(meal));
+        //assert size
+        assertThat(result, hasSize(1));	
+        //check empty list
+        assertThat(result, not(IsEmptyCollection.empty()));
     }
 
     private Meal createNewMeal(Visit visit) {

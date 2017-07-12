@@ -1,11 +1,16 @@
 package com.healthcare.integration.controller;
 
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 import javax.transaction.Transactional;
 
@@ -31,6 +36,8 @@ import com.healthcare.service.ServicePlanService;
 @SpringBootTest(webEnvironment = WebEnvironment.MOCK)
 @Transactional
 public class ServicePlanControllerTest {
+	
+	private static final String SERVICEPLAN_ENDPOINT= "/api/serviceplan";
 	private MockMvc mockMvc;
 
 	@MockBean
@@ -50,7 +57,7 @@ public class ServicePlanControllerTest {
 		Mockito.when(servicePlanService.save(servicePlan)).thenReturn(servicePlan);
 		ObjectMapper mapper = new ObjectMapper();
 		String jsonInString = mapper.writeValueAsString(servicePlan);
-		this.mockMvc.perform(post("/api/serviceplan").contentType(MediaType.APPLICATION_JSON).content(jsonInString))
+		this.mockMvc.perform(post(SERVICEPLAN_ENDPOINT).contentType(MediaType.APPLICATION_JSON).content(jsonInString))
 				.andExpect(status().isOk());
 	}
 
@@ -69,7 +76,7 @@ public class ServicePlanControllerTest {
 	@Test
 	public void testFindAllServicePlan() throws Exception {
 		Mockito.when(servicePlanService.findAll()).thenReturn(new ArrayList<ServicePlan>());
-		this.mockMvc.perform(get("/api/serviceplan")).andExpect(status().isOk());
+		this.mockMvc.perform(get(SERVICEPLAN_ENDPOINT)).andExpect(status().isOk());
 	}
 
 	@Test
@@ -78,13 +85,25 @@ public class ServicePlanControllerTest {
 		Mockito.when(servicePlanService.save(servicePlan)).thenReturn(servicePlan);
 		ObjectMapper mapper = new ObjectMapper();
 		String jsonInString = mapper.writeValueAsString(servicePlan);
-		this.mockMvc.perform(put("/api/serviceplan").contentType(MediaType.APPLICATION_JSON).content(jsonInString))
+		this.mockMvc.perform(put(SERVICEPLAN_ENDPOINT).contentType(MediaType.APPLICATION_JSON).content(jsonInString))
 				.andExpect(status().isOk());
 	}
 
 	@Test
 	public void testDeleteServicePlan() throws Exception {
 		Mockito.when(servicePlanService.deleteById(1L)).thenReturn(1L);
-		this.mockMvc.perform(get("/api/serviceplan/1")).andExpect(status().isOk());
+		this.mockMvc.perform(get(SERVICEPLAN_ENDPOINT+"/1")).andExpect(status().isOk());
+	}
+	
+	@Test
+	public void testserviceCalendarGeneration() throws Exception {
+		// when
+		when(servicePlanService.serviceCalendarGeneration(1L)).thenReturn(new ArrayList<Date>());
+		//perform
+		this.mockMvc.perform(get(SERVICEPLAN_ENDPOINT+"/calendar/homevisit/1")).andExpect(status().isOk());
+		//verifying exact number of invocations
+		verify(servicePlanService, times(1)).serviceCalendarGeneration(1L);
+		//make sure that nothing else was invoked on your mocks.
+		verifyNoMoreInteractions(servicePlanService);
 	}
 }

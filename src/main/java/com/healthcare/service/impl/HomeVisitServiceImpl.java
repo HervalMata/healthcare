@@ -55,4 +55,5 @@ public class HomeVisitServiceImpl implements HomeVisitService {
 			homeVisitList = homeVisitRepository.findAll();
 		return homeVisitList;
 	}
+	
 }

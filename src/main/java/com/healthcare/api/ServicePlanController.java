@@ -1,5 +1,6 @@
 package com.healthcare.api;
 
+import java.util.Date;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -75,5 +76,12 @@ public class ServicePlanController {
 	public void delete(@PathVariable("id") Long id) {
 		logger.info("id : " + id);
 		servicePlanService.deleteById(id);
+	}
+	
+	@ApiOperation(value = "service calendar generation", notes = "generate service calendar")
+	@ApiImplicitParam(name = "id", value = "service plan id", required = true, dataType = "Long", paramType = "path")
+	@GetMapping("/calendar/homevisit/{id}")
+	public List<Date> serviceCalendarGeneration(@PathVariable("id") Long servicePlanId){
+		return servicePlanService.serviceCalendarGeneration(servicePlanId);
 	}
 }

@@ -1,6 +1,7 @@
 package com.healthcare.service.impl;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -14,6 +15,7 @@ import com.healthcare.model.entity.ServicePlan;
 import com.healthcare.model.enums.DayEnum;
 import com.healthcare.repository.ServicePlanRepository;
 import com.healthcare.service.ServicePlanService;
+import com.healthcare.util.DateUtils;
 import com.healthcare.util.EnumUtils;
 
 import io.jsonwebtoken.lang.Collections;
@@ -21,6 +23,8 @@ import io.jsonwebtoken.lang.Collections;
 @Service
 @Transactional
 public class ServicePlanServiceImpl implements ServicePlanService {
+	
+
 	private static final String KEY = ServicePlan.class.getSimpleName();
 	private static final String DAYS_DELIMITER = ",";
 
@@ -74,7 +78,23 @@ public class ServicePlanServiceImpl implements ServicePlanService {
 			servicePlanList = servicePlanRepository.findAll();
 		return servicePlanList;
 	}
+	
+	/**
+	 * generate service calendar (Home visit)
+	 * @param Long serviceplanId
+	 * @return List<HomeVisitDto>
+	 */
+	@Override
+	public List<Date> serviceCalendarGeneration(Long serviceplanId) {			
+		ServicePlan servicePlan = findById(serviceplanId);
+		if(servicePlan != null)
+			//get all schudled dates between start and end  service plan 
+			return DateUtils.getDaysBetweenDates(servicePlan.getPlanStart(),
+					servicePlan.getPlanEnd(), servicePlan.getDays());
 
+		return new ArrayList<>();
+	}
+	
 	@Override
 	public List<String> getServiceCalendar(Long servicePlanId) {
 		ServicePlan servicePlan = findById(servicePlanId);

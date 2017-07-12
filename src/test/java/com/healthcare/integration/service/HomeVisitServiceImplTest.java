@@ -129,7 +129,6 @@ public class HomeVisitServiceImplTest {
         id=0L;
     }
     
-    
     private HomeVisit getHomeVisit(final ServicePlan serviceplan,final User user,final CareGiver careGiver) {
 		final HomeVisit homeVisit = new HomeVisit();
         homeVisit.setCheckInTime(Timestamp.valueOf("2017-05-01 09:00:000"));

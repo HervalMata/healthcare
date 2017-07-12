@@ -1,10 +1,23 @@
 package com.healthcare.integration.service;
 
 import java.sql.Timestamp;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
+
+import static org.hamcrest.CoreMatchers.hasItems;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.core.IsNot.not;
+import static org.hamcrest.core.IsNull.notNullValue;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 import javax.transaction.Transactional;
 
+import org.hamcrest.collection.IsEmptyCollection;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -174,4 +187,29 @@ public class ServicePlanServiceTest extends EntityFactory {
 		servicePlan = servicePlanService.findById(servicePlan.getId());
 		Assert.assertNull(servicePlan);
 	}
+	
+    @Test
+    public void testserviceCalendarGeneration(){
+    	// given
+    	List<Date> expectedList = Arrays.asList(new GregorianCalendar(2017, Calendar.JUNE, 06).getTime(), new GregorianCalendar(2017, Calendar.JUNE, 13).getTime());
+    	//when
+    	servicePlan = servicePlanService.save(createNewServicePlan(user));
+    	List<Date> result = servicePlanService.serviceCalendarGeneration(servicePlan.getId());
+    	
+    	//then
+    	//assert not null
+    	assertThat(result, notNullValue());
+    	//assert is expected
+    	assertThat(result, is(not(expectedList)));
+        //assert has item
+        assertThat(result, hasItems(new GregorianCalendar(2017, Calendar.JUNE, 01).getTime()));
+        //assert size
+        assertThat(result, hasSize(53));	
+        //check empty list
+        assertThat(result, not(IsEmptyCollection.empty()));	
+        //assert random list item betwen start and end plan date
+        assertTrue(result.get(0).before(servicePlan.getPlanEnd()));
+        assertTrue(result.get(1).after(servicePlan.getPlanStart()));
+    }
+	
 }

@@ -1,5 +1,7 @@
 package com.healthcare.api;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,5 +77,11 @@ public class MealController extends BaseController {
 		}
 
 		mealService.deleteById(mealId);
+	}
+	
+	@ApiOperation(value = "Get all meals", notes = "Get all meals")
+	@GetMapping()
+	public ResponseEntity<List<Meal>> findAll() {
+		return ResponseEntity.ok(mealService.findAll());
 	}
 }
