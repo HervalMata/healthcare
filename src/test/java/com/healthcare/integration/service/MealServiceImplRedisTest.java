@@ -3,6 +3,8 @@ package com.healthcare.integration.service;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsNull.notNullValue;
 import static org.hamcrest.core.IsNull.nullValue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Matchers.any;
@@ -10,9 +12,12 @@ import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.verify;
 import static org.mockito.internal.verification.VerificationModeFactory.only;
 
+import java.util.List;
+
 import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -102,4 +107,33 @@ public class MealServiceImplRedisTest {
 
         assertThat(savedMeal, nullValue());
     }
+    
+    @Test
+	public void shouldFindAllMeals() {
+    	Meal meal = new Meal();
+    	meal.setId(1L);
+		Mockito.when(mealRepository.save(meal)).thenReturn(meal);
+		meal = sut.save(meal);
+
+		Meal meal1= new Meal();
+		meal1.setId(2L);
+		Mockito.when(mealRepository.save(meal1)).thenReturn(meal1);
+		meal1 = sut.save(meal1);
+		
+		Meal meal2= new Meal();
+		meal2.setId(3L);
+		Mockito.when(mealRepository.save(meal2)).thenReturn(meal2);
+		meal2 = sut.save(meal2);
+
+		List<Meal> list= sut.findAll();
+		assertNotNull(list);
+		assertEquals(3, list.size());
+
+		id=meal.getId();
+		rollback();
+		id=meal1.getId();
+		rollback();
+		id=meal2.getId();
+		rollback();
+	}
 }
