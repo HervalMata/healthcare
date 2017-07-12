@@ -98,11 +98,11 @@ public class ServicePlanControllerTest {
 	@Test
 	public void testserviceCalendarGeneration() throws Exception {
 		// when
-		when(servicePlanService.serviceCalendarGeneration(1000L)).thenReturn(new ArrayList<Date>());
+		when(servicePlanService.serviceCalendarGeneration(1L)).thenReturn(new ArrayList<Date>());
 		//perform
-		this.mockMvc.perform(get(SERVICEPLAN_ENDPOINT+"/calendar/1000")).andExpect(status().isOk());
+		this.mockMvc.perform(get(SERVICEPLAN_ENDPOINT+"/calendar/homevisit/1")).andExpect(status().isOk());
 		//verifying exact number of invocations
-		verify(servicePlanService, times(1)).serviceCalendarGeneration(1000L);
+		verify(servicePlanService, times(1)).serviceCalendarGeneration(1L);
 		//make sure that nothing else was invoked on your mocks.
 		verifyNoMoreInteractions(servicePlanService);
 	}

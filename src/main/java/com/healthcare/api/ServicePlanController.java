@@ -80,7 +80,7 @@ public class ServicePlanController {
 	
 	@ApiOperation(value = "service calendar generation", notes = "generate service calendar")
 	@ApiImplicitParam(name = "id", value = "service plan id", required = true, dataType = "Long", paramType = "path")
-	@GetMapping("/calendar/{id}")
+	@GetMapping("/calendar/homevisit/{id}")
 	public List<Date> serviceCalendarGeneration(@PathVariable("id") Long servicePlanId){
 		return servicePlanService.serviceCalendarGeneration(servicePlanId);
 	}

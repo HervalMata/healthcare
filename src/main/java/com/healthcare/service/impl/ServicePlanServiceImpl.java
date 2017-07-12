@@ -1,21 +1,22 @@
 package com.healthcare.service.impl;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 import javax.transaction.Transactional;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import com.healthcare.model.entity.ServicePlan;
+import com.healthcare.model.enums.DayEnum;
 import com.healthcare.repository.ServicePlanRepository;
 import com.healthcare.service.ServicePlanService;
 import com.healthcare.util.DateUtils;
+import com.healthcare.util.EnumUtils;
 
 import io.jsonwebtoken.lang.Collections;
 
@@ -23,9 +24,9 @@ import io.jsonwebtoken.lang.Collections;
 @Transactional
 public class ServicePlanServiceImpl implements ServicePlanService {
 	
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	private static final String KEY = ServicePlan.class.getSimpleName();
+	private static final String DAYS_DELIMITER = ",";
 
 	@Autowired
 	ServicePlanRepository servicePlanRepository;
@@ -35,6 +36,22 @@ public class ServicePlanServiceImpl implements ServicePlanService {
 
 	@Override
 	public ServicePlan save(ServicePlan servicePlan) {
+		if (servicePlan == null) {
+			return null;
+		}
+
+		// validate days
+		for (String day : servicePlan.getDays().split(DAYS_DELIMITER)) {
+			if (!EnumUtils.isInEnum(day, DayEnum.class))
+				return null;
+		}
+
+		// validate plan period
+		if (servicePlan.getPlanStart() != null && servicePlan.getPlanEnd() != null) {
+			if (servicePlan.getPlanEnd().before(servicePlan.getPlanStart()))
+				return null;
+		}
+
 		servicePlan = servicePlanRepository.save(servicePlan);
 		servicePlanRedisTemplate.opsForHash().put(KEY, servicePlan.getId(), servicePlan);
 		return servicePlan;
@@ -70,15 +87,19 @@ public class ServicePlanServiceImpl implements ServicePlanService {
 	@Override
 	public List<Date> serviceCalendarGeneration(Long serviceplanId) {			
 		ServicePlan servicePlan = findById(serviceplanId);
-		
-		//get all schudled dates between start and end  service plan 
-		List<Date> generateCalendar = DateUtils.getDaysBetweenDates(servicePlan.getPlanStart(),
-				servicePlan.getPlanEnd(), servicePlan.getDays());
-		if(logger.isDebugEnabled()){
-			logger.debug("HCS_service plan start after : "+servicePlan.getPlanStart());
-			logger.debug("HCS_service plan end before : "+servicePlan.getPlanStart());
-			logger.debug("HCS_list of days between start and end service plan : "+generateCalendar.size());
-		}
-		return generateCalendar;
+		if(servicePlan != null)
+			//get all schudled dates between start and end  service plan 
+			return DateUtils.getDaysBetweenDates(servicePlan.getPlanStart(),
+					servicePlan.getPlanEnd(), servicePlan.getDays());
+
+		return new ArrayList<>();
+	}
+	
+	@Override
+	public List<String> getServiceCalendar(Long servicePlanId) {
+		ServicePlan servicePlan = findById(servicePlanId);
+		if (servicePlan != null)
+			return servicePlanRepository.getServiceCalendar(servicePlan);
+		return new ArrayList<String>();
 	}
 }
